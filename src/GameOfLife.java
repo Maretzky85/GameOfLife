@@ -55,21 +55,64 @@ public class GameOfLife extends Application {
                 case "-c":
                     Config.setConsoleView(true);
                     break;
+                case "-s":
+                    Config.togglePrintStatistics();
+                    break;
                 case "-h":
                     SettingsMenu.showHelp();
                     System.exit(0);
                     break;
                 default:
-                    System.out.println("Illegal argument\n" +
-                            "List of available arguments:\n" +
-                            "-w - start app in window with default configuration" +
-                            "-e - start app with example models" +
-                            "-c - start app with console output" +
-                            "-h - display help");
-                    System.exit(0);
+                    if(!handleComplexArg(arg)){
+                        System.out.println("Illegal argument\n" +
+                                "List of available arguments:\n\n" +
+                                "-x[] - sets board X size eg. -x200\n" +
+                                "-y[] - sets board Y size eg. -y200\n" +
+                                "-W[] - sets window width eg. -W1000\n" +
+                                "-H[] - sets window height eg. -H1000\n" +
+                                "-w - start app in window with default configuration\n" +
+                                "-e - start app with example models\n" +
+                                "-c - start app with console output\n" +
+                                "-s - start app with print statistics on\n" +
+                                "-h - display help");
+                        System.exit(0);
+                    }
                     break;
             }
         }
         launch();
     }
+
+    /**
+     * function for handling complex arguments
+     *
+     * @param argument - single argument
+     * @return - true if handled properly
+     */
+    private static boolean handleComplexArg(String argument) {
+        try{
+            if (argument.startsWith("-x")){
+                Config.setXsize(convertToInt(argument));
+                return true;
+            }else if(argument.startsWith("-y")){
+                Config.setYsize(convertToInt(argument));
+                return true;
+            }else if(argument.startsWith("-W")){
+                Config.setRequestedWindowWidth(convertToInt(argument));
+                return true;
+            }else if(argument.startsWith("-H")){
+                Config.setRequestedWindowHeight(convertToInt(argument));
+                return true;
+            }
+        }catch (NumberFormatException ignored){
+        }
+        return false;
+    }
+
+    private static int convertToInt(String arg){
+        int value = Integer.valueOf(arg.substring(2));
+        return value;
+    }
+
 }
+

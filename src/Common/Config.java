@@ -61,7 +61,7 @@ public class Config {
     setters and getters for console menu and in-game modifications from JavaFX
      */
 
-    static void togglePrintStatistics() {
+    public static void togglePrintStatistics() {
         printStatistics = !printStatistics;
     }
 
@@ -69,7 +69,7 @@ public class Config {
         CONSOLE_VIEW = consoleView;
     }
 
-    static void setXsize(int xSize) {
+    public static void setXsize(int xSize) {
         X_SIZE = xSize;
         if (REQUESTED_WINDOW_WIDTH < X_SIZE) {
             REQUESTED_WINDOW_WIDTH = X_SIZE;
@@ -77,7 +77,7 @@ public class Config {
         resize();
     }
 
-    static void setYsize(int ySize) {
+    public static void setYsize(int ySize) {
         Y_SIZE = ySize;
         if (REQUESTED_WINDOW_HEIGHT < Y_SIZE) {
             REQUESTED_WINDOW_HEIGHT = Y_SIZE;
@@ -89,7 +89,7 @@ public class Config {
         FRAME_RATE = frameRate;
     }
 
-    static boolean setRequestedWindowWidth(int requestedWindowWidth) {
+    public static boolean setRequestedWindowWidth(int requestedWindowWidth) {
         boolean ok = false;
         if (requestedWindowWidth < X_SIZE) {
             REQUESTED_WINDOW_WIDTH = X_SIZE;
@@ -102,7 +102,7 @@ public class Config {
         return ok;
     }
 
-    static boolean setRequestedWindowHeight(int requestedWindowHeight) {
+    public static boolean setRequestedWindowHeight(int requestedWindowHeight) {
         boolean ok = false;
         if (requestedWindowHeight < Y_SIZE) {
             REQUESTED_WINDOW_HEIGHT = Y_SIZE;
@@ -157,4 +157,5 @@ public class Config {
     public static boolean isStartExampleModels() {
         return startExampleModels;
     }
+
 }
