@@ -124,6 +124,8 @@ public class Config {
         WIDTH = RECTANGLE_WIDTH * X_SIZE;
         RECTANGLE_HEIGHT = Math.max(1, Math.floorDiv(REQUESTED_WINDOW_HEIGHT, Y_SIZE));
         HEIGHT = RECTANGLE_HEIGHT * Y_SIZE;
+        RECTANGLE_ARC_HEIGHT = RECTANGLE_HEIGHT / 3;
+        RECTANGLE_ARC_WIDTH = RECTANGLE_WIDTH / 3;
     }
 
     public static boolean isPrintStatistics() {
