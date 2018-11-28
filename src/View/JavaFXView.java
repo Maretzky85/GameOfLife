@@ -75,13 +75,14 @@ public class JavaFXView implements ViewInterface {
      * Attaches listeners for stage width and height and calls resizeGrid if needed
      */
     private void attachListeners(){
+        int windowUpperBarTreshold = -30;
         primaryStage.widthProperty().addListener((observable, oldValue, newValue) -> {
             Config.setRequestedWindowWidth(newValue.intValue());
             resizeGrid();
         });
 
         primaryStage.heightProperty().addListener((observable, oldValue, newValue) -> {
-            Config.setRequestedWindowHeight(newValue.intValue());
+            Config.setRequestedWindowHeight(newValue.intValue()+windowUpperBarTreshold);
             resizeGrid();
         });
 
