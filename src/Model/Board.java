@@ -43,11 +43,10 @@ public class Board {
 
                 int aliveNeighbors = getNeighbors(j, i);
                 Dot currentSourceDot = board[i][j];
-                Dot currentDestDot = tempBoard[i][j];
 
                 if (currentSourceDot != null && Arrays.stream(ruleToLive).anyMatch(value -> value == aliveNeighbors)) {
                     tempBoard[i][j] = currentSourceDot;
-                } else if ((currentDestDot == null && Arrays.stream(ruleToGetAlive).anyMatch(value -> value == aliveNeighbors))) {
+                } else if ((currentSourceDot == null && Arrays.stream(ruleToGetAlive).anyMatch(value -> value == aliveNeighbors))) {
                     tempBoard[i][j] = new Dot();
                 }
             }
