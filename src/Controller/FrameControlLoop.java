@@ -48,6 +48,7 @@ public class FrameControlLoop extends Thread {
             if (timeCounterMs >= timeFrame) {
                 if (!isPause) {
                     updater.run();
+                    Thread.yield();
                 }
 
                 if (CONSOLE_VIEW) {

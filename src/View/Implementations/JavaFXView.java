@@ -1,8 +1,10 @@
-package View;
+package View.Implementations;
 
 import Common.Config;
 import Controller.Controller;
 import Model.Dot;
+import View.Implementations.Common.InputHandler;
+import View.ViewInterface;
 import javafx.application.Platform;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
@@ -204,8 +206,7 @@ public class JavaFXView implements ViewInterface {
                     for (int j = 0; j < X_SIZE; j++) {
                         Rectangle rectangle = viewRectangleTable[i][j];
                         if (board[i][j] != null) {
-                            int generationColor = Math.max(255 - board[i][j].getGeneration() * 2, 0);
-                            rectangle.setFill(Color.rgb(255, generationColor, 0));
+                            rectangle.setFill(board[i][j].getColor());
                         } else {
                             rectangle.setFill(DEAD_COLOR);
                         }

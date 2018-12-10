@@ -3,11 +3,11 @@ package Controller;
 import Common.BoardTooSmallException;
 import Common.Config;
 import Model.Board;
-import Model.BoardMultithreading;
-import Model.BoardSingleThread;
-import View.ConsoleView;
-import View.JavaFX3DView;
-import View.JavaFXView;
+import Model.MultiThread.BoardMultithreading;
+import Model.SingleThread.BoardSingleThread;
+import View.Implementations.ConsoleView;
+import View.Implementations.JavaFXView;
+import View.Implementations.View3D.JavaFX3DView;
 import View.ViewInterface;
 import javafx.stage.Stage;
 
@@ -171,7 +171,6 @@ public class Controller implements Observer {
             if(!model.isBusy()){
                 model.nextGen();
                 view.refresh(model.getBoard());
-                Thread.yield();
             }
     }
 

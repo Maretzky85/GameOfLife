@@ -1,4 +1,4 @@
-package View.Model3D;
+package View.Implementations.View3D;
 import javafx.scene.Group;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Scale;

@@ -1,6 +1,8 @@
-package Model;
+package Model.SingleThread;
 
 import Common.BoardTooSmallException;
+import Model.Board;
+import Model.Dot;
 
 import java.util.Arrays;
 
@@ -9,7 +11,7 @@ import java.util.Arrays;
  * holds board that is 2d table that holds Dot or null
  * holds rule to live to next generation and rule to get alive in net generation
  */
-public class BoardSingleThread implements Board{
+public class BoardSingleThread implements Board {
     private Dot[][] board;
 
     private int[] ruleToLive = new int[]{2, 3};

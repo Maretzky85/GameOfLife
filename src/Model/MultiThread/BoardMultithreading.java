@@ -1,6 +1,8 @@
-package Model;
+package Model.MultiThread;
 
 import Common.BoardTooSmallException;
+import Model.Board;
+import Model.Dot;
 
 import java.util.ArrayList;
 /**
@@ -8,7 +10,7 @@ import java.util.ArrayList;
  * holds board that is 2d table that holds Dot or null
  * holds rule to live to next generation and rule to get alive in net generation
  */
-public class BoardMultithreading implements Board{
+public class BoardMultithreading implements Board {
     Dot[][] board;
     Dot[][] nextGenBoard;
     public Boolean ongoingUpdate = false;
@@ -16,7 +18,7 @@ public class BoardMultithreading implements Board{
     private int workersDoneCount = 0;
     int[] ruleToLive = new int[]{2, 3};
     int[] ruleToGetAlive = new int[]{3};
-    int generation = 0;
+    private int generation = 0;
 
     /**
      * Board constructor
@@ -204,82 +206,82 @@ public class BoardMultithreading implements Board{
         int y3Offset = 1;
         try {
 //        Glider
-            board[2 + y3Offset][2 + x3Offset] = new Dot();
-            board[2 + y3Offset][3 + x3Offset] = new Dot();
-            board[2 + y3Offset][1 + x3Offset] = new Dot();
-            board[1 + y3Offset][3 + x3Offset] = new Dot();
-            board[y3Offset][2 + x3Offset] = new Dot();
+//            board[2 + y3Offset][2 + x3Offset] = new Dot();
+//            board[2 + y3Offset][3 + x3Offset] = new Dot();
+//            board[2 + y3Offset][1 + x3Offset] = new Dot();
+//            board[1 + y3Offset][3 + x3Offset] = new Dot();
+//            board[y3Offset][2 + x3Offset] = new Dot();
 //
 //        something
-//            board[8 + x2Offset][1 + y2Offset] = new Dot();
-//            board[8 + x2Offset][3 + y2Offset] = new Dot();
-//            board[7 + x2Offset][3 + y2Offset] = new Dot();
-//            board[6 + x2Offset][5 + y2Offset] = new Dot();
-//            board[5 + x2Offset][5 + y2Offset] = new Dot();
-//            board[4 + x2Offset][5 + y2Offset] = new Dot();
-//            board[5 + x2Offset][7 + y2Offset] = new Dot();
-//            board[4 + x2Offset][7 + y2Offset] = new Dot();
-//            board[3 + x2Offset][7 + y2Offset] = new Dot();
-//            board[4 + x2Offset][8 + y2Offset] = new Dot();
+            board[8 + x2Offset][1 + y2Offset] = new Dot();
+            board[8 + x2Offset][3 + y2Offset] = new Dot();
+            board[7 + x2Offset][3 + y2Offset] = new Dot();
+            board[6 + x2Offset][5 + y2Offset] = new Dot();
+            board[5 + x2Offset][5 + y2Offset] = new Dot();
+            board[4 + x2Offset][5 + y2Offset] = new Dot();
+            board[5 + x2Offset][7 + y2Offset] = new Dot();
+            board[4 + x2Offset][7 + y2Offset] = new Dot();
+            board[3 + x2Offset][7 + y2Offset] = new Dot();
+            board[4 + x2Offset][8 + y2Offset] = new Dot();
 //
 ////        GliderGun
 //
-//            board[8 + xOffset][1 + yOffset] = new Dot();
-//            board[7 + xOffset][1 + yOffset] = new Dot();
-//            board[8 + xOffset][2 + yOffset] = new Dot();
-//            board[7 + xOffset][2 + yOffset] = new Dot();
-//
-//            board[8 + xOffset][12 + yOffset] = new Dot();
-//            board[7 + xOffset][12 + yOffset] = new Dot();
-//            board[6 + xOffset][12 + yOffset] = new Dot();
-//
-//            board[9 + xOffset][13 + yOffset] = new Dot();
-//            board[5 + xOffset][13 + yOffset] = new Dot();
-//
-//            board[4 + xOffset][14 + yOffset] = new Dot();
-//            board[10 + xOffset][14 + yOffset] = new Dot();
-//
-//            board[5 + xOffset][15 + yOffset] = new Dot();
-//            board[9 + xOffset][15 + yOffset] = new Dot();
-//
-//            board[8 + xOffset][16 + yOffset] = new Dot();
-//            board[7 + xOffset][16 + yOffset] = new Dot();
-//            board[6 + xOffset][16 + yOffset] = new Dot();
-//
-//            board[8 + xOffset][17 + yOffset] = new Dot();
-//            board[7 + xOffset][17 + yOffset] = new Dot();
-//            board[6 + xOffset][17 + yOffset] = new Dot();
-//
-//            board[6 + xOffset][22 + yOffset] = new Dot();
-//            board[5 + xOffset][22 + yOffset] = new Dot();
-//            board[4 + xOffset][22 + yOffset] = new Dot();
-//
-//            board[3 + xOffset][23 + yOffset] = new Dot();
-//            board[4 + xOffset][23 + yOffset] = new Dot();
-//            board[6 + xOffset][23 + yOffset] = new Dot();
-//            board[7 + xOffset][23 + yOffset] = new Dot();
-//
-//            board[3 + xOffset][24 + yOffset] = new Dot();
-//            board[4 + xOffset][24 + yOffset] = new Dot();
-//            board[6 + xOffset][24 + yOffset] = new Dot();
-//            board[7 + xOffset][24 + yOffset] = new Dot();
-//
-//            board[3 + xOffset][25 + yOffset] = new Dot();
-//            board[4 + xOffset][25 + yOffset] = new Dot();
-//            board[5 + xOffset][25 + yOffset] = new Dot();
-//            board[6 + xOffset][25 + yOffset] = new Dot();
-//            board[7 + xOffset][25 + yOffset] = new Dot();
-//            board[2 + xOffset][26 + yOffset] = new Dot();
-//            board[3 + xOffset][26 + yOffset] = new Dot();
-//            board[7 + xOffset][26 + yOffset] = new Dot();
-//            board[8 + xOffset][26 + yOffset] = new Dot();
-//
-//            board[3 + xOffset][31 + yOffset] = new Dot();
-//            board[4 + xOffset][31 + yOffset] = new Dot();
-//            board[5 + xOffset][35 + yOffset] = new Dot();
-//            board[6 + xOffset][35 + yOffset] = new Dot();
-//            board[5 + xOffset][36 + yOffset] = new Dot();
-//            board[6 + xOffset][36 + yOffset] = new Dot();
+            board[8 + xOffset][1 + yOffset] = new Dot();
+            board[7 + xOffset][1 + yOffset] = new Dot();
+            board[8 + xOffset][2 + yOffset] = new Dot();
+            board[7 + xOffset][2 + yOffset] = new Dot();
+
+            board[8 + xOffset][12 + yOffset] = new Dot();
+            board[7 + xOffset][12 + yOffset] = new Dot();
+            board[6 + xOffset][12 + yOffset] = new Dot();
+
+            board[9 + xOffset][13 + yOffset] = new Dot();
+            board[5 + xOffset][13 + yOffset] = new Dot();
+
+            board[4 + xOffset][14 + yOffset] = new Dot();
+            board[10 + xOffset][14 + yOffset] = new Dot();
+
+            board[5 + xOffset][15 + yOffset] = new Dot();
+            board[9 + xOffset][15 + yOffset] = new Dot();
+
+            board[8 + xOffset][16 + yOffset] = new Dot();
+            board[7 + xOffset][16 + yOffset] = new Dot();
+            board[6 + xOffset][16 + yOffset] = new Dot();
+
+            board[8 + xOffset][17 + yOffset] = new Dot();
+            board[7 + xOffset][17 + yOffset] = new Dot();
+            board[6 + xOffset][17 + yOffset] = new Dot();
+
+            board[6 + xOffset][22 + yOffset] = new Dot();
+            board[5 + xOffset][22 + yOffset] = new Dot();
+            board[4 + xOffset][22 + yOffset] = new Dot();
+
+            board[3 + xOffset][23 + yOffset] = new Dot();
+            board[4 + xOffset][23 + yOffset] = new Dot();
+            board[6 + xOffset][23 + yOffset] = new Dot();
+            board[7 + xOffset][23 + yOffset] = new Dot();
+
+            board[3 + xOffset][24 + yOffset] = new Dot();
+            board[4 + xOffset][24 + yOffset] = new Dot();
+            board[6 + xOffset][24 + yOffset] = new Dot();
+            board[7 + xOffset][24 + yOffset] = new Dot();
+
+            board[3 + xOffset][25 + yOffset] = new Dot();
+            board[4 + xOffset][25 + yOffset] = new Dot();
+            board[5 + xOffset][25 + yOffset] = new Dot();
+            board[6 + xOffset][25 + yOffset] = new Dot();
+            board[7 + xOffset][25 + yOffset] = new Dot();
+            board[2 + xOffset][26 + yOffset] = new Dot();
+            board[3 + xOffset][26 + yOffset] = new Dot();
+            board[7 + xOffset][26 + yOffset] = new Dot();
+            board[8 + xOffset][26 + yOffset] = new Dot();
+
+            board[3 + xOffset][31 + yOffset] = new Dot();
+            board[4 + xOffset][31 + yOffset] = new Dot();
+            board[5 + xOffset][35 + yOffset] = new Dot();
+            board[6 + xOffset][35 + yOffset] = new Dot();
+            board[5 + xOffset][36 + yOffset] = new Dot();
+            board[6 + xOffset][36 + yOffset] = new Dot();
         } catch (IndexOutOfBoundsException ignore) {
 
         }

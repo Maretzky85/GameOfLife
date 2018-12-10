@@ -1,9 +1,9 @@
-package View;
+package View.Implementations.View3D;
 
 import Controller.Controller;
 import Model.Dot;
-import View.Model3D.BoxB;
-import View.Model3D.Xform;
+import View.Implementations.Common.InputHandler;
+import View.ViewInterface;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.scene.*;
@@ -62,7 +62,7 @@ public class JavaFX3DView implements ViewInterface {
         =========== MODEL VIEW SECTION ==========
      */
 
-    private Box[][] viewBoardTable;
+    private BoxB[][] viewBoardTable;
 
     private Stage primaryStage;
     private Group root = new Group();
@@ -143,7 +143,7 @@ public class JavaFX3DView implements ViewInterface {
     }
 
     private void initGrid() {
-        viewBoardTable = new Box[Y_SIZE][X_SIZE];
+        viewBoardTable = new BoxB[Y_SIZE][X_SIZE];
         /*
           start positions for scene centering
          */
@@ -165,6 +165,7 @@ public class JavaFX3DView implements ViewInterface {
                  */
 //                boxToAdd.setTranslateZ(  Math.sin((double) boxToAdd.getBoardX()/90) * 1000  );
                 boxToAdd.setMaterial(new PhongMaterial(Color.RED));
+//                boxToAdd.setEffect(new Bloom());
                 /*
                     optional secondary color
                  */
@@ -214,14 +215,11 @@ public class JavaFX3DView implements ViewInterface {
             Platform.runLater(() -> {
                 for (int i = 0; i < Y_SIZE; i++) {
                     for (int j = 0; j < X_SIZE; j++) {
-                        Box box = viewBoardTable[i][j];
+                        BoxB box = viewBoardTable[i][j];
                         if (board[i][j] != null) {
                             box.setVisible(true);
                             ((PhongMaterial) box.getMaterial()).
-                                    setDiffuseColor(Color.rgb(
-                                            255,
-                                            board[i][j].getGeneration(),
-                                            0));
+                                    setDiffuseColor(board[i][j].getColor());
                         } else {
                             if(showDeadDot){
                                 box.setVisible(true);

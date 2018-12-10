@@ -1,6 +1,6 @@
-package View;
+package View.Implementations.Common;
 
-import View.Model3D.BoxB;
+import View.Implementations.View3D.BoxB;
 import javafx.scene.input.InputEvent;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -17,7 +17,7 @@ import static javafx.scene.input.MouseEvent.MOUSE_RELEASED;
  * Input Handler Class - extends observable Class
  * Receives input calls from JavaFX and passes through to observators with proper parameters
  */
-class InputHandler extends Observable {
+public class InputHandler extends Observable {
 
     /**
      * handleInput method
@@ -27,7 +27,7 @@ class InputHandler extends Observable {
      * @param event - any event than extends Input Event class
      */
 
-    void handleInput(InputEvent event) {
+    public void handleInput(InputEvent event) {
         if (event.getEventType().equals(MOUSE_RELEASED)) {
             MouseEvent mouseEvent = (MouseEvent) event;
             switch (mouseEvent.getButton()) {

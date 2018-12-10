@@ -1,7 +1,8 @@
-package View;
+package View.Implementations;
 
 import Controller.Controller;
 import Model.Dot;
+import View.ViewInterface;
 
 /**
  * View class for viewing GameOfLife board in console

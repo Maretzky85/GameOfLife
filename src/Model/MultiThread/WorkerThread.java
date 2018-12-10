@@ -1,4 +1,6 @@
-package Model;
+package Model.MultiThread;
+
+import Model.Dot;
 
 import java.util.Arrays;
 
