@@ -58,10 +58,13 @@ public class FrameControlLoop extends Thread {
                 frame++;
                 timeCounterMs = 0;
             }
-            try {
-                Thread.sleep(timeFrame - timeCounterMs);
-            } catch (InterruptedException ignored) {
+            if(timeFrame - timeCounterMs > 0){
+                try {
+                    Thread.sleep(timeFrame - timeCounterMs);
+                } catch (InterruptedException ignored) {
+                }
             }
+
             //FPS loging in ======================
             if (currentTime - startTime > 1000) {
                 statTimer.run();
@@ -94,16 +97,29 @@ public class FrameControlLoop extends Thread {
      * decrease or increase update speed by altering timeframe value
      */
     void decreaseSpeed() {
-        timeFrame = timeFrame + 3;
+        if(timeFrame<1000){
+            timeFrame = 1000 / Math.max((1000 / timeFrame -1), 1);
+        }else {
+            System.out.println("Limit FPS");
+        }
+        if(timeFrame < 30){
+            timeFrame++;
+        }
         if (Config.isPrintStatistics()) {
             System.out.println("new requested FPS: " + 1000 / timeFrame);
         }
     }
 
     void increaseSpeed() {
-        timeFrame = Math.max(timeFrame - 3, 5);
+        if(timeFrame > 1){
+            timeFrame = 1000 / (1000 / timeFrame +1);
+        }else {
+            System.out.println("Limit FPS");
+        }
+
         if (Config.isPrintStatistics()) {
             System.out.println("new requested FPS: " + 1000 / timeFrame);
+
         }
 
     }

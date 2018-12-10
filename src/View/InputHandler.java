@@ -1,5 +1,6 @@
 package View;
 
+import View.Model3D.BoxB;
 import javafx.scene.input.InputEvent;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -10,7 +11,7 @@ import java.util.Observable;
 import static Common.Config.RECTANGLE_HEIGHT;
 import static Common.Config.RECTANGLE_WIDTH;
 import static javafx.scene.input.KeyEvent.KEY_PRESSED;
-import static javafx.scene.input.MouseEvent.MOUSE_PRESSED;
+import static javafx.scene.input.MouseEvent.MOUSE_RELEASED;
 
 /**
  * Input Handler Class - extends observable Class
@@ -25,18 +26,28 @@ class InputHandler extends Observable {
      *
      * @param event - any event than extends Input Event class
      */
+
     void handleInput(InputEvent event) {
-        if (event.getEventType().equals(MOUSE_PRESSED)) {
+        if (event.getEventType().equals(MOUSE_RELEASED)) {
             MouseEvent mouseEvent = (MouseEvent) event;
             switch (mouseEvent.getButton()) {
                 case PRIMARY:
-                    if (((MouseEvent) event).getPickResult().getIntersectedNode() != null) {
-                        Rectangle rectangle = (Rectangle) mouseEvent.getPickResult().getIntersectedNode();
-                        int gridXposition = (int) (rectangle.getX() / RECTANGLE_WIDTH);
-                        int gridYposition = (int) (rectangle.getY() / RECTANGLE_HEIGHT);
-                        int position[] = new int[]{gridXposition, gridYposition};
-                        setChanged();
-                        notifyObservers(position);
+                    if (((MouseEvent) event).getPickResult().getIntersectedNode() != null){
+                        if( ((MouseEvent) event).getPickResult().getIntersectedNode().getClass().equals(BoxB.class)){
+                            BoxB rectangle = (BoxB) mouseEvent.getPickResult().getIntersectedNode();
+                            int gridXposition = (rectangle.getBoardX());
+                            int gridYposition = (rectangle.getBoardY());
+                            int[] position = new int[]{gridXposition, gridYposition};
+                            setChanged();
+                            notifyObservers(position);
+                        }else{
+                            Rectangle rectangle = (Rectangle) mouseEvent.getPickResult().getIntersectedNode();
+                            int gridXposition = (int) (rectangle.getX() / RECTANGLE_WIDTH);
+                            int gridYposition = (int) (rectangle.getY() / RECTANGLE_HEIGHT);
+                            int position[] = new int[]{gridXposition, gridYposition};
+                            setChanged();
+                            notifyObservers(position);
+                        }
                     }
                     break;
                 case SECONDARY:

@@ -32,7 +32,7 @@ public class GameOfLife extends Application {
      */
     @Override
     public void start(Stage primaryStage) throws BoardTooSmallException {
-        System.out.println("Starting Game...");
+        System.out.println("Starting Game Of Life...");
         Controller controller = new Controller();
         controller.controllerInit(primaryStage);
         controller.startLoop();
@@ -58,23 +58,29 @@ public class GameOfLife extends Application {
                 case "-s":
                     Config.togglePrintStatistics();
                     break;
+                case "-3":
+                    Config.setView3d(true);
+                    break;
                 case "-h":
                     SettingsMenu.showHelp();
                     System.exit(0);
                     break;
                 default:
                     if(!handleComplexArg(arg)){
-                        System.out.println("Illegal argument\n" +
+                        SettingsMenu.showHelp();
+                        System.out.println(
                                 "List of available arguments:\n\n" +
                                 "-x[] - sets board X size eg. -x200\n" +
                                 "-y[] - sets board Y size eg. -y200\n" +
                                 "-W[] - sets window width eg. -W1000\n" +
                                 "-H[] - sets window height eg. -H1000\n" +
                                 "-w - start app in window with default configuration\n" +
+                                "-3 - set JavaFX view in 3D view\n" +
                                 "-e - start app with example models\n" +
                                 "-c - start app with console output\n" +
                                 "-s - start app with print statistics on\n" +
-                                "-h - display help");
+                                "-h - display help\n\n");
+
                         System.exit(0);
                     }
                     break;

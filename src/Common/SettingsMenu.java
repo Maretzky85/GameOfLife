@@ -32,8 +32,9 @@ public class SettingsMenu {
         int choice = 9;
         while (choice > 0) {
             clearScreen();
-            System.out.println("SettingsMenu:\n" +
-                    "1: View menu\n" +
+            System.out.println("Pre-launch options menu\n\n" +
+                    "Settings Menu:\n" +
+                    "1: View options menu\n" +
                     "2: Game options menu\n" +
                     "3: Display Help\n" +
                     "9: Quit\n" +
@@ -67,7 +68,8 @@ public class SettingsMenu {
         int choice = 9;
         clearScreen();
         while (choice > 0) {
-            System.out.println("Game settings menu:\n" +
+            System.out.println("Pre-launch options menu\n\n" +
+                    "Game options menu:\n" +
                     "1: Set board X size - " + Config.getxSize() + "\n" +
                     "2: Set board Y size - " + Config.getySize() + "\n" +
                     "3: Set speed (FPS) - " + Config.getFrameRate() + "\n" +
@@ -122,11 +124,13 @@ public class SettingsMenu {
         int choice = 9;
         clearScreen();
         while (choice > 0) {
-            System.out.println("View Menu:\n" +
+            System.out.println("Pre-launch options menu\n\n" +
+                    "View Options Menu:\n" +
                     "1: Set Window Height - " + Config.getRequestedWindowHeight() + "\n" +
                     "2: Set Window Width - " + Config.getRequestedWindowWidth() + "\n" +
                     "3: Set Console View - current state - " + Config.isConsoleView() + "\n" +
-                    "4: Set JavaFX View\n" +
+                    "4: Set JavaFX View - current state - " + !Config.isConsoleView() + "\n" +
+                    "5: Set JavaFX3D View (valid only if JavaFX View is True) - " + Config.isView3d() + "\n" +
                     "0: Return");
             switch (inputValidator()) {
                 case 1:
@@ -166,6 +170,12 @@ public class SettingsMenu {
                     System.out.println("Set View to JavaFX View\n");
                     scanner.nextLine();
                     break;
+                case 5:
+                    Config.setView3d(!Config.isView3d());
+                    clearScreen();
+                    System.out.println("Set View to JavaFX3D View\n");
+                    scanner.nextLine();
+                    break;
                 case 0:
                     choice = 0;
                     break;
@@ -174,9 +184,10 @@ public class SettingsMenu {
     }
 
     public static void showHelp() {
-        System.out.println("Usage:\n" +
-                "Console view - console view is for viewing only - there is no input method - quit with ctr(cmd) + c\n" +
-                "Example usage: GameOfLife -c -e\n" +
+        clearScreen();
+        System.out.println("Usage:\n\n" +
+                "Example command line usage: GameOfLife -c -e\n\n" +
+                "Console view - console view is for viewing only - there is no input method - quit with ctr(cmd) + c\n\n" +
                 "JavaFX view:\n" +
                 "-Mouse:\n" +
                 "--Left key - change dot state\n" +
@@ -186,7 +197,16 @@ public class SettingsMenu {
                 "-- c - clears board\n" +
                 "-- n - places example dots on board\n" +
                 "-- + - increase requested speed\n" +
-                "-- - - decrease speed\n");
+                "-- - - decrease requested speed\n\n" +
+                "======= below valid only in 3d view in addition to JavaFX view========\n" +
+                "-Mouse drag:\n" +
+                "-- with left key - rotate model\n" +
+                "-Keyboard:\n" +
+                "-- WSAD - move camera\n" +
+                "-- UP/DOWN - move camera up or down\n" +
+                "-- LEFT/RIGHT - rotate camera\n" +
+                "-- v - toggle view of corner cubes\n" +
+                "---- Additionally SHIFT/CTRL pressed while moving camera or rotating view will modify speed");
         System.out.println("Press enter to continue");
         waitForEnter();
     }
@@ -198,6 +218,7 @@ public class SettingsMenu {
     }
 
     private static int inputValidator(){
+        System.out.println("\n\nSelect number and press Enter");
         while(!scanner.hasNextInt()){
             System.out.println("Please enter a number");
             scanner.nextLine();

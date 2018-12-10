@@ -7,8 +7,10 @@ import Model.Dot;
  * View class for viewing GameOfLife board in console
  * mostly for debugging and testing purposes
  */
-public class ConsoleView implements ViewInterface {
+public class ConsoleView implements ViewInterface, Runnable{
     private int frameDropped = 0;
+    private int renderedFrames = 0;
+    private int renderedFramesSum = 0;
     private boolean printingInProgress = false;
     /**
      * clearScreen - method for clearing screen
@@ -46,7 +48,7 @@ public class ConsoleView implements ViewInterface {
                 System.out.println();
                 for(Dot DotInRow : RowInBoard){
                     if(DotInRow == null){
-                        System.out.print(" ");
+                        System.out.print(".");
                     }else{
                         System.out.print(DotInRow);
                     }
@@ -54,6 +56,9 @@ public class ConsoleView implements ViewInterface {
             }
             System.out.println();
             System.out.println();
+            System.out.println("Rendered Frames: "+renderedFramesSum);
+            System.out.println("Dropped frames: "+frameDropped);
+            renderedFrames++;
             printingInProgress = false;
         }else{
             frameDropped++;
@@ -62,12 +67,25 @@ public class ConsoleView implements ViewInterface {
 
     @Override
     public int getDroppedFrames() {
+        int currentDroppedFrames = frameDropped;
         frameDropped = 0;
-        return frameDropped;
+        return currentDroppedFrames;
+    }
+
+    @Override
+    public int getRenderedFrames() {
+        renderedFramesSum = renderedFrames;
+        int currentRenderedFrames = renderedFrames;
+        renderedFrames = 0;
+        return currentRenderedFrames;
     }
 
     @Override
     public void attachObserver(Controller ignore) {
     }
 
+    @Override
+    public void run() {
+        System.out.println("ConsoleView Started in new thread");
+    }
 }

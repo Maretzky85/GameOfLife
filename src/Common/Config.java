@@ -3,7 +3,7 @@ package Common;
 import javafx.scene.paint.Color;
 
 public class Config {
-    public static double VERSION = 0.98;
+    public static double VERSION = 0.99;
 
     /**
      * Print statistics
@@ -19,20 +19,26 @@ public class Config {
     public static boolean CONSOLE_VIEW = false;
 
     /**
+     * VIEW_3D - 3D representation of board
+     * can be showed if JavaFX view is selected
+     */
+    public static boolean VIEW_3D = false;
+
+    /**
      * X_SIZE and Y_SIZE - size of grid for GameOfLife board
      * FRAME_RATE - how many generations to render in one second
      */
     public static int X_SIZE = 80;
+
     public static int Y_SIZE = 40;
     public static int FRAME_RATE = 20;
-
     /**
      * JavaFX window size configuration
      * DEAD_COLOR - color for inactive Dot
      */
     private static int REQUESTED_WINDOW_WIDTH = 400;
-    private static int REQUESTED_WINDOW_HEIGHT = 300;
 
+    private static int REQUESTED_WINDOW_HEIGHT = 300;
     /**
      * DEAD_COLOR - color for inactive Dot
      */
@@ -50,6 +56,7 @@ public class Config {
      * window size cannot be smaller than board size
      */
     public static int RECTANGLE_WIDTH = Math.max(1, Math.floorDiv(REQUESTED_WINDOW_WIDTH, X_SIZE));
+
     public static int RECTANGLE_HEIGHT = Math.max(1, Math.floorDiv(REQUESTED_WINDOW_HEIGHT, Y_SIZE));
     public static int WIDTH = RECTANGLE_WIDTH * X_SIZE;
     public static int HEIGHT = RECTANGLE_HEIGHT * Y_SIZE;
@@ -60,13 +67,16 @@ public class Config {
     =============================================================================
     setters and getters for console menu and in-game modifications from JavaFX
      */
-
     public static void togglePrintStatistics() {
         printStatistics = !printStatistics;
     }
 
     public static void setConsoleView(boolean consoleView) {
         CONSOLE_VIEW = consoleView;
+    }
+
+    public static void setView3d(boolean view3d) {
+        VIEW_3D = view3d;
     }
 
     public static void setXsize(int xSize) {
@@ -136,6 +146,10 @@ public class Config {
         return CONSOLE_VIEW;
     }
 
+    public static boolean isView3d() {
+        return VIEW_3D;
+    }
+
     static int getxSize() {
         return X_SIZE;
     }
@@ -159,5 +173,4 @@ public class Config {
     public static boolean isStartExampleModels() {
         return startExampleModels;
     }
-
 }

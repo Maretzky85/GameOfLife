@@ -4,9 +4,12 @@ import Common.Config;
 import Controller.Controller;
 import Model.Dot;
 import javafx.application.Platform;
+import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.input.InputEvent;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
@@ -14,7 +17,9 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 import static Common.Config.*;
-import static javafx.scene.input.MouseEvent.MOUSE_PRESSED;
+import static javafx.scene.input.KeyCode.TAB;
+import static javafx.scene.input.KeyEvent.KEY_PRESSED;
+import static javafx.scene.input.MouseEvent.MOUSE_RELEASED;
 
 /**
  * JavaFX View Class implements ViewInterface class
@@ -23,13 +28,17 @@ import static javafx.scene.input.MouseEvent.MOUSE_PRESSED;
 public class JavaFXView implements ViewInterface {
 
     private Stage primaryStage;
-    private Group group = new Group();
-    private Scene scene = new Scene(group, WIDTH, HEIGHT, Color.BLACK);
+    private Group viewBoard = new Group();
+    private Scene gameScene = new Scene(viewBoard, WIDTH, HEIGHT, Color.BLACK);
+    private Group menuGroup = new Group();
+    private Scene menu = new Scene(menuGroup, WIDTH, HEIGHT, Color.WHITE);
     private InputHandler inputHandler = new InputHandler();
     private Rectangle[][] viewRectangleTable;
     private boolean ongoingUpdateFromModel = false;
     private boolean ongoingUpdateFromView = false;
     private int droppedFrames = 0;
+    private int renderedFrames = 0;
+
 
     /**
      * Constructor that takes primary stage from caller
@@ -44,8 +53,8 @@ public class JavaFXView implements ViewInterface {
      * viewInit method
      * Sets stages title, creates and initialises reflecting rectangle table for holding view`s side rectangles
      * Defines rectangle appearance
-     * Calls scene set and view methods for showing window.
-     * Calls attachListeners function to attach proper listeners to stage and scene
+     * Calls gameScene set and view methods for showing window.
+     * Calls attachListeners function to attach proper listeners to stage and gameScene
      */
     @Override
     public void viewInit() {
@@ -58,20 +67,21 @@ public class JavaFXView implements ViewInterface {
         initGrid();
         System.out.print(" Done. Initialising grid took " + (System.currentTimeMillis() - startTime) + " ms\n");
 
-        System.out.println("JavaFX: Setting-up scene");
-        primaryStage.setScene(scene);
-        System.out.println("JavaFX: Finished setting-up scene");
+        System.out.println("JavaFX: Setting-up gameScene");
+        primaryStage.setScene(gameScene);
+        System.out.println("JavaFX: Finished setting-up gameScene");
 
         System.out.println("JavaFX: setting-up window");
         startTime = System.currentTimeMillis();
+        gameScene.setCursor(Cursor.CROSSHAIR);
         primaryStage.show();
         System.out.println("JavaFX: Preparing window took " + (System.currentTimeMillis() - startTime) + " ms");
         attachListeners();
-
+//        menuBuilder();
     }
 
     /**
-     * Attaches listeners for mouse and keyboard input to scene
+     * Attaches listeners for mouse and keyboard input to gameScene
      * Attaches listeners for stage width and height and calls resizeGrid if needed
      */
     private void attachListeners(){
@@ -86,8 +96,8 @@ public class JavaFXView implements ViewInterface {
             resizeGrid();
         });
 
-        scene.setOnKeyPressed(this::handleInput);
-        scene.setOnMousePressed(this::handleInput);
+        gameScene.setOnKeyPressed(this::handleInput);
+        gameScene.setOnMouseReleased(this::handleInput);
     }
 
     private void resizeGrid(){
@@ -118,7 +128,7 @@ public class JavaFXView implements ViewInterface {
                 rectangleToAdd.setArcHeight(RECTANGLE_ARC_HEIGHT);
                 rectangleToAdd.setArcWidth(RECTANGLE_ARC_WIDTH);
                 viewRectangleTable[boardYposition][boardXposition] = rectangleToAdd;
-                group.getChildren().add(viewRectangleTable[boardYposition][boardXposition]);
+                viewBoard.getChildren().add(viewRectangleTable[boardYposition][boardXposition]);
             }
         }
     }
@@ -131,11 +141,17 @@ public class JavaFXView implements ViewInterface {
      */
     private void handleInput(InputEvent event) {
         inputHandler.handleInput(event);
-        if (event.getEventType().equals(MOUSE_PRESSED)) {
+        if (event.getEventType().equals(MOUSE_RELEASED)) {
             MouseEvent mouseEvent = (MouseEvent) event;
             if (mouseEvent.getButton() == MouseButton.PRIMARY) {
                 updateViewOnPos(mouseEvent);
             }
+        }else if (event.getEventType().equals(KEY_PRESSED)){
+            KeyEvent keyEvent = (KeyEvent) event;
+            if(keyEvent.getCode().equals(TAB)){
+                primaryStage.setScene(menu);
+            }
+
         }
 
     }
@@ -195,6 +211,7 @@ public class JavaFXView implements ViewInterface {
                         }
                     }
                 }
+                renderedFrames++;
                 ongoingUpdateFromModel = false;
             });
         } else {
@@ -215,6 +232,13 @@ public class JavaFXView implements ViewInterface {
         return droppedFramesCurrent;
     }
 
+    @Override
+    public int getRenderedFrames() {
+        int currentRenderedFrames = renderedFrames;
+        renderedFrames = 0;
+        return currentRenderedFrames;
+    }
+
 
     /**
      * attachObserver function
@@ -225,6 +249,15 @@ public class JavaFXView implements ViewInterface {
     @Override
     public void attachObserver(Controller controller) {
         inputHandler.addObserver(controller);
+    }
+
+    private void menuBuilder(){
+
+        Button button = new Button("Return to game");
+
+        button.setOnAction(event -> primaryStage.setScene(gameScene));
+
+        menuGroup.getChildren().add(button);
     }
 
 }

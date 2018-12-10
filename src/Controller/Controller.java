@@ -3,7 +3,10 @@ package Controller;
 import Common.BoardTooSmallException;
 import Common.Config;
 import Model.Board;
+import Model.BoardMultithreading;
+import Model.BoardSingleThread;
 import View.ConsoleView;
+import View.JavaFX3DView;
 import View.JavaFXView;
 import View.ViewInterface;
 import javafx.stage.Stage;
@@ -41,26 +44,37 @@ public class Controller implements Observer {
      */
     public void controllerInit(Stage primaryStage) throws BoardTooSmallException {
 
-
+        System.out.print("------=============  Initialising Model  =============------\n");
+        int logicProcessors = Runtime.getRuntime().availableProcessors();
         long startTime = System.currentTimeMillis();
-
-        System.out.print("Initialising model");
-        model = new Board(Y_SIZE, X_SIZE);
-
+        System.out.print("Board: Initialising.");
+        if( logicProcessors > 1 && Y_SIZE > 100 && X_SIZE > 100){
+            System.out.print("\nBoard: Found "+logicProcessors+" logical processors, starting Multithreaded model");
+            model = new BoardMultithreading(Y_SIZE, X_SIZE);
+        }else{
+            model = new BoardSingleThread(Y_SIZE, X_SIZE);
+        }
         if (Config.isStartExampleModels()) {
             model.initExampleBoard();
         }
-        System.out.print(" ...done. Took " + (System.currentTimeMillis() - startTime) + " ms\n");
+        System.out.print("\nBoard: done. Took " + (System.currentTimeMillis() - startTime) + " ms\n" +
+                "-------Theoretical model initialised successfully\n\n");
 
-        System.out.print("Initialising View...");
+        System.out.print("------=============  Initialising View  =============------\n");
         startTime = System.currentTimeMillis();
         if (CONSOLE_VIEW) {
             view = new ConsoleView();
+            ConsoleView cview = (ConsoleView) view;
+            new Thread(cview).start();
         } else {
-            view = new JavaFXView(primaryStage);
+            if(VIEW_3D){
+                view = new JavaFX3DView(primaryStage);
+            }else{
+                view = new JavaFXView(primaryStage);
+            }
+
         }
 
-        System.out.print(" ...done. Took " + (System.currentTimeMillis() - startTime) + " ms\n");
 
         loop = new FrameControlLoop(this::updateState);
         loop.attachStatisticTimer(this::showStatistics);
@@ -70,10 +84,14 @@ public class Controller implements Observer {
         if (CONSOLE_VIEW) {
             loop.togglePause();
         } else {
+//            loop.togglePause();
             loop.setDaemon(true);
             view.attachObserver(this);
             view.refresh(model.getBoard());
         }
+        System.out.print("View: done. Took " + (System.currentTimeMillis() - startTime) + " ms\n" +
+                "-------Theoretical model initialised successfully\n\n" +
+                "------=============  Game Of Life v "+VERSION+"  =============------\n");
     }
 
 
@@ -125,6 +143,9 @@ public class Controller implements Observer {
                 case "-":
                     loop.decreaseSpeed();
                     break;
+                case "l":
+                    view.refresh(model.getBoard());
+                    break;
                 default:
                     break;
             }
@@ -147,8 +168,11 @@ public class Controller implements Observer {
      * for both model and than view
      */
     private void updateState() {
-        model.nextGen();
-        view.refresh(model.getBoard());
+            if(!model.isBusy()){
+                model.nextGen();
+                view.refresh(model.getBoard());
+                Thread.yield();
+            }
     }
 
     /**
@@ -158,7 +182,10 @@ public class Controller implements Observer {
      */
     private void showStatistics() {
         if (Config.isPrintStatistics()) {
-            System.out.println("Current model FPS: " + loop.getFPS() + "\nDropped View frames: " + view.getDroppedFrames() + "\n");
+            System.out.println("Loop: FPS: " + loop.getFPS() +
+                    "\nBoard: Generations (per second): "+ model.getGeneration() +
+                    "\nView: rendered frames: " + view.getRenderedFrames() +
+                    "\nView: dropped frames: "+ view.getDroppedFrames());
         }
     }
 }
