@@ -1,6 +1,8 @@
 package Model;
 
 import Common.BoardTooSmallException;
+import Model.MultiThread.BoardMultithreading;
+import Model.SingleThread.BoardSingleThread;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -85,7 +87,7 @@ public class ModelPerformanceTests {
 
         multiResoult = boardMulti.getGeneration();
 
-//        System.out.println("Time taken for multiThread: "+ multiResoult + " ms");
+//        System.out.println("Time taken for MultiThread: "+ multiResoult + " ms");
 
         percent = (float)multiResoult/(float)singleResoult*100;
 //        System.out.println("MultiThreaded is "+ percent +" % of SingleThreaded");
