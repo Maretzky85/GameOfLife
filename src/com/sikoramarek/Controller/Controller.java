@@ -79,33 +79,33 @@ public class Controller implements Observer {
 
         }
 
-        try {
-            view.viewInit();
-        } catch (SystemConfigTooWeekException e) {
-            System.out.println("\n"+e.getMessage());
-            if(VIEW_3D){
-                System.out.println("Fallback to JavaFX 2D View");
-                startTime = System.currentTimeMillis();
-                view = new JavaFXView(primaryStage);
-                try {
-                    view.viewInit();
-                } catch (SystemConfigTooWeekException e1) {
-                    System.out.println("\n"+e1.getMessage());
-                    System.out.println("System performance too low, please try smaller board");
-                    System.exit(0);
-                }
-            }else{
-                System.out.println("System performance too low, please try smaller board");
-                System.exit(0);
-            }
-        }
+//        try {
+//            view.viewInit();
+//        } catch (SystemConfigTooWeekException e) {
+//            System.out.println("\n"+e.getMessage());
+//            if(VIEW_3D){
+//                System.out.println("Fallback to JavaFX 2D View");
+//                startTime = System.currentTimeMillis();
+//                view = new JavaFXView(primaryStage);
+//                try {
+//                    view.viewInit();
+//                } catch (SystemConfigTooWeekException e1) {
+//                    System.out.println("\n"+e1.getMessage());
+//                    System.out.println("System performance too low, please try smaller board");
+//                    System.exit(0);
+//                }
+//            }else{
+//                System.out.println("System performance too low, please try smaller board");
+//                System.exit(0);
+//            }
+//        }
 
         if (CONSOLE_VIEW) {
             loop.togglePause();
         } else {
 //            loop.togglePause();
             view.attachObserver(this);
-            view.refresh(model.getBoard());
+//            view.refresh(model.getBoard());
         }
         if(System.currentTimeMillis() - startTime > 2000){
             System.out.println("\n\n*************************************************************\n" +

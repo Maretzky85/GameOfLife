@@ -150,23 +150,23 @@ public class Config {
         return VIEW_3D;
     }
 
-    static int getxSize() {
+    public static int getxSize() {
         return X_SIZE;
     }
 
-    static int getySize() {
+    public static int getySize() {
         return Y_SIZE;
     }
 
-    static int getFrameRate() {
+    public static int getFrameRate() {
         return FRAME_RATE;
     }
 
-    static int getRequestedWindowWidth() {
+    public static int getRequestedWindowWidth() {
         return REQUESTED_WINDOW_WIDTH;
     }
 
-    static int getRequestedWindowHeight() {
+    public static int getRequestedWindowHeight() {
         return REQUESTED_WINDOW_HEIGHT;
     }
 

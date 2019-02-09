@@ -6,6 +6,7 @@ import com.sikoramarek.Controller.Controller;
 import com.sikoramarek.Model.Dot;
 import com.sikoramarek.View.Implementations.Common.InputHandler;
 import com.sikoramarek.View.ViewInterface;
+import com.sikoramarek.View.WindowedMenu;
 import javafx.application.Platform;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
@@ -33,10 +34,9 @@ import static javafx.scene.input.MouseEvent.MOUSE_RELEASED;
 public class JavaFXView implements ViewInterface {
 
     private Stage primaryStage;
+    private Scene menu;
     private Group viewBoard = new Group();
     private Scene gameScene = new Scene(viewBoard, WIDTH, HEIGHT, Color.BLACK);
-    private Group menuGroup = new Group();
-    private Scene menu = new Scene(menuGroup, WIDTH, HEIGHT, Color.WHITE);
     private InputHandler inputHandler = new InputHandler();
     private Rectangle[][] viewRectangleTable;
     private boolean ongoingUpdateFromModel = false;
@@ -52,6 +52,15 @@ public class JavaFXView implements ViewInterface {
      */
     public JavaFXView(Stage primaryStage) {
         this.primaryStage = primaryStage;
+        menu = new WindowedMenu(() -> {
+            try {
+                viewInit();
+            } catch (SystemConfigTooWeekException e) {
+                e.printStackTrace();
+            }
+        }).getMenu();
+        primaryStage.setScene(menu);
+        primaryStage.show();
     }
 
     /**
@@ -82,7 +91,6 @@ public class JavaFXView implements ViewInterface {
         primaryStage.show();
         System.out.println("JavaFX: Preparing window took " + (System.currentTimeMillis() - startTime) + " ms");
         Platform.runLater(this::attachListeners);
-//        menuBuilder();
     }
 
     /**
@@ -90,17 +98,18 @@ public class JavaFXView implements ViewInterface {
      * Attaches listeners for stage width and height and calls resizeGrid if needed
      */
     private void attachListeners(){
-        int windowUpperBarTreshold = -30;
+        int windowUpperBarThreshold = -30;
         primaryStage.widthProperty().addListener((observable, oldValue, newValue) -> {
             Config.setRequestedWindowWidth(newValue.intValue());
             resizeGrid();
         });
 
         primaryStage.heightProperty().addListener((observable, oldValue, newValue) -> {
-            Config.setRequestedWindowHeight(newValue.intValue()+windowUpperBarTreshold);
+            Config.setRequestedWindowHeight(newValue.intValue()+windowUpperBarThreshold);
             resizeGrid();
         });
 
+        menu.setOnKeyPressed(this::handleInput);
         gameScene.setOnKeyPressed(this::handleInput);
         gameScene.setOnMouseReleased(this::handleInput);
     }
@@ -178,7 +187,12 @@ public class JavaFXView implements ViewInterface {
         }else if (event.getEventType().equals(KEY_PRESSED)){
             KeyEvent keyEvent = (KeyEvent) event;
             if(keyEvent.getCode().equals(TAB)){
-                primaryStage.setScene(menu);
+                if(primaryStage.getScene().getFill().equals(Color.WHITE)){
+                    primaryStage.setScene(gameScene);
+                }else{
+                    primaryStage.setScene(menu);
+                }
+
             }
 
         }
@@ -279,13 +293,5 @@ public class JavaFXView implements ViewInterface {
         inputHandler.addObserver(controller);
     }
 
-    private void menuBuilder(){
-
-        Button button = new Button("Return to game");
-
-        button.setOnAction(event -> primaryStage.setScene(gameScene));
-
-        menuGroup.getChildren().add(button);
-    }
 
 }
