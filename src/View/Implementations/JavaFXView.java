@@ -1,6 +1,7 @@
 package View.Implementations;
 
 import Common.Config;
+import Common.SystemConfigTooWeekException;
 import Controller.Controller;
 import Model.Dot;
 import View.Implementations.Common.InputHandler;
@@ -17,6 +18,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+
+import java.text.DecimalFormat;
 
 import static Common.Config.*;
 import static javafx.scene.input.KeyCode.TAB;
@@ -59,7 +62,7 @@ public class JavaFXView implements ViewInterface {
      * Calls attachListeners function to attach proper listeners to stage and gameScene
      */
     @Override
-    public void viewInit() {
+    public void viewInit() throws SystemConfigTooWeekException {
         System.out.println("JavaFX: Initialising Scene.");
         primaryStage.setTitle("Game Of Life  v " + VERSION);
 
@@ -67,7 +70,7 @@ public class JavaFXView implements ViewInterface {
 
         System.out.print("JavaFX: Initialising grid");
         initGrid();
-        System.out.print(" Done. Initialising grid took " + (System.currentTimeMillis() - startTime) + " ms\n");
+        System.out.print("\nDone. Initialising grid took " + (System.currentTimeMillis() - startTime) + " ms\n");
 
         System.out.println("JavaFX: Setting-up gameScene");
         primaryStage.setScene(gameScene);
@@ -78,7 +81,7 @@ public class JavaFXView implements ViewInterface {
         gameScene.setCursor(Cursor.CROSSHAIR);
         primaryStage.show();
         System.out.println("JavaFX: Preparing window took " + (System.currentTimeMillis() - startTime) + " ms");
-        attachListeners();
+        Platform.runLater(this::attachListeners);
 //        menuBuilder();
     }
 
@@ -115,11 +118,20 @@ public class JavaFXView implements ViewInterface {
         }
     }
 
-    private void initGrid() {
+    private void initGrid() throws SystemConfigTooWeekException {
+
+        long initStartTime = System.currentTimeMillis();
+        long counter = System.currentTimeMillis();
+
         viewRectangleTable = new Rectangle[Y_SIZE][X_SIZE];
         for (int boardYposition = 0; boardYposition < Y_SIZE; boardYposition++) {
+            long timeTaken = System.currentTimeMillis() - initStartTime;
             if (boardYposition % 25 == 0) {
-                System.out.print(".");
+                if(timeTaken < 500){
+                    if (boardYposition % 25 == 0) {
+                        System.out.print(".");
+                    }
+                }
             }
             for (int boardXposition = 0; boardXposition < X_SIZE; boardXposition++) {
 
@@ -131,6 +143,21 @@ public class JavaFXView implements ViewInterface {
                 rectangleToAdd.setArcWidth(RECTANGLE_ARC_WIDTH);
                 viewRectangleTable[boardYposition][boardXposition] = rectangleToAdd;
                 viewBoard.getChildren().add(viewRectangleTable[boardYposition][boardXposition]);
+
+                if(timeTaken > 500){
+                    long currentTime = System.currentTimeMillis();
+                    if(counter - currentTime < -500){
+                        counter = System.currentTimeMillis();
+                        System.out.print( "\n- "+
+                                new DecimalFormat("#0.0")
+                                        .format((double)
+                                                (X_SIZE*boardYposition+boardXposition)/(Y_SIZE*X_SIZE)*100) +" % " );
+                    }
+                }
+
+                if(timeTaken > 5000){
+                    throw new SystemConfigTooWeekException("Creating 2d View takes too long, impossible to run");
+                }
             }
         }
     }

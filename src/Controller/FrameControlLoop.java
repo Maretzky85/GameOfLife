@@ -11,7 +11,7 @@ import static Common.Config.FRAME_RATE;
  * Additional sends call one per second (for FPS generation)
  */
 
-public class FrameControlLoop extends Thread {
+public class FrameControlLoop implements Runnable{
 
     private Runnable updater;
     private Runnable statTimer;

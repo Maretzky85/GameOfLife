@@ -1,5 +1,6 @@
 package View.Implementations.View3D;
 
+import Common.SystemConfigTooWeekException;
 import Controller.Controller;
 import Model.Dot;
 import View.Implementations.Common.InputHandler;
@@ -17,6 +18,8 @@ import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
 import javafx.stage.Stage;
 
+import java.text.DecimalFormat;
+
 import static Common.Config.*;
 import static javafx.scene.input.MouseEvent.MOUSE_PRESSED;
 
@@ -24,7 +27,7 @@ import static javafx.scene.input.MouseEvent.MOUSE_PRESSED;
  * JavaFX View Class implements ViewInterface class
  * For viewing passed board model and passing input from user to Observable Class
  */
-public class JavaFX3DView implements ViewInterface {
+public class JavaFX3DView implements ViewInterface{
 
     /*
         3D SECTION ===========
@@ -93,7 +96,7 @@ public class JavaFX3DView implements ViewInterface {
      *
      * @param primaryStage - takes primary stage from entry point of application
      */
-    public JavaFX3DView(Stage primaryStage) {
+    public JavaFX3DView (Stage primaryStage){
         this.primaryStage = primaryStage;
 
     }
@@ -106,7 +109,7 @@ public class JavaFX3DView implements ViewInterface {
      * Calls attachListeners function to attach proper listeners to stage and scene
      */
     @Override
-    public void viewInit() {
+    public void viewInit() throws SystemConfigTooWeekException {
         aliveMaterial.setBumpMap(bumpMap);
         aliveMaterial.setSelfIlluminationMap(bumpMap2);
 
@@ -118,7 +121,7 @@ public class JavaFX3DView implements ViewInterface {
         long startTime = System.currentTimeMillis();
         System.out.print("Initiating Grid for 3D view  ");
         initGrid();
-        System.out.print("  Done. Taken "+(System.currentTimeMillis()-startTime)+" ms\n");
+        System.out.print("\nDone. Taken "+(System.currentTimeMillis()-startTime)+" ms\n");
         world.getChildren().add(viewBoard);
         System.out.print("Preparing scene and window");
         startTime = System.currentTimeMillis();
@@ -130,7 +133,8 @@ public class JavaFX3DView implements ViewInterface {
 
         primaryStage.setScene(scene);
         primaryStage.show();
-        System.out.print("  ... Done. Taken "+( System.currentTimeMillis()-startTime )+" ms\n");
+        long timeTaken = System.currentTimeMillis()-startTime;
+        System.out.print("  ... Done. Taken "+timeTaken+" ms\n");
         handleKeyboard(scene, world);
         handleMouse(scene, world);
 
@@ -142,17 +146,23 @@ public class JavaFX3DView implements ViewInterface {
 
     }
 
-    private void initGrid() {
+    private void initGrid() throws SystemConfigTooWeekException {
         viewBoardTable = new BoxB[Y_SIZE][X_SIZE];
         /*
           start positions for scene centering
          */
+        long initStartTime = System.currentTimeMillis();
+        long counter = System.currentTimeMillis();
         int startXposition = 0 - WIDTH/2;
         int startYposition = 0 - HEIGHT/2;
         for (int boardYposition = 0; boardYposition < Y_SIZE; boardYposition++) {
-            if (boardYposition % 25 == 0) {
-                System.out.print(".");
-            }
+            long timeTaken = System.currentTimeMillis() - initStartTime;
+
+                if(timeTaken < 500){
+                    if (boardYposition % 25 == 0) {
+                        System.out.print(".");
+                    }
+                }
 
             for (int boardXposition = 0; boardXposition < X_SIZE; boardXposition++) {
 
@@ -180,6 +190,20 @@ public class JavaFX3DView implements ViewInterface {
 
                 viewBoardTable[boardYposition][boardXposition] = boxToAdd;
                 viewBoard.getChildren().add(boxXform);
+                if(timeTaken > 500){
+                    long currentTime = System.currentTimeMillis();
+                    if(counter - currentTime < -500){
+                        counter = System.currentTimeMillis();
+                        System.out.print( "\n- "+
+                                new DecimalFormat("#0.0")
+                                        .format((double)
+                                                (X_SIZE*boardYposition+boardXposition)/(Y_SIZE*X_SIZE)*100) +" % " );
+                    }
+                }
+
+                if(timeTaken > 5000){
+                    throw new SystemConfigTooWeekException("Creating 3d View takes too long, impossible to run in 3D View");
+                }
             }
         }
         initAuxiliaryItems();

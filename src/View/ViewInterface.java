@@ -1,5 +1,6 @@
 package View;
 
+import Common.SystemConfigTooWeekException;
 import Controller.Controller;
 import Model.Dot;
 
@@ -9,7 +10,7 @@ import Model.Dot;
  */
 public interface ViewInterface {
 
-    void viewInit();
+    void viewInit() throws SystemConfigTooWeekException;
 
     void refresh(Dot[][] board);
 

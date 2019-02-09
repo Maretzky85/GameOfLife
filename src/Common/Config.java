@@ -103,7 +103,7 @@ public class Config {
         boolean ok = false;
         if (requestedWindowWidth < X_SIZE) {
             REQUESTED_WINDOW_WIDTH = X_SIZE;
-            System.out.println("Requested window size is smaller than board\nWindow X size set to: " + X_SIZE);
+            System.out.println("Requested window size ("+requestedWindowWidth+") is smaller than board\nWindow X size set to: " + X_SIZE);
         } else {
             REQUESTED_WINDOW_WIDTH = requestedWindowWidth;
             ok = true;
@@ -116,7 +116,7 @@ public class Config {
         boolean ok = false;
         if (requestedWindowHeight < Y_SIZE) {
             REQUESTED_WINDOW_HEIGHT = Y_SIZE;
-            System.out.println("Requested window size is smaller than board\nWindow Y size set to: " + Y_SIZE);
+            System.out.println("Requested window size ("+requestedWindowHeight+") is smaller than board\nWindow Y size set to: " + Y_SIZE);
         } else {
             REQUESTED_WINDOW_HEIGHT = requestedWindowHeight;
             ok = true;

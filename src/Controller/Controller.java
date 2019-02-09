@@ -2,6 +2,7 @@ package Controller;
 
 import Common.BoardTooSmallException;
 import Common.Config;
+import Common.SystemConfigTooWeekException;
 import Model.Board;
 import Model.MultiThread.BoardMultithreading;
 import Model.SingleThread.BoardSingleThread;
@@ -60,6 +61,9 @@ public class Controller implements Observer {
         System.out.print("\nBoard: done. Took " + (System.currentTimeMillis() - startTime) + " ms\n" +
                 "-------Theoretical model initialised successfully\n\n");
 
+        loop = new FrameControlLoop(this::updateState);
+        loop.attachStatisticTimer(this::showStatistics);
+
         System.out.print("------=============  Initialising View  =============------\n");
         startTime = System.currentTimeMillis();
         if (CONSOLE_VIEW) {
@@ -75,21 +79,40 @@ public class Controller implements Observer {
 
         }
 
-
-        loop = new FrameControlLoop(this::updateState);
-        loop.attachStatisticTimer(this::showStatistics);
-
-        view.viewInit();
+        try {
+            view.viewInit();
+        } catch (SystemConfigTooWeekException e) {
+            System.out.println("\n"+e.getMessage());
+            if(VIEW_3D){
+                System.out.println("Fallback to JavaFX 2D View");
+                startTime = System.currentTimeMillis();
+                view = new JavaFXView(primaryStage);
+                try {
+                    view.viewInit();
+                } catch (SystemConfigTooWeekException e1) {
+                    System.out.println("\n"+e1.getMessage());
+                    System.out.println("System performance too low, please try smaller board");
+                    System.exit(0);
+                }
+            }else{
+                System.out.println("System performance too low, please try smaller board");
+                System.exit(0);
+            }
+        }
 
         if (CONSOLE_VIEW) {
             loop.togglePause();
         } else {
 //            loop.togglePause();
-            loop.setDaemon(true);
             view.attachObserver(this);
             view.refresh(model.getBoard());
         }
-        System.out.print("View: done. Took " + (System.currentTimeMillis() - startTime) + " ms\n" +
+        if(System.currentTimeMillis() - startTime > 2000){
+            System.out.println("\n\n*************************************************************\n" +
+                    "            WARNING: Performance may be low    WARNING\n" +
+                    "*************************************************************\n");
+        }
+        System.out.print("\nView: done. Took " + (System.currentTimeMillis() - startTime) + " ms\n" +
                 "-------Theoretical model initialised successfully\n\n" +
                 "------=============  Game Of Life v "+VERSION+"  =============------\n");
     }
@@ -159,7 +182,9 @@ public class Controller implements Observer {
      * called from outside class after init
      */
     public void startLoop() {
-        loop.start();
+        Thread loopThread = new Thread(loop);
+        loopThread.setDaemon(true);
+        loopThread.start();
     }
 
     /**
