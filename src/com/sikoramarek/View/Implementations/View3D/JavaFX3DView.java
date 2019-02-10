@@ -67,7 +67,7 @@ public class JavaFX3DView implements ViewInterface{
 
     private BoxB[][] viewBoardTable;
 
-    private Stage primaryStage;
+//    private Stage primaryStage;
     private Group root = new Group();
     private Scene scene;
 
@@ -96,8 +96,8 @@ public class JavaFX3DView implements ViewInterface{
      *
      * @param primaryStage - takes primary stage from entry point of application
      */
-    public JavaFX3DView (Stage primaryStage){
-        this.primaryStage = primaryStage;
+    public JavaFX3DView (){
+//        this.primaryStage = primaryStage;
 
     }
 
@@ -131,19 +131,23 @@ public class JavaFX3DView implements ViewInterface{
 
         cornerObjects.setVisible(false);
 
-        primaryStage.setScene(scene);
-        primaryStage.show();
+//        primaryStage.setScene(scene);
+//        primaryStage.show();
         long timeTaken = System.currentTimeMillis()-startTime;
         System.out.print("  ... Done. Taken "+timeTaken+" ms\n");
         handleKeyboard(scene, world);
         handleMouse(scene, world);
 
-        primaryStage.setTitle("Game Of Life  v " + VERSION);
+//        primaryStage.setTitle("Game Of Life  v " + VERSION);
 
         camera.setFieldOfView(50);
         scene.setCamera(camera);
         System.out.println("================== Game Start ==================");
 
+    }
+
+    public Scene getScene() {
+        return scene;
     }
 
     private void initGrid() throws SystemConfigTooWeekException {

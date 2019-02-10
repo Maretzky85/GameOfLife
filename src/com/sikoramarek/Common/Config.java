@@ -18,6 +18,8 @@ public class Config {
      */
     public static boolean CONSOLE_VIEW = false;
 
+    public static boolean JAVAFX_VIEW = true;
+
     /**
      * VIEW_3D - 3D representation of board
      * can be showed if JavaFX view is selected
@@ -78,6 +80,8 @@ public class Config {
     public static void setView3d(boolean view3d) {
         VIEW_3D = view3d;
     }
+
+    public static void setJavafxView(boolean javafxView){ JAVAFX_VIEW = javafxView;}
 
     public static void setXsize(int xSize) {
         X_SIZE = xSize;

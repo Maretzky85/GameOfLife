@@ -6,6 +6,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
@@ -31,7 +32,8 @@ public class WindowedMenu {
 
     private void init(){
         Object[] labels = new Object[]
-                {"Window Height", "Window Width", "Board X size","Board Y size", "Frame Rate"};
+                {"Window Height", "Window Width", "Board X size","Board Y size", "Frame Rate", "Console View",
+                "JavaFX View", "JavaFX3D View"};
 
 
 
@@ -49,7 +51,13 @@ public class WindowedMenu {
         GridPane.setConstraints(ySize, 1, 3);
         TextField frameRate = new TextField(Integer.toString(Config.getFrameRate()));
         GridPane.setConstraints(frameRate, 1, 4);
-        menuGroup.getChildren().addAll(wHeight,wWidth,xSize,ySize,frameRate);
+        CheckBox consoleViewBox = new CheckBox();
+        GridPane.setConstraints(consoleViewBox, 1, 5);
+        CheckBox javaFXViewBox = new CheckBox();
+        GridPane.setConstraints(javaFXViewBox, 1, 6);
+        CheckBox jFX3dBox = new CheckBox();
+        GridPane.setConstraints(jFX3dBox, 1, 7);
+        menuGroup.getChildren().addAll(wHeight,wWidth,xSize,ySize,frameRate, consoleViewBox, javaFXViewBox, jFX3dBox);
 
         labelBuilder(0, labels);
 
@@ -62,6 +70,9 @@ public class WindowedMenu {
                 Config.setXsize(Integer.valueOf(xSize.getText()));
                 Config.setYsize(Integer.valueOf(ySize.getText()));
                 Config.FRAME_RATE = Integer.valueOf(frameRate.getText());
+                Config.CONSOLE_VIEW = consoleViewBox.isSelected();
+                Config.JAVAFX_VIEW = javaFXViewBox.isSelected();
+                Config.VIEW_3D = jFX3dBox.isSelected();
                 System.out.println("saved!");
                 runnable.run();
             }

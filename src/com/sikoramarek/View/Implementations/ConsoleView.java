@@ -3,6 +3,7 @@ package com.sikoramarek.View.Implementations;
 import com.sikoramarek.Controller.Controller;
 import com.sikoramarek.Model.Dot;
 import com.sikoramarek.View.ViewInterface;
+import javafx.scene.Scene;
 
 /**
  * View class for viewing GameOfLife board in console
@@ -22,6 +23,11 @@ public class ConsoleView implements ViewInterface, Runnable{
         System.out.print("\033[H\033[2J");
         System.out.flush();
         //TODO check in Windows
+    }
+
+    @Override
+    public Scene getScene() {
+        return new Scene(null);
     }
 
     /**

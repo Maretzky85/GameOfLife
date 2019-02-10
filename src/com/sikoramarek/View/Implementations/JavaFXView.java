@@ -48,19 +48,13 @@ public class JavaFXView implements ViewInterface {
     /**
      * Constructor that takes primary stage from caller
      *
-     * @param primaryStage - takes primary stage from entry point of application
+//     * @param primaryStage - takes primary stage from entry point of application
      */
-    public JavaFXView(Stage primaryStage) {
-        this.primaryStage = primaryStage;
-        menu = new WindowedMenu(() -> {
-            try {
-                viewInit();
-            } catch (SystemConfigTooWeekException e) {
-                e.printStackTrace();
-            }
-        }).getMenu();
-        primaryStage.setScene(menu);
-        primaryStage.show();
+    public JavaFXView() {
+    }
+
+    public Scene getScene() {
+        return gameScene;
     }
 
     /**
@@ -73,7 +67,7 @@ public class JavaFXView implements ViewInterface {
     @Override
     public void viewInit() throws SystemConfigTooWeekException {
         System.out.println("JavaFX: Initialising Scene.");
-        primaryStage.setTitle("Game Of Life  v " + VERSION);
+//        primaryStage.setTitle("Game Of Life  v " + VERSION);
 
         long startTime = System.currentTimeMillis();
 
@@ -82,13 +76,13 @@ public class JavaFXView implements ViewInterface {
         System.out.print("\nDone. Initialising grid took " + (System.currentTimeMillis() - startTime) + " ms\n");
 
         System.out.println("JavaFX: Setting-up gameScene");
-        primaryStage.setScene(gameScene);
+//        primaryStage.setScene(gameScene);
         System.out.println("JavaFX: Finished setting-up gameScene");
 
         System.out.println("JavaFX: setting-up window");
         startTime = System.currentTimeMillis();
         gameScene.setCursor(Cursor.CROSSHAIR);
-        primaryStage.show();
+//        primaryStage.show();
         System.out.println("JavaFX: Preparing window took " + (System.currentTimeMillis() - startTime) + " ms");
         Platform.runLater(this::attachListeners);
     }
@@ -99,17 +93,16 @@ public class JavaFXView implements ViewInterface {
      */
     private void attachListeners(){
         int windowUpperBarThreshold = -30;
-        primaryStage.widthProperty().addListener((observable, oldValue, newValue) -> {
+        gameScene.widthProperty().addListener((observable, oldValue, newValue) -> {
             Config.setRequestedWindowWidth(newValue.intValue());
             resizeGrid();
         });
 
-        primaryStage.heightProperty().addListener((observable, oldValue, newValue) -> {
+        gameScene.heightProperty().addListener((observable, oldValue, newValue) -> {
             Config.setRequestedWindowHeight(newValue.intValue()+windowUpperBarThreshold);
             resizeGrid();
         });
 
-        menu.setOnKeyPressed(this::handleInput);
         gameScene.setOnKeyPressed(this::handleInput);
         gameScene.setOnMouseReleased(this::handleInput);
     }

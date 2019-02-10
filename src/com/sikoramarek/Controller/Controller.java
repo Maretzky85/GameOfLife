@@ -10,6 +10,7 @@ import com.sikoramarek.View.Implementations.ConsoleView;
 import com.sikoramarek.View.Implementations.JavaFXView;
 import com.sikoramarek.View.Implementations.View3D.JavaFX3DView;
 import com.sikoramarek.View.ViewInterface;
+import com.sikoramarek.View.ViewManager;
 import javafx.stage.Stage;
 
 import java.util.Observable;
@@ -65,19 +66,21 @@ public class Controller implements Observer {
         loop.attachStatisticTimer(this::showStatistics);
 
         System.out.print("------=============  Initialising View  =============------\n");
-        startTime = System.currentTimeMillis();
-        if (CONSOLE_VIEW) {
-            view = new ConsoleView();
-            ConsoleView cview = (ConsoleView) view;
-            new Thread(cview).start();
-        } else {
-            if(VIEW_3D){
-                view = new JavaFX3DView(primaryStage);
-            }else{
-                view = new JavaFXView(primaryStage);
-            }
-
-        }
+        view = new ViewManager(primaryStage);
+        view.attachObserver(this);
+//        startTime = System.currentTimeMillis();
+//        if (CONSOLE_VIEW) {
+//            view = new ConsoleView();
+//            ConsoleView cview = (ConsoleView) view;
+//            new Thread(cview).start();
+//        } else {
+//            if(VIEW_3D){
+//                view = new JavaFX3DView(primaryStage);
+//            }else{
+//                view = new JavaFXView(primaryStage);
+//            }
+//
+//        }
 
 //        try {
 //            view.viewInit();
@@ -100,21 +103,21 @@ public class Controller implements Observer {
 //            }
 //        }
 
-        if (CONSOLE_VIEW) {
-            loop.togglePause();
-        } else {
+//        if (CONSOLE_VIEW) {
 //            loop.togglePause();
-            view.attachObserver(this);
+//        } else {
+//            loop.togglePause();
+//            view.attachObserver(this);
 //            view.refresh(model.getBoard());
-        }
-        if(System.currentTimeMillis() - startTime > 2000){
-            System.out.println("\n\n*************************************************************\n" +
-                    "            WARNING: Performance may be low    WARNING\n" +
-                    "*************************************************************\n");
-        }
-        System.out.print("\nView: done. Took " + (System.currentTimeMillis() - startTime) + " ms\n" +
-                "-------Theoretical model initialised successfully\n\n" +
-                "------=============  Game Of Life v "+VERSION+"  =============------\n");
+//        }
+//        if(System.currentTimeMillis() - startTime > 2000){
+//            System.out.println("\n\n*************************************************************\n" +
+//                    "            WARNING: Performance may be low    WARNING\n" +
+//                    "*************************************************************\n");
+//        }
+//        System.out.print("\nView: done. Took " + (System.currentTimeMillis() - startTime) + " ms\n" +
+//                "-------Theoretical model initialised successfully\n\n" +
+//                "------=============  Game Of Life v "+VERSION+"  =============------\n");
     }
 
 
