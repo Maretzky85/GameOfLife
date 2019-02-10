@@ -9,8 +9,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.GridPane;
+import javafx.scene.image.Image;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.stage.Screen;
 
 import static com.sikoramarek.Common.Config.HEIGHT;
 import static com.sikoramarek.Common.Config.WIDTH;
@@ -40,6 +42,15 @@ public class WindowedMenu {
         menuGroup.setPadding(new Insets(10, 10, 10, 10));
         menuGroup.setVgap(5);
         menuGroup.setHgap(5);
+
+        menuGroup.setBackground(new Background(new BackgroundImage(new Image("gameoflife.jpg",
+                (int) Screen.getPrimary().getBounds().getWidth(),
+                (int)Screen.getPrimary().getBounds().getHeight(),
+                false,false),
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundPosition.CENTER,
+                BackgroundSize.DEFAULT)));
 
         TextField wHeight = new TextField(Integer.toString(Config.getRequestedWindowHeight()));
         GridPane.setConstraints(wHeight, 1, 0);

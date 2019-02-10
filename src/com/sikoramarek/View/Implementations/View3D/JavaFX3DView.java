@@ -126,7 +126,7 @@ public class JavaFX3DView implements ViewInterface{
         System.out.print("Preparing scene and window");
         startTime = System.currentTimeMillis();
         scene = new Scene(root, WIDTH, HEIGHT,true, SceneAntialiasing.BALANCED);
-        scene.setFill(Color.BLACK);
+        scene.setFill(Color.WHITE);
         scene.setCursor(Cursor.CROSSHAIR);
 
         cornerObjects.setVisible(false);
