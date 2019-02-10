@@ -46,28 +46,34 @@ public class Controller implements Observer {
      */
     public void controllerInit(Stage primaryStage) throws BoardTooSmallException {
 
-        System.out.print("------=============  Initialising Model  =============------\n");
-        int logicProcessors = Runtime.getRuntime().availableProcessors();
-        long startTime = System.currentTimeMillis();
-        System.out.print("Board: Initialising.");
-        if( logicProcessors > 1 && Y_SIZE > 100 && X_SIZE > 100){
-            System.out.print("\nBoard: Found "+logicProcessors+" logical processors, starting Multithreaded model");
-            model = new BoardMultithreading(Y_SIZE, X_SIZE);
-        }else{
-            model = new BoardSingleThread(Y_SIZE, X_SIZE);
-        }
-        if (Config.isStartExampleModels()) {
-            model.initExampleBoard();
-        }
-        System.out.print("\nBoard: done. Took " + (System.currentTimeMillis() - startTime) + " ms\n" +
-                "-------Theoretical model initialised successfully\n\n");
-
+//        System.out.print("------=============  Initialising Model  =============------\n");
+//        int logicProcessors = Runtime.getRuntime().availableProcessors();
+//        long startTime = System.currentTimeMillis();
+//        System.out.print("Board: Initialising.");
+//        if( logicProcessors > 1 && Y_SIZE > 100 && X_SIZE > 100){
+//            System.out.print("\nBoard: Found "+logicProcessors+" logical processors, starting Multithreaded model");
+//            model = new BoardMultithreading(Y_SIZE, X_SIZE);
+//        }else{
+//            model = new BoardSingleThread(Y_SIZE, X_SIZE);
+//        }
+//        if (Config.isStartExampleModels()) {
+//            model.initExampleBoard();
+//        }
+//        System.out.print("\nBoard: done. Took " + (System.currentTimeMillis() - startTime) + " ms\n" +
+//                "-------Theoretical model initialised successfully\n\n");
+        view = new ViewManager(primaryStage, () -> {
+            try {
+                init();
+            } catch (BoardTooSmallException e) {
+                e.printStackTrace();
+            }
+        });
         loop = new FrameControlLoop(this::updateState);
         loop.attachStatisticTimer(this::showStatistics);
 
-        System.out.print("------=============  Initialising View  =============------\n");
-        view = new ViewManager(primaryStage);
-        view.attachObserver(this);
+//        System.out.print("------=============  Initialising View  =============------\n");
+//        view = new ViewManager(primaryStage);
+//        view.attachObserver(this);
 //        startTime = System.currentTimeMillis();
 //        if (CONSOLE_VIEW) {
 //            view = new ConsoleView();
@@ -118,6 +124,17 @@ public class Controller implements Observer {
 //        System.out.print("\nView: done. Took " + (System.currentTimeMillis() - startTime) + " ms\n" +
 //                "-------Theoretical model initialised successfully\n\n" +
 //                "------=============  Game Of Life v "+VERSION+"  =============------\n");
+    }
+
+    private void init() throws BoardTooSmallException {
+        int logicProcessors = Runtime.getRuntime().availableProcessors();
+        if( logicProcessors > 1 && Y_SIZE > 100 && X_SIZE > 100){
+            System.out.print("\nBoard: Found "+logicProcessors+" logical processors, starting Multithreaded model");
+            model = new BoardMultithreading(Y_SIZE, X_SIZE);
+        }else{
+            model = new BoardSingleThread(Y_SIZE, X_SIZE);
+        }
+        view.attachObserver(this);
     }
 
 

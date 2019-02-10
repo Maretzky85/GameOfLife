@@ -33,8 +33,6 @@ import static javafx.scene.input.MouseEvent.MOUSE_RELEASED;
  */
 public class JavaFXView implements ViewInterface {
 
-    private Stage primaryStage;
-    private Scene menu;
     private Group viewBoard = new Group();
     private Scene gameScene = new Scene(viewBoard, WIDTH, HEIGHT, Color.BLACK);
     private InputHandler inputHandler = new InputHandler();
@@ -103,7 +101,7 @@ public class JavaFXView implements ViewInterface {
             resizeGrid();
         });
 
-        gameScene.setOnKeyPressed(this::handleInput);
+//        gameScene.setOnKeyPressed(this::handleInput);
         gameScene.setOnMouseReleased(this::handleInput);
     }
 
@@ -177,19 +175,7 @@ public class JavaFXView implements ViewInterface {
             if (mouseEvent.getButton() == MouseButton.PRIMARY) {
                 updateViewOnPos(mouseEvent);
             }
-        }else if (event.getEventType().equals(KEY_PRESSED)){
-            KeyEvent keyEvent = (KeyEvent) event;
-            if(keyEvent.getCode().equals(TAB)){
-                if(primaryStage.getScene().getFill().equals(Color.WHITE)){
-                    primaryStage.setScene(gameScene);
-                }else{
-                    primaryStage.setScene(menu);
-                }
-
-            }
-
         }
-
     }
 
 

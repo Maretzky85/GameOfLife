@@ -4,24 +4,38 @@ import com.sikoramarek.Common.Config;
 import com.sikoramarek.Common.SystemConfigTooWeekException;
 import com.sikoramarek.Controller.Controller;
 import com.sikoramarek.Model.Dot;
+import com.sikoramarek.View.Implementations.Common.InputHandler;
 import com.sikoramarek.View.Implementations.ConsoleView;
 import com.sikoramarek.View.Implementations.JavaFXView;
 import com.sikoramarek.View.Implementations.View3D.JavaFX3DView;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
 
 public class ViewManager implements ViewInterface {
 
-    private Stage primarystage;
+    private Runnable initializer;
+    private Stage primaryStage;
     private ArrayList<ViewInterface> views = new ArrayList<>();
+    private InputHandler inputHandler = new InputHandler();
 
     private WindowedMenu menu;
 
-    public ViewManager(Stage primarystage){
-        this.primarystage = primarystage;
+    private int currentView = 0;
+
+    public ViewManager(Stage primaryStage, Runnable initializer){
+        primaryStage.setFullScreen(true);
+        primaryStage.setMaximized(true);
+        primaryStage.show();
+        Config.setRequestedWindowHeight((int)Screen.getPrimary().getBounds().getHeight());
+        Config.setRequestedWindowWidth((int)Screen.getPrimary().getBounds().getWidth());
+
+
+        this.initializer = initializer;
+        this.primaryStage = primaryStage;
         menu = new WindowedMenu(() -> {
             try {
                 viewInit();
@@ -29,12 +43,17 @@ public class ViewManager implements ViewInterface {
                 e.printStackTrace();
             }
         });
-        primarystage.setScene(menu.getMenu());
-        primarystage.show();
+        primaryStage.setScene(menu.getMenu());
     }
 
-    private void SceneToggler(){
+    private void sceneToggle(){
         //TODO
+        if (currentView < views.size()-1){
+                currentView++;
+        }else{
+            currentView = 0;
+        }
+        primaryStage.setScene(views.get(currentView).getScene());
     }
 
     @Override
@@ -44,6 +63,8 @@ public class ViewManager implements ViewInterface {
 
     @Override
     public void viewInit() throws SystemConfigTooWeekException {
+        views = new ArrayList<>();
+        currentView = 0;
         if(Config.CONSOLE_VIEW){
             views.add(new ConsoleView());
         }
@@ -56,16 +77,22 @@ public class ViewManager implements ViewInterface {
         for (ViewInterface view : views
                 ) {
             view.viewInit();
+            attachKeyHandler(view.getScene());
+
         }
-        attachKeyHandler();
-        primarystage.setScene(views.get(0).getScene());
+        initializer.run();
+        primaryStage.setScene(views.get(currentView).getScene());
     }
 
-    private void attachKeyHandler() {
-        primarystage.getScene().setOnKeyPressed(event -> {
-            System.out.println(event.getText());
+    private void attachKeyHandler(Scene scene) {
+        scene.setOnKeyPressed(event -> {
             if(event.getCode().equals(KeyCode.TAB)){
-                primarystage.setScene(views.get(1).getScene());
+                sceneToggle();
+            }else
+            if(event.getCode().equals(KeyCode.M)){
+                primaryStage.setScene(menu.getMenu());
+            }else{
+                inputHandler.handleInput(event);
             }
         });
     }
@@ -80,6 +107,7 @@ public class ViewManager implements ViewInterface {
 
     @Override
     public void attachObserver(Controller controller) {
+        inputHandler.addObserver(controller);
         for (ViewInterface view : views
                 ) {
             view.attachObserver(controller);

@@ -3,7 +3,11 @@ package com.sikoramarek.View.Implementations;
 import com.sikoramarek.Controller.Controller;
 import com.sikoramarek.Model.Dot;
 import com.sikoramarek.View.ViewInterface;
+import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
+
+import static com.sikoramarek.Common.Config.*;
 
 /**
  * View class for viewing GameOfLife board in console
@@ -14,6 +18,7 @@ public class ConsoleView implements ViewInterface, Runnable{
     private int renderedFrames = 0;
     private int renderedFramesSum = 0;
     private boolean printingInProgress = false;
+    private Scene scene = new Scene(new Group(new Label("Console View")), WIDTH, HEIGHT);
     /**
      * clearScreen - method for clearing screen
      *              -called once per update firstly before drawing board
@@ -27,7 +32,7 @@ public class ConsoleView implements ViewInterface, Runnable{
 
     @Override
     public Scene getScene() {
-        return new Scene(null);
+        return scene;
     }
 
     /**
