@@ -17,7 +17,10 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.text.DecimalFormat;
@@ -82,6 +85,12 @@ public class JavaFXView implements ViewInterface {
         gameScene.setCursor(Cursor.CROSSHAIR);
 //        primaryStage.show();
         System.out.println("JavaFX: Preparing window took " + (System.currentTimeMillis() - startTime) + " ms");
+
+        Text text = new Text(100, 50, "Welcome");
+        text.setFill(Color.WHITE);
+        text.setFont(new Font(30));
+        viewBoard.getChildren().add(text);
+
         Platform.runLater(this::attachListeners);
     }
 

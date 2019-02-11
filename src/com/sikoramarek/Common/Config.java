@@ -24,7 +24,7 @@ public class Config {
      * VIEW_3D - 3D representation of board
      * can be showed if JavaFX view is selected
      */
-    public static boolean VIEW_3D = false;
+    public static boolean VIEW_3D = true;
 
     /**
      * X_SIZE and Y_SIZE - size of grid for GameOfLife board

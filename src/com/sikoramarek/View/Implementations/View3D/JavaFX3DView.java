@@ -126,7 +126,7 @@ public class JavaFX3DView implements ViewInterface{
         System.out.print("Preparing scene and window");
         startTime = System.currentTimeMillis();
         scene = new Scene(root, WIDTH, HEIGHT,true, SceneAntialiasing.BALANCED);
-        scene.setFill(Color.WHITE);
+        scene.setFill(Color.BLACK);
         scene.setCursor(Cursor.CROSSHAIR);
 
         cornerObjects.setVisible(false);
@@ -135,8 +135,7 @@ public class JavaFX3DView implements ViewInterface{
 //        primaryStage.show();
         long timeTaken = System.currentTimeMillis()-startTime;
         System.out.print("  ... Done. Taken "+timeTaken+" ms\n");
-        handleKeyboard(scene, world);
-        handleMouse(scene, world);
+
 
 //        primaryStage.setTitle("Game Of Life  v " + VERSION);
 
@@ -147,6 +146,8 @@ public class JavaFX3DView implements ViewInterface{
     }
 
     public Scene getScene() {
+        handleKeyboard(scene, world);
+        handleMouse(scene, world);
         return scene;
     }
 

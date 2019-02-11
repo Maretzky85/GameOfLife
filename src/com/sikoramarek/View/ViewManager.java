@@ -15,6 +15,8 @@ import javafx.stage.Stage;
 
 import java.util.ArrayList;
 
+import static com.sikoramarek.Common.Config.VERSION;
+
 public class ViewManager implements ViewInterface {
 
     private Runnable initializer;
@@ -27,8 +29,9 @@ public class ViewManager implements ViewInterface {
     private int currentView = 0;
 
     public ViewManager(Stage primaryStage, Runnable initializer){
-        primaryStage.setFullScreen(true);
+//        primaryStage.setFullScreen(true);
         primaryStage.setMaximized(true);
+        primaryStage.setTitle("Game Of Life  v " + VERSION);
         primaryStage.show();
         Config.setRequestedWindowHeight((int)Screen.getPrimary().getBounds().getHeight());
         Config.setRequestedWindowWidth((int)Screen.getPrimary().getBounds().getWidth());

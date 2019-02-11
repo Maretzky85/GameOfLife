@@ -43,14 +43,16 @@ public class WindowedMenu {
         menuGroup.setVgap(5);
         menuGroup.setHgap(5);
 
-        menuGroup.setBackground(new Background(new BackgroundImage(new Image("gameoflife.jpg",
-                (int) Screen.getPrimary().getBounds().getWidth(),
+        BackgroundSize backgroundSize = new BackgroundSize((int) Screen.getPrimary().getBounds().getWidth(),
+                (int)Screen.getPrimary().getBounds().getHeight(), true, true, true, true);
+
+        menuGroup.setBackground(new Background(new BackgroundImage(new Image("gameoflife.jpg",(int) Screen.getPrimary().getBounds().getWidth(),
                 (int)Screen.getPrimary().getBounds().getHeight(),
-                false,false),
+                false,true),
                 BackgroundRepeat.NO_REPEAT,
                 BackgroundRepeat.NO_REPEAT,
                 BackgroundPosition.CENTER,
-                BackgroundSize.DEFAULT)));
+                backgroundSize)));
 
         TextField wHeight = new TextField(Integer.toString(Config.getRequestedWindowHeight()));
         GridPane.setConstraints(wHeight, 1, 0);
@@ -63,16 +65,19 @@ public class WindowedMenu {
         TextField frameRate = new TextField(Integer.toString(Config.getFrameRate()));
         GridPane.setConstraints(frameRate, 1, 4);
         CheckBox consoleViewBox = new CheckBox();
+        consoleViewBox.setSelected(Config.CONSOLE_VIEW);
         GridPane.setConstraints(consoleViewBox, 1, 5);
         CheckBox javaFXViewBox = new CheckBox();
+        javaFXViewBox.setSelected(Config.JAVAFX_VIEW);
         GridPane.setConstraints(javaFXViewBox, 1, 6);
         CheckBox jFX3dBox = new CheckBox();
+        jFX3dBox.setSelected(Config.VIEW_3D);
         GridPane.setConstraints(jFX3dBox, 1, 7);
         menuGroup.getChildren().addAll(wHeight,wWidth,xSize,ySize,frameRate, consoleViewBox, javaFXViewBox, jFX3dBox);
 
         labelBuilder(0, labels);
 
-        Button save = new Button("Save");
+        Button save = new Button("Run");
         save.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
