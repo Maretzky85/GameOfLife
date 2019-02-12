@@ -4,17 +4,14 @@ import com.sikoramarek.Common.SharedResources;
 import com.sikoramarek.Common.SystemConfigTooWeekException;
 import com.sikoramarek.Controller.Controller;
 import com.sikoramarek.Model.Dot;
-import com.sikoramarek.View.Implementations.Common.InputHandler;
 import com.sikoramarek.View.ViewInterface;
 import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.scene.*;
 import javafx.scene.image.Image;
 import javafx.scene.input.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
-import javafx.stage.Stage;
 
 import java.text.DecimalFormat;
 
@@ -69,7 +66,7 @@ public class JavaFX3DView implements ViewInterface{
     private Group root = new Group();
     private Scene scene;
 
-    private InputHandler inputHandler = new InputHandler();
+//    private InputHandler inputHandler = new InputHandler();
 
     private boolean ongoingUpdateFromModel = false;
     private boolean ongoingUpdateFromView = false;
@@ -328,7 +325,8 @@ public class JavaFX3DView implements ViewInterface{
 //            @Override public void handle(MouseEvent me) {
         if (me.getEventType().equals(MOUSE_RELEASED)){
                 if(System.currentTimeMillis() - mousePressedTime < 300){
-                    inputHandler.handleInput(me);
+                    //TODO
+//                    inputHandler.handleInput(me);
                     if (me.getButton() == MouseButton.PRIMARY) {
                         if(me.getPickResult().getIntersectedNode() != null
                                 && me.getPickResult().getIntersectedNode().getClass().equals(BoxB.class)){
@@ -520,7 +518,8 @@ public class JavaFX3DView implements ViewInterface{
      */
     @Override
     public void attachObserver(Controller controller) {
-        inputHandler.addObserver(controller);
+
+//        inputHandler.addObserver(controller);
     }
 
 }

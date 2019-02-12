@@ -4,30 +4,22 @@ import com.sikoramarek.Common.Config;
 import com.sikoramarek.Common.SystemConfigTooWeekException;
 import com.sikoramarek.Controller.Controller;
 import com.sikoramarek.Model.Dot;
-import com.sikoramarek.View.Implementations.Common.InputHandler;
 import com.sikoramarek.View.ViewInterface;
-import com.sikoramarek.View.WindowedMenu;
 import javafx.application.Platform;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.input.InputEvent;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 
 import java.text.DecimalFormat;
 
 import static com.sikoramarek.Common.Config.*;
-import static javafx.scene.input.KeyCode.TAB;
-import static javafx.scene.input.KeyEvent.KEY_PRESSED;
 import static javafx.scene.input.MouseEvent.MOUSE_RELEASED;
 
 /**
@@ -38,7 +30,6 @@ public class JavaFXView implements ViewInterface {
 
     private Group viewBoard = new Group();
     private Scene gameScene = new Scene(viewBoard, WIDTH, HEIGHT, Color.BLACK);
-    private InputHandler inputHandler = new InputHandler();
     private Rectangle[][] viewRectangleTable;
     private boolean ongoingUpdateFromModel = false;
     private boolean ongoingUpdateFromView = false;
@@ -184,7 +175,8 @@ public class JavaFXView implements ViewInterface {
     private void updateViewOnPos(MouseEvent event) {
         ongoingUpdateFromView = true;
         Platform.runLater(() -> {
-            if (event.getPickResult().getIntersectedNode() != null) {
+            if (event.getPickResult().getIntersectedNode() != null
+                    && event.getPickResult().getIntersectedNode().getClass().equals(Rectangle.class)) {
                 Rectangle rectangle = (Rectangle) event.
                         getPickResult().
                         getIntersectedNode();
@@ -195,8 +187,8 @@ public class JavaFXView implements ViewInterface {
                     rectangle.
                             setFill(Color.WHITE);
                 }
-                ongoingUpdateFromView = false;
             }
+            ongoingUpdateFromView = false;
         });
 
     }
@@ -276,7 +268,6 @@ public class JavaFXView implements ViewInterface {
      */
     @Override
     public void attachObserver(Controller controller) {
-        inputHandler.addObserver(controller);
     }
 
 

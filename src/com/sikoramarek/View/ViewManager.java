@@ -5,7 +5,6 @@ import com.sikoramarek.Common.SharedResources;
 import com.sikoramarek.Common.SystemConfigTooWeekException;
 import com.sikoramarek.Controller.Controller;
 import com.sikoramarek.Model.Dot;
-import com.sikoramarek.View.Implementations.Common.InputHandler;
 import com.sikoramarek.View.Implementations.ConsoleView;
 import com.sikoramarek.View.Implementations.JavaFXView;
 import com.sikoramarek.View.Implementations.View3D.BoxB;
@@ -96,8 +95,8 @@ public class ViewManager implements ViewInterface {
 
     private void attachKeyHandler(Scene scene) {
         scene.setOnMouseReleased(event -> {
-            handleInput(event);
             views.get(currentView).handleMouse(event);
+            handleInput(event);
         });
 
         scene.setOnMousePressed(event -> {
@@ -132,25 +131,37 @@ public class ViewManager implements ViewInterface {
                             int gridXposition = (rectangle.getBoardX());
                             int gridYposition = (rectangle.getBoardY());
                             int[] position = new int[]{gridXposition, gridYposition};
-                            SharedResources.positions.add(position);
+                            synchronized (SharedResources.keyboardInput){
+                                SharedResources.positions.add(position);
+                            }
+
                         }else{
+                            if( ((MouseEvent) event).getPickResult().getIntersectedNode().getClass().equals(Rectangle.class)){
                             Rectangle rectangle = (Rectangle) mouseEvent.getPickResult().getIntersectedNode();
                             int gridXposition = (int) (rectangle.getX() / RECTANGLE_WIDTH);
                             int gridYposition = (int) (rectangle.getY() / RECTANGLE_HEIGHT);
                             int position[] = new int[]{gridXposition, gridYposition};
-                            SharedResources.positions.add(position);
+                            synchronized (SharedResources.keyboardInput){
+                                SharedResources.positions.add(position);
+                            }}
                         }
                     }
                     break;
                 case SECONDARY:
-                    SharedResources.keyboardInput.add(KeyCode.P);
+                    synchronized (SharedResources.keyboardInput){
+                        SharedResources.keyboardInput.add(KeyCode.P);
+                    }
+
                     break;
                 default:
                     break;
             }
         } else if (event.getEventType().equals(KEY_RELEASED)) {
             KeyEvent keyEvent = (KeyEvent) event;
-            SharedResources.keyboardInput.add((keyEvent.getCode()));
+            synchronized (SharedResources.keyboardInput){
+                SharedResources.keyboardInput.add((keyEvent.getCode()));
+            }
+
         }
     }
 

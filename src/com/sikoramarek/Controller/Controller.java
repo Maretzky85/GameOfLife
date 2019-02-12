@@ -2,6 +2,7 @@ package com.sikoramarek.Controller;
 
 import com.sikoramarek.Common.BoardTooSmallException;
 import com.sikoramarek.Common.Config;
+import com.sikoramarek.Common.SharedResources;
 import com.sikoramarek.Common.SystemConfigTooWeekException;
 import com.sikoramarek.Model.Board;
 import com.sikoramarek.Model.MultiThread.BoardMultithreading;
@@ -11,6 +12,7 @@ import com.sikoramarek.View.Implementations.JavaFXView;
 import com.sikoramarek.View.Implementations.View3D.JavaFX3DView;
 import com.sikoramarek.View.ViewInterface;
 import com.sikoramarek.View.ViewManager;
+import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 
 import java.util.Observable;
@@ -25,6 +27,7 @@ import static com.sikoramarek.Common.Config.*;
  */
 public class Controller implements Observer {
 
+    private SharedResources sr = new SharedResources();
     private Board model;
     private ViewInterface view;
     private FrameControlLoop loop;
@@ -196,6 +199,47 @@ public class Controller implements Observer {
         }
     }
 
+    private synchronized void handleInputs(){
+            for (KeyCode key : SharedResources.keyboardInput
+                    ) {
+                switch (key) {
+                    case P:
+                        loop.togglePause();
+                        break;
+                    case C:
+                        model.clearBoard();
+                        view.refresh(model.getBoard());
+                        break;
+                    case N:
+                        model.initExampleBoard();
+                        view.refresh(model.getBoard());
+                        break;
+                    case ADD:
+                        loop.increaseSpeed();
+                        break;
+                    case SUBTRACT:
+                        loop.decreaseSpeed();
+                        break;
+                    case L:
+                        view.refresh(model.getBoard());
+                        break;
+                    default:
+                        break;
+                }
+        }
+        synchronized (SharedResources.positions){
+            SharedResources.keyboardInput.clear();
+        }
+        for (int[] position : SharedResources.positions
+                ) {
+            model.changeOnPosition(position[0], position[1]);
+            }
+        synchronized (SharedResources.positions){
+            SharedResources.positions.clear();
+        }
+    }
+
+
     /**
      * startLoop
      * method for FrameControlLoop start in new Thread
@@ -213,10 +257,11 @@ public class Controller implements Observer {
      * for both model and than view
      */
     private void updateState() {
-            if(!model.isBusy()){
-                model.nextGen();
-                view.refresh(model.getBoard());
-            }
+        handleInputs();
+        if(!model.isBusy()){
+            model.nextGen();
+            view.refresh(model.getBoard());
+        }
     }
 
     /**

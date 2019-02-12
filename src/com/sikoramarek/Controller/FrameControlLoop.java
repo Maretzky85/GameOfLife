@@ -1,6 +1,8 @@
 package com.sikoramarek.Controller;
 
 import com.sikoramarek.Common.Config;
+import com.sikoramarek.Common.SharedResources;
+import javafx.scene.input.KeyCode;
 
 import static com.sikoramarek.Common.Config.CONSOLE_VIEW;
 import static com.sikoramarek.Common.Config.FRAME_RATE;
@@ -46,6 +48,12 @@ public class FrameControlLoop implements Runnable{
             initialTime = currentTime;
 
             if (timeCounterMs >= timeFrame) {
+                synchronized (SharedResources.positions){
+                    if (SharedResources.keyboardInput.contains(KeyCode.P)) {
+                        togglePause();
+                        SharedResources.keyboardInput.remove(KeyCode.P);
+                    }
+                }
                 if (!isPause) {
                     updater.run();
                     Thread.yield();

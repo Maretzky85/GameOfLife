@@ -2,12 +2,13 @@ package com.sikoramarek.Common;
 
 import javafx.scene.input.KeyCode;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 public class SharedResources {
 
-    public static ArrayList<KeyCode> keyboardInput = new ArrayList<>();
+    public static List<KeyCode> keyboardInput = new LinkedList<>();
 
-    public static ArrayList<int[]> positions = new ArrayList<>();
+    public static List<int[]> positions = new LinkedList<>();
 
 }
