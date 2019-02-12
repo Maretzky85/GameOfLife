@@ -13,6 +13,8 @@ import javafx.scene.input.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 
 import java.text.DecimalFormat;
 
@@ -89,8 +91,6 @@ public class JavaFX3DView implements ViewInterface{
 
     /**
      * Constructor that takes primary stage from caller
-     *
-     * @param primaryStage - takes primary stage from entry point of application
      */
     public JavaFX3DView (){
 //        this.primaryStage = primaryStage;
@@ -207,6 +207,12 @@ public class JavaFX3DView implements ViewInterface{
             }
         }
         initAuxiliaryItems();
+
+        Text text = new Text(0, -Y_SIZE, "Welcome");
+        text.setTranslateZ(-200);
+        text.setFill(Color.WHITE);
+        text.setFont(new Font(30));
+        viewBoard.getChildren().add(text);
     }
 
     private void buildCamera() {
@@ -520,6 +526,11 @@ public class JavaFX3DView implements ViewInterface{
     public void attachObserver(Controller controller) {
 
 //        inputHandler.addObserver(controller);
+    }
+
+    @Override
+    public String toString(){
+        return "JavaFX 3D";
     }
 
 }

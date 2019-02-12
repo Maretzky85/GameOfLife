@@ -6,6 +6,8 @@ import com.sikoramarek.Common.SystemConfigTooWeekException;
 import com.sikoramarek.Controller.Controller;
 import com.sikoramarek.Model.Dot;
 import com.sikoramarek.View.ViewInterface;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
@@ -17,6 +19,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 
 import java.text.DecimalFormat;
 
@@ -37,7 +40,9 @@ public class JavaFXView implements ViewInterface {
     private int droppedFrames = 0;
     private int renderedFrames = 0;
 
-
+    int iterator = 0;
+    Timeline timeline;
+    Color toggleColor;
     /**
      * Constructor that takes primary stage from caller
      *
@@ -47,7 +52,43 @@ public class JavaFXView implements ViewInterface {
     }
 
     public Scene getScene() {
+        welcomeAnimation();
         return gameScene;
+    }
+
+    private void welcomeAnimation() {
+        toggleColor = Color.WHITE;
+        timeline = new Timeline(getKeyframes());
+        timeline.setOnFinished((event) -> {
+            timeline.stop();
+            toggleColor = Color.BLACK;
+            timeline = new Timeline(getKeyframes());
+            iterator = 0;
+            timeline.setOnFinished(event1 -> timeline.stop());
+            timeline.play();
+        });
+        timeline.play();
+    }
+
+    private KeyFrame[] getKeyframes(){
+        KeyFrame[] keyframes = new KeyFrame[X_SIZE];
+        for (int i = 0; i < keyframes.length; i++) {
+            keyframes[i] = new KeyFrame(Duration.millis(i*10), event -> {toggleRow(toggleColor);});
+        }
+        return keyframes;
+    }
+
+    private void toggleRow(Color color) {
+        for (int i = 0; i < viewRectangleTable.length; i++) {
+            viewRectangleTable[i][iterator].setFill(color);
+        }
+        if (iterator < X_SIZE-1){
+            iterator++;
+        }else{
+            iterator = 0;
+        }
+
+
     }
 
     /**
@@ -100,8 +141,6 @@ public class JavaFXView implements ViewInterface {
             resizeGrid();
         });
 
-//        gameScene.setOnKeyPressed(this::handleInput);
-//        gameScene.setOnMouseReleased(this::handleInput);
     }
 
     private void resizeGrid(){
