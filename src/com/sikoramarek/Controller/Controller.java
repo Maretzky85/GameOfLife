@@ -25,7 +25,7 @@ import static com.sikoramarek.Common.Config.*;
  * Have theoretical model(Board), View for drawing model and FrameControlLoop for
  * controlling speed of updates for model and statistics drawing
  */
-public class Controller implements Observer {
+public class Controller{
 
     private SharedResources sr = new SharedResources();
     private Board model;
@@ -151,53 +151,54 @@ public class Controller implements Observer {
      *            int - for board rules update
      *            String for speed control, pause, clear and insert example elements on board
      */
-    @Override
-    public void update(Observable o, Object arg) {
-        boolean argIsPosition = true;
-        boolean argIsint = true;
-        try {
-            int[] position = (int[]) arg;
-            model.changeOnPosition(position[0], position[1]);
-        } catch (ClassCastException ignored) {
-            argIsPosition = false;
-        }
 
-        try {
-            int option = Integer.valueOf(arg.toString());
-            model.setRules(option);
-        } catch (NumberFormatException ignored) {
-            argIsint = false;
-        }
-
-        if (!argIsPosition && !argIsint) try {
-            String key = (String) arg;
-            switch (key) {
-                case "p":
-                    loop.togglePause();
-                    break;
-                case "c":
-                    model.clearBoard();
-                    view.refresh(model.getBoard());
-                    break;
-                case "n":
-                    model.initExampleBoard();
-                    view.refresh(model.getBoard());
-                    break;
-                case "+":
-                    loop.increaseSpeed();
-                    break;
-                case "-":
-                    loop.decreaseSpeed();
-                    break;
-                case "l":
-                    view.refresh(model.getBoard());
-                    break;
-                default:
-                    break;
-            }
-        } catch (ClassCastException ignored) {
-        }
-    }
+    //TODO handle rules change
+//    public void update(Observable o, Object arg) {
+//        boolean argIsPosition = true;
+//        boolean argIsint = true;
+//        try {
+//            int[] position = (int[]) arg;
+//            model.changeOnPosition(position[0], position[1]);
+//        } catch (ClassCastException ignored) {
+//            argIsPosition = false;
+//        }
+//
+//        try {
+//            int option = Integer.valueOf(arg.toString());
+//            model.setRules(option);
+//        } catch (NumberFormatException ignored) {
+//            argIsint = false;
+//        }
+//
+//        if (!argIsPosition && !argIsint) try {
+//            String key = (String) arg;
+//            switch (key) {
+//                case "p":
+//                    loop.togglePause();
+//                    break;
+//                case "c":
+//                    model.clearBoard();
+//                    view.refresh(model.getBoard());
+//                    break;
+//                case "n":
+//                    model.initExampleBoard();
+//                    view.refresh(model.getBoard());
+//                    break;
+//                case "+":
+//                    loop.increaseSpeed();
+//                    break;
+//                case "-":
+//                    loop.decreaseSpeed();
+//                    break;
+//                case "l":
+//                    view.refresh(model.getBoard());
+//                    break;
+//                default:
+//                    break;
+//            }
+//        } catch (ClassCastException ignored) {
+//        }
+//    }
 
     private synchronized void handleInputs(){
             for (KeyCode key : SharedResources.keyboardInput
