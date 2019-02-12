@@ -11,6 +11,7 @@ import javafx.scene.*;
 import javafx.scene.image.Image;
 import javafx.scene.input.*;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
 import javafx.scene.text.Font;
@@ -207,12 +208,6 @@ public class JavaFX3DView implements ViewInterface{
             }
         }
         initAuxiliaryItems();
-
-        Text text = new Text(0, -Y_SIZE, "Welcome");
-        text.setTranslateZ(-200);
-        text.setFill(Color.WHITE);
-        text.setFont(new Font(30));
-        viewBoard.getChildren().add(text);
     }
 
     private void buildCamera() {
@@ -462,9 +457,25 @@ public class JavaFX3DView implements ViewInterface{
             }
 
         }
+        Xform xform = new Xform();
+        Box box = new Box(Math.abs(startXposition*2), RECTANGLE_HEIGHT*5, RECTANGLE_HEIGHT*5);
+        box.setTranslateX(0);
+        box.setTranslateY(startYposition);
+        box.setTranslateZ(-200);
+        box.setMaterial(new PhongMaterial(Color.color(0.1,0.1,0.1,0.1)));
+
+        Text text = new Text(0, -Y_SIZE, "Welcome");
+        text.setTranslateY(startYposition);
+        text.setTranslateZ(-200);
+        text.setFill(Color.WHITE);
+        text.setFont(new Font(30));
+        xform.getChildren().add(text);
+
+        xform.getChildren().add(box);
+
         viewBoard.getChildren().add(cornerObjects);
         viewBoard.getChildren().add(cornerLights);
-
+        viewBoard.getChildren().add(xform);
     }
 
 
