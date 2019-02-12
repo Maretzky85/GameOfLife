@@ -1,6 +1,7 @@
 package com.sikoramarek.View;
 
 import com.sikoramarek.Common.Config;
+import com.sikoramarek.Common.Logger;
 import com.sikoramarek.Common.SharedResources;
 import com.sikoramarek.Common.SystemConfigTooWeekException;
 import com.sikoramarek.Controller.Controller;
@@ -18,7 +19,9 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
+import javax.swing.text.View;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import static com.sikoramarek.Common.Config.*;
 import static javafx.scene.input.KeyEvent.KEY_RELEASED;
@@ -46,11 +49,7 @@ public class ViewManager implements ViewInterface {
         this.initializer = initializer;
         this.primaryStage = primaryStage;
         menu = new WindowedMenu(() -> {
-            try {
                 viewInit();
-            } catch (SystemConfigTooWeekException e) {
-                e.printStackTrace();
-            }
         });
         primaryStage.setScene(menu.getMenu());
     }
@@ -71,26 +70,34 @@ public class ViewManager implements ViewInterface {
     }
 
     @Override
-    public void viewInit() throws SystemConfigTooWeekException {
+    public void viewInit(){
         views = new ArrayList<>();
         currentView = 0;
-        if(Config.CONSOLE_VIEW){
-            views.add(new ConsoleView());
+        if(Config.VIEW_3D){
+            initSingleView(new JavaFX3DView());
         }
         if(Config.JAVAFX_VIEW){
-            views.add(new JavaFXView());
+            initSingleView(new JavaFXView());
         }
-        if(Config.VIEW_3D){
-            views.add(new JavaFX3DView());
+        if(Config.CONSOLE_VIEW){
+            initSingleView(new ConsoleView());
         }
-        for (ViewInterface view : views
-                ) {
+        if (views.size() > 0){
+            initializer.run();
+            primaryStage.setScene(views.get(currentView).getScene());
+        }else{
+            Logger.error("Cannot initialize view, please change board size settings", this);
+        }
+    }
+
+    private void initSingleView(ViewInterface view){
+        try{
             view.viewInit();
             attachKeyHandler(view.getScene());
-
+            views.add(view);
+        }catch (SystemConfigTooWeekException exception){
+            Logger.error(exception.getMessage(), view);
         }
-        initializer.run();
-        primaryStage.setScene(views.get(currentView).getScene());
     }
 
     private void attachKeyHandler(Scene scene) {

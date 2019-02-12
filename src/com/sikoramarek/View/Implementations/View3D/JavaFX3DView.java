@@ -1,5 +1,6 @@
 package com.sikoramarek.View.Implementations.View3D;
 
+import com.sikoramarek.Common.Logger;
 import com.sikoramarek.Common.SharedResources;
 import com.sikoramarek.Common.SystemConfigTooWeekException;
 import com.sikoramarek.Controller.Controller;
@@ -114,11 +115,11 @@ public class JavaFX3DView implements ViewInterface{
         buildCamera();
 
         long startTime = System.currentTimeMillis();
-        System.out.print("Initiating Grid for 3D view  ");
+        Logger.log("Initiating Grid for 3D view", this);
         initGrid();
-        System.out.print("\nDone. Taken "+(System.currentTimeMillis()-startTime)+" ms\n");
+        Logger.log("Done. Taken "+(System.currentTimeMillis()-startTime)+" ms", this);
         world.getChildren().add(viewBoard);
-        System.out.print("Preparing scene and window");
+        Logger.log("Preparing scene and window", this);
         startTime = System.currentTimeMillis();
         scene = new Scene(root, WIDTH, HEIGHT,true, SceneAntialiasing.BALANCED);
         scene.setFill(Color.BLACK);
@@ -126,17 +127,15 @@ public class JavaFX3DView implements ViewInterface{
 
         cornerObjects.setVisible(false);
 
-//        primaryStage.setScene(scene);
-//        primaryStage.show();
         long timeTaken = System.currentTimeMillis()-startTime;
-        System.out.print("  ... Done. Taken "+timeTaken+" ms\n");
+        Logger.log("  ... Done. Taken "+timeTaken+" ms", this);
 
 
 //        primaryStage.setTitle("Game Of Life  v " + VERSION);
 
         camera.setFieldOfView(50);
         scene.setCamera(camera);
-        System.out.println("================== Game Start ==================");
+//        System.out.println("================== Game Start ==================");
 
     }
 
@@ -175,6 +174,7 @@ public class JavaFX3DView implements ViewInterface{
                  */
 //                boxToAdd.setTranslateZ(  Math.sin((double) boxToAdd.getBoardX()/90) * 1000  );
                 boxToAdd.setMaterial(new PhongMaterial(Color.RED));
+                boxToAdd.setVisible(false);
 //                boxToAdd.setEffect(new Bloom());
                 /*
                     optional secondary color
@@ -194,10 +194,10 @@ public class JavaFX3DView implements ViewInterface{
                     long currentTime = System.currentTimeMillis();
                     if(counter - currentTime < -500){
                         counter = System.currentTimeMillis();
-                        System.out.print( "\n- "+
+                        Logger.log( "\n- "+
                                 new DecimalFormat("#0.0")
                                         .format((double)
-                                                (X_SIZE*boardYposition+boardXposition)/(Y_SIZE*X_SIZE)*100) +" % " );
+                                                (X_SIZE*boardYposition+boardXposition)/(Y_SIZE*X_SIZE)*100) +" % ", this);
                     }
                 }
 

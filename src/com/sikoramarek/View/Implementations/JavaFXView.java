@@ -1,6 +1,7 @@
 package com.sikoramarek.View.Implementations;
 
 import com.sikoramarek.Common.Config;
+import com.sikoramarek.Common.Logger;
 import com.sikoramarek.Common.SystemConfigTooWeekException;
 import com.sikoramarek.Controller.Controller;
 import com.sikoramarek.Model.Dot;
@@ -58,24 +59,22 @@ public class JavaFXView implements ViewInterface {
      */
     @Override
     public void viewInit() throws SystemConfigTooWeekException {
-        System.out.println("JavaFX: Initialising Scene.");
-//        primaryStage.setTitle("Game Of Life  v " + VERSION);
+        Logger.log("Initialising Scene.", this);
 
         long startTime = System.currentTimeMillis();
 
-        System.out.print("JavaFX: Initialising grid");
+        Logger.log("Initialising grid", this);
+
         initGrid();
-        System.out.print("\nDone. Initialising grid took " + (System.currentTimeMillis() - startTime) + " ms\n");
 
-        System.out.println("JavaFX: Setting-up gameScene");
-//        primaryStage.setScene(gameScene);
-        System.out.println("JavaFX: Finished setting-up gameScene");
+        Logger.log("Done. Initialising grid took " + (System.currentTimeMillis() - startTime) + " ms", this);
+        Logger.log("Setting-up window", this);
 
-        System.out.println("JavaFX: setting-up window");
         startTime = System.currentTimeMillis();
+
         gameScene.setCursor(Cursor.CROSSHAIR);
-//        primaryStage.show();
-        System.out.println("JavaFX: Preparing window took " + (System.currentTimeMillis() - startTime) + " ms");
+
+        Logger.log("Preparing window took " + (System.currentTimeMillis() - startTime) + " ms", this);
 
         Text text = new Text(100, 50, "Welcome");
         text.setFill(Color.WHITE);
@@ -129,7 +128,7 @@ public class JavaFXView implements ViewInterface {
             if (boardYposition % 25 == 0) {
                 if(timeTaken < 500){
                     if (boardYposition % 25 == 0) {
-                        System.out.print(".");
+                        Logger.log("processing", this);
                     }
                 }
             }
@@ -148,10 +147,10 @@ public class JavaFXView implements ViewInterface {
                     long currentTime = System.currentTimeMillis();
                     if(counter - currentTime < -500){
                         counter = System.currentTimeMillis();
-                        System.out.print( "\n- "+
+                        Logger.log( ""+
                                 new DecimalFormat("#0.0")
                                         .format((double)
-                                                (X_SIZE*boardYposition+boardXposition)/(Y_SIZE*X_SIZE)*100) +" % " );
+                                                (X_SIZE*boardYposition+boardXposition)/(Y_SIZE*X_SIZE)*100) +" % ", this);
                     }
                 }
 
@@ -268,6 +267,11 @@ public class JavaFXView implements ViewInterface {
      */
     @Override
     public void attachObserver(Controller controller) {
+    }
+
+    @Override
+    public String toString(){
+        return "JavaFX";
     }
 
 
