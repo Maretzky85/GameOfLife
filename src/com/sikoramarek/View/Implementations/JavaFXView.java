@@ -111,7 +111,7 @@ public class JavaFXView implements ViewInterface {
         });
 
 //        gameScene.setOnKeyPressed(this::handleInput);
-        gameScene.setOnMouseReleased(this::handleInput);
+//        gameScene.setOnMouseReleased(this::handleInput);
     }
 
     private void resizeGrid(){
@@ -167,22 +167,6 @@ public class JavaFXView implements ViewInterface {
                 if(timeTaken > 5000){
                     throw new SystemConfigTooWeekException("Creating 2d View takes too long, impossible to run");
                 }
-            }
-        }
-    }
-
-    /**
-     * handleInput method for handling view side and routing for InputHandler class
-     *             and/or updateViewOnPos function
-     *
-     * @param event - any input event acceptable, mouse or key event are supported here, else is discarded
-     */
-    private void handleInput(InputEvent event) {
-        inputHandler.handleInput(event);
-        if (event.getEventType().equals(MOUSE_RELEASED)) {
-            MouseEvent mouseEvent = (MouseEvent) event;
-            if (mouseEvent.getButton() == MouseButton.PRIMARY) {
-                updateViewOnPos(mouseEvent);
             }
         }
     }
@@ -267,6 +251,20 @@ public class JavaFXView implements ViewInterface {
         int currentRenderedFrames = renderedFrames;
         renderedFrames = 0;
         return currentRenderedFrames;
+    }
+
+    @Override
+    public void handleKeyboard(KeyEvent event) {
+
+    }
+
+    @Override
+    public void handleMouse(MouseEvent me) {
+        if (me.getEventType().equals(MOUSE_RELEASED)) {
+            if (me.getButton() == MouseButton.PRIMARY) {
+                updateViewOnPos(me);
+            }
+        }
     }
 
 

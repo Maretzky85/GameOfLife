@@ -6,6 +6,8 @@ import com.sikoramarek.View.ViewInterface;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 
 import static com.sikoramarek.Common.Config.*;
 
@@ -90,6 +92,16 @@ public class ConsoleView implements ViewInterface, Runnable{
         int currentRenderedFrames = renderedFrames;
         renderedFrames = 0;
         return currentRenderedFrames;
+    }
+
+    @Override
+    public void handleKeyboard(KeyEvent event) {
+
+    }
+
+    @Override
+    public void handleMouse(MouseEvent me) {
+
     }
 
     @Override

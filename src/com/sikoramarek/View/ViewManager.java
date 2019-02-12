@@ -1,35 +1,42 @@
 package com.sikoramarek.View;
 
 import com.sikoramarek.Common.Config;
+import com.sikoramarek.Common.SharedResources;
 import com.sikoramarek.Common.SystemConfigTooWeekException;
 import com.sikoramarek.Controller.Controller;
 import com.sikoramarek.Model.Dot;
 import com.sikoramarek.View.Implementations.Common.InputHandler;
 import com.sikoramarek.View.Implementations.ConsoleView;
 import com.sikoramarek.View.Implementations.JavaFXView;
+import com.sikoramarek.View.Implementations.View3D.BoxB;
 import com.sikoramarek.View.Implementations.View3D.JavaFX3DView;
 import javafx.scene.Scene;
+import javafx.scene.input.InputEvent;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
 
-import static com.sikoramarek.Common.Config.VERSION;
+import static com.sikoramarek.Common.Config.*;
+import static javafx.scene.input.KeyEvent.KEY_RELEASED;
+import static javafx.scene.input.MouseEvent.MOUSE_RELEASED;
 
 public class ViewManager implements ViewInterface {
 
     private Runnable initializer;
     private Stage primaryStage;
     private ArrayList<ViewInterface> views = new ArrayList<>();
-    private InputHandler inputHandler = new InputHandler();
+//    private InputHandler inputHandler = new InputHandler();
 
     private WindowedMenu menu;
 
     private int currentView = 0;
 
     public ViewManager(Stage primaryStage, Runnable initializer){
-//        primaryStage.setFullScreen(true);
         primaryStage.setMaximized(true);
         primaryStage.setTitle("Game Of Life  v " + VERSION);
         primaryStage.show();
@@ -88,16 +95,63 @@ public class ViewManager implements ViewInterface {
     }
 
     private void attachKeyHandler(Scene scene) {
-        scene.setOnKeyPressed(event -> {
+        scene.setOnMouseReleased(event -> {
+            handleInput(event);
+            views.get(currentView).handleMouse(event);
+        });
+
+        scene.setOnMousePressed(event -> {
+            views.get(currentView).handleMouse(event);
+        });
+
+        scene.setOnMouseDragged(event -> {
+            views.get(currentView).handleMouse(event);
+        });
+
+        scene.setOnKeyReleased(event -> {
             if(event.getCode().equals(KeyCode.TAB)){
                 sceneToggle();
             }else
             if(event.getCode().equals(KeyCode.M)){
                 primaryStage.setScene(menu.getMenu());
             }else{
-                inputHandler.handleInput(event);
+                views.get(currentView).handleKeyboard(event);
+                handleInput(event);
             }
         });
+    }
+
+    public void handleInput(InputEvent event) {
+        if (event.getEventType().equals(MOUSE_RELEASED)) {
+            MouseEvent mouseEvent = (MouseEvent) event;
+            switch (mouseEvent.getButton()) {
+                case PRIMARY:
+                    if (((MouseEvent) event).getPickResult().getIntersectedNode() != null){
+                        if( ((MouseEvent) event).getPickResult().getIntersectedNode().getClass().equals(BoxB.class)){
+                            BoxB rectangle = (BoxB) mouseEvent.getPickResult().getIntersectedNode();
+                            int gridXposition = (rectangle.getBoardX());
+                            int gridYposition = (rectangle.getBoardY());
+                            int[] position = new int[]{gridXposition, gridYposition};
+                            SharedResources.positions.add(position);
+                        }else{
+                            Rectangle rectangle = (Rectangle) mouseEvent.getPickResult().getIntersectedNode();
+                            int gridXposition = (int) (rectangle.getX() / RECTANGLE_WIDTH);
+                            int gridYposition = (int) (rectangle.getY() / RECTANGLE_HEIGHT);
+                            int position[] = new int[]{gridXposition, gridYposition};
+                            SharedResources.positions.add(position);
+                        }
+                    }
+                    break;
+                case SECONDARY:
+                    SharedResources.keyboardInput.add(KeyCode.P);
+                    break;
+                default:
+                    break;
+            }
+        } else if (event.getEventType().equals(KEY_RELEASED)) {
+            KeyEvent keyEvent = (KeyEvent) event;
+            SharedResources.keyboardInput.add((keyEvent.getCode()));
+        }
     }
 
     @Override
@@ -110,11 +164,11 @@ public class ViewManager implements ViewInterface {
 
     @Override
     public void attachObserver(Controller controller) {
-        inputHandler.addObserver(controller);
-        for (ViewInterface view : views
-                ) {
-            view.attachObserver(controller);
-        }
+//        inputHandler.addObserver(controller);
+//        for (ViewInterface view : views
+//                ) {
+//            view.attachObserver(controller);
+//        }
     }
 
     @Override
@@ -125,5 +179,15 @@ public class ViewManager implements ViewInterface {
     @Override
     public int getRenderedFrames() {
         return 0;
+    }
+
+    @Override
+    public void handleKeyboard(KeyEvent event) {
+
+    }
+
+    @Override
+    public void handleMouse(MouseEvent me) {
+
     }
 }

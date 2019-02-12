@@ -1,5 +1,6 @@
 package com.sikoramarek.View.Implementations.View3D;
 
+import com.sikoramarek.Common.SharedResources;
 import com.sikoramarek.Common.SystemConfigTooWeekException;
 import com.sikoramarek.Controller.Controller;
 import com.sikoramarek.Model.Dot;
@@ -9,10 +10,7 @@ import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.scene.*;
 import javafx.scene.image.Image;
-import javafx.scene.input.InputEvent;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.input.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
@@ -21,7 +19,7 @@ import javafx.stage.Stage;
 import java.text.DecimalFormat;
 
 import static com.sikoramarek.Common.Config.*;
-import static javafx.scene.input.MouseEvent.MOUSE_PRESSED;
+import static javafx.scene.input.MouseEvent.*;
 
 /**
  * JavaFX View Class implements ViewInterface class
@@ -146,8 +144,8 @@ public class JavaFX3DView implements ViewInterface{
     }
 
     public Scene getScene() {
-        handleKeyboard(scene, world);
-        handleMouse(scene, world);
+//        handleKeyboard(scene, world);
+//        handleMouse(scene, world);
         return scene;
     }
 
@@ -272,34 +270,27 @@ public class JavaFX3DView implements ViewInterface{
      * handleInput method for handling view side and routing for InputHandler class
      *             and/or updateViewOnPos function
      *
-     * @param event - any input event acceptable, mouse or key event are supported here, else is discarded
+     * @param me - any input event acceptable, mouse or key event are supported here, else is discarded
      */
-    private void handleInput(InputEvent event) {
-        inputHandler.handleInput(event);
-        if (event.getEventType().equals(MOUSE_PRESSED)) {
-            MouseEvent mouseEvent = (MouseEvent) event;
-            if (mouseEvent.getButton() == MouseButton.PRIMARY) {
-                updateViewOnPos(mouseEvent);
-            }
-        }
-
-    }
 
 
-    private void handleMouse(Scene scene, final Node root) {
+    @Override
+    public void handleMouse(MouseEvent me) {
 
-        scene.setOnMousePressed(new EventHandler<MouseEvent>() {
-            @Override public void handle(MouseEvent me) {
+//        scene.setOnMousePressed(new EventHandler<MouseEvent>() {
+        if (me.getEventType().equals(MOUSE_PRESSED)){
+//            @Override public void handle(MouseEvent me) {
                 mousePressedTime = System.currentTimeMillis();
                 mousePosX = me.getSceneX();
                 mousePosY = me.getSceneY();
                 mouseOldX = me.getSceneX();
                 mouseOldY = me.getSceneY();
-            }
-        });
+        }
+//        });
 
-        scene.setOnMouseDragged(new EventHandler<MouseEvent>() {
-            @Override public void handle(MouseEvent me) {
+//        scene.setOnMouseDragged(new EventHandler<MouseEvent>() {
+//            @Override public void handle(MouseEvent me) {
+        if (me.getEventType().equals(MOUSE_DRAGGED)){
                 me.consume();
                 mouseOldX = mousePosX;
                 mouseOldY = mousePosY;
@@ -330,11 +321,12 @@ public class JavaFX3DView implements ViewInterface{
                     cameraXform2.t.setY(cameraXform2.t.getY() + mouseDeltaY*MOUSE_SPEED*modifier*TRACK_SPEED);
                 }
 
-            }
-        });
+        }
+//        });
 
-        scene.setOnMouseReleased(new EventHandler<MouseEvent>() {
-            @Override public void handle(MouseEvent me) {
+//        scene.setOnMouseReleased(new EventHandler<MouseEvent>() {
+//            @Override public void handle(MouseEvent me) {
+        if (me.getEventType().equals(MOUSE_RELEASED)){
                 if(System.currentTimeMillis() - mousePressedTime < 300){
                     inputHandler.handleInput(me);
                     if (me.getButton() == MouseButton.PRIMARY) {
@@ -348,14 +340,15 @@ public class JavaFX3DView implements ViewInterface{
                     }
                 }
             }
-        });
+//        });
     }
 
 
-    private void handleKeyboard(Scene scene, final Node root) {
-        scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
+    @Override
+    public void handleKeyboard(KeyEvent event) {
+//        scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+//            @Override
+//            public void handle(KeyEvent event) {
                 int speedModifier = 5;
                 if(event.isShiftDown()){
                     speedModifier = 20;
@@ -372,7 +365,7 @@ public class JavaFX3DView implements ViewInterface{
                     case L:
                         showDeadDot = !showDeadDot;
                         shrinkBoxes();
-                        handleInput(event);
+                        SharedResources.keyboardInput.add(KeyCode.L);
                         break;
 
                     case W:
@@ -403,11 +396,11 @@ public class JavaFX3DView implements ViewInterface{
                         cornerObjects.setVisible(!cornerObjects.isVisible());
                         break;
                     default:
-                        handleInput(event);
+                        SharedResources.keyboardInput.add(event.getCode());
                         break;
                 }
-            }
-        });
+//            }
+//        });
     }
 
 

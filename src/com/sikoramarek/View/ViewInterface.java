@@ -4,6 +4,8 @@ import com.sikoramarek.Common.SystemConfigTooWeekException;
 import com.sikoramarek.Controller.Controller;
 import com.sikoramarek.Model.Dot;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 
 
 /**
@@ -22,4 +24,8 @@ public interface ViewInterface {
     int getDroppedFrames();
 
     int getRenderedFrames();
+
+    void handleKeyboard(KeyEvent event);
+
+    void handleMouse(MouseEvent me);
 }
