@@ -6,16 +6,18 @@ import com.sikoramarek.Common.SystemConfigTooWeekException;
 import com.sikoramarek.Controller.Controller;
 import com.sikoramarek.Model.Dot;
 import com.sikoramarek.View.ViewInterface;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.scene.*;
 import javafx.scene.image.Image;
 import javafx.scene.input.*;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 
 import java.text.DecimalFormat;
 
@@ -90,6 +92,10 @@ public class JavaFX3DView implements ViewInterface{
             ========= END OF MODEL VIEW SECTION ======
      */
 
+    int iterator = 0;
+    Timeline timeline;
+    Color toggleColor;
+
     /**
      * Constructor that takes primary stage from caller
      */
@@ -143,8 +149,48 @@ public class JavaFX3DView implements ViewInterface{
     public Scene getScene() {
 //        handleKeyboard(scene, world);
 //        handleMouse(scene, world);
+        welcomeAnimation();
         return scene;
     }
+
+    private void welcomeAnimation() {
+        toggleColor = Color.WHITE;
+        timeline = new Timeline(getKeyframes());
+        timeline.setOnFinished((event) -> {
+            timeline.stop();
+            toggleColor = Color.BLACK;
+            timeline = new Timeline(getKeyframes());
+            iterator = 0;
+            timeline.setOnFinished(event1 -> timeline.stop());
+            timeline.play();
+        });
+        timeline.play();
+    }
+
+    private KeyFrame[] getKeyframes(){
+        KeyFrame[] keyframes = new KeyFrame[X_SIZE];
+        for (int i = 0; i < keyframes.length; i++) {
+            keyframes[i] = new KeyFrame(Duration.millis(i*10), event -> {toggleRow(toggleColor);});
+        }
+        return keyframes;
+    }
+
+    private void toggleRow(Color color) {
+        for (int i = 0; i < viewBoardTable.length; i++) {
+            PhongMaterial material = (PhongMaterial) viewBoardTable[i][iterator].getMaterial();
+            material.setDiffuseColor(color);
+            BoxB boxB = (BoxB) viewBoardTable[i][iterator];
+            boxB.setVisible(true);
+        }
+        if (iterator < X_SIZE-1){
+            iterator++;
+        }else{
+            iterator = 0;
+        }
+
+
+    }
+
 
     private void initGrid() throws SystemConfigTooWeekException {
         viewBoardTable = new BoxB[Y_SIZE][X_SIZE];
@@ -465,7 +511,7 @@ public class JavaFX3DView implements ViewInterface{
         box.setMaterial(new PhongMaterial(Color.color(0.1,0.1,0.1,0.1)));
 
         Text text = new Text(0, -Y_SIZE, "Welcome");
-        text.setTranslateY(startYposition);
+        text.setY(startYposition);
         text.setTranslateZ(-200);
         text.setFill(Color.WHITE);
         text.setFont(new Font(30));
