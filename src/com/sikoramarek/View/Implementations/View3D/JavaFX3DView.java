@@ -60,6 +60,8 @@ public class JavaFX3DView implements ViewInterface{
 
     private Xform cornerObjects = new Xform();
     private Xform cornerLights = new Xform();
+
+    Text text = new Text(0, -Y_SIZE, "Welcome");
     /*
         =========== END OF 3D SECTION ===========
 
@@ -388,6 +390,11 @@ public class JavaFX3DView implements ViewInterface{
 //        });
     }
 
+    @Override
+    public Text getText() {
+        return text;
+    }
+
 
     @Override
     public void handleKeyboard(KeyEvent event) {
@@ -441,7 +448,6 @@ public class JavaFX3DView implements ViewInterface{
                         cornerObjects.setVisible(!cornerObjects.isVisible());
                         break;
                     default:
-                        SharedResources.keyboardInput.add(event.getCode());
                         break;
                 }
 //            }
@@ -510,7 +516,7 @@ public class JavaFX3DView implements ViewInterface{
         box.setTranslateZ(-200);
         box.setMaterial(new PhongMaterial(Color.color(0.1,0.1,0.1,0.1)));
 
-        Text text = new Text(0, -Y_SIZE, "Welcome");
+
         text.setY(startYposition);
         text.setTranslateZ(-200);
         text.setFill(Color.WHITE);

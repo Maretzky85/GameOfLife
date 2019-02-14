@@ -4,9 +4,8 @@ import com.sikoramarek.Common.Config;
 import com.sikoramarek.Common.Logger;
 import com.sikoramarek.Common.SharedResources;
 import com.sikoramarek.Common.SystemConfigTooWeekException;
-import com.sikoramarek.Controller.Controller;
 import com.sikoramarek.Model.Dot;
-import com.sikoramarek.View.Implementations.ConsoleView;
+import com.sikoramarek.View.Implementations.ConsoleOutput;
 import com.sikoramarek.View.Implementations.JavaFXView;
 import com.sikoramarek.View.Implementations.View3D.BoxB;
 import com.sikoramarek.View.Implementations.View3D.JavaFX3DView;
@@ -16,23 +15,23 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
-import javax.swing.text.View;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import static com.sikoramarek.Common.Config.*;
 import static javafx.scene.input.KeyEvent.KEY_RELEASED;
 import static javafx.scene.input.MouseEvent.MOUSE_RELEASED;
 
-public class ViewManager implements ViewInterface {
+public class ViewManager{
 
     private Runnable initializer;
     private Stage primaryStage;
     private ArrayList<ViewInterface> views = new ArrayList<>();
-//    private InputHandler inputHandler = new InputHandler();
+    private ConsoleOutput consoleOutput;
+    private Tutorial tutorial = new Tutorial();
 
     private WindowedMenu menu;
 
@@ -55,7 +54,6 @@ public class ViewManager implements ViewInterface {
     }
 
     private void sceneToggle(){
-        //TODO
         if (currentView < views.size()-1){
                 currentView++;
         }else{
@@ -64,12 +62,6 @@ public class ViewManager implements ViewInterface {
         primaryStage.setScene(views.get(currentView).getScene());
     }
 
-    @Override
-    public Scene getScene() {
-        return null;
-    }
-
-    @Override
     public void viewInit(){
         views = new ArrayList<>();
         currentView = 0;
@@ -80,11 +72,21 @@ public class ViewManager implements ViewInterface {
             initSingleView(new JavaFXView());
         }
         if(Config.CONSOLE_VIEW){
-            initSingleView(new ConsoleView());
+            consoleOutput = new ConsoleOutput();
+            Thread t = new Thread(consoleOutput);
+            t.start();
+            consoleOutput.viewInit();
         }
         if (views.size() > 0){
             initializer.run();
             primaryStage.setScene(views.get(currentView).getScene());
+            for (ViewInterface view : views
+                    ) {
+                tutorial.addTextHolders(view.getText());
+
+            }
+            tutorial.timeline.playFromStart();
+
         }else{
             Logger.error("Cannot initialize view, please change board size settings", this);
         }
@@ -172,40 +174,17 @@ public class ViewManager implements ViewInterface {
         }
     }
 
-    @Override
     public void refresh(Dot[][] board) {
         for (ViewInterface view : views
                 ) {
             view.refresh(board);
         }
+        if(CONSOLE_VIEW){
+            consoleOutput.refresh(board);
+        }
     }
-
     @Override
-    public void attachObserver(Controller controller) {
-//        inputHandler.addObserver(controller);
-//        for (ViewInterface view : views
-//                ) {
-//            view.attachObserver(controller);
-//        }
-    }
-
-    @Override
-    public int getDroppedFrames() {
-        return 0;
-    }
-
-    @Override
-    public int getRenderedFrames() {
-        return 0;
-    }
-
-    @Override
-    public void handleKeyboard(KeyEvent event) {
-
-    }
-
-    @Override
-    public void handleMouse(MouseEvent me) {
-
+    public String toString(){
+        return "View Manager";
     }
 }

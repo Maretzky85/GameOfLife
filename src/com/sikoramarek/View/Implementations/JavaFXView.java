@@ -43,6 +43,8 @@ public class JavaFXView implements ViewInterface {
     int iterator = 0;
     Timeline timeline;
     Color toggleColor;
+
+    Text text = new Text(100, 50, "Welcome");
     /**
      * Constructor that takes primary stage from caller
      *
@@ -65,9 +67,9 @@ public class JavaFXView implements ViewInterface {
             timeline = new Timeline(getKeyframes());
             iterator = 0;
             timeline.setOnFinished(event1 -> timeline.stop());
-            timeline.play();
+            timeline.playFromStart();
         });
-        timeline.play();
+        timeline.playFromStart();
     }
 
     private KeyFrame[] getKeyframes(){
@@ -117,7 +119,7 @@ public class JavaFXView implements ViewInterface {
 
         Logger.log("Preparing window took " + (System.currentTimeMillis() - startTime) + " ms", this);
 
-        Text text = new Text(100, 50, "Welcome");
+
         text.setFill(Color.WHITE);
         text.setFont(new Font(30));
         viewBoard.getChildren().add(text);
@@ -295,6 +297,11 @@ public class JavaFXView implements ViewInterface {
                 updateViewOnPos(me);
             }
         }
+    }
+
+    @Override
+    public Text getText() {
+        return text;
     }
 
 

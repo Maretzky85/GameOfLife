@@ -19,7 +19,7 @@ public class FrameControlLoop implements Runnable{
     private Runnable statTimer;
 
     private boolean isRunning = false;
-    private boolean isPause = true;
+    private boolean isPause = false;
 
     private int tics = 0; //For FPS Debugging
 
@@ -40,7 +40,9 @@ public class FrameControlLoop implements Runnable{
      * checks time between current time and start time, waits for rest ms,
      * if time between current and start time is greater than time frame, than runs required command.
      */
+    @Override
     public void run() {
+        System.out.println("FrameControlLoop started at thread: "+Thread.currentThread());
         isRunning = true;
         while (isRunning) {
             long currentTime = System.currentTimeMillis();
@@ -48,12 +50,6 @@ public class FrameControlLoop implements Runnable{
             initialTime = currentTime;
 
             if (timeCounterMs >= timeFrame) {
-                synchronized (SharedResources.positions){
-                    if (SharedResources.keyboardInput.contains(KeyCode.P)) {
-                        togglePause();
-                        SharedResources.keyboardInput.remove(KeyCode.P);
-                    }
-                }
                 if (!isPause) {
                     updater.run();
                     Thread.yield();

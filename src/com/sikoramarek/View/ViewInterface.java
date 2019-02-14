@@ -6,6 +6,7 @@ import com.sikoramarek.Model.Dot;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.text.Text;
 
 
 /**
@@ -28,4 +29,6 @@ public interface ViewInterface {
     void handleKeyboard(KeyEvent event);
 
     void handleMouse(MouseEvent me);
+
+    Text getText();
 }

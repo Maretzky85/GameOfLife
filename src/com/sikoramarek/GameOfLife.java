@@ -37,7 +37,7 @@ public class GameOfLife extends Application {
         System.out.println("Starting Game Of Life...");
         Controller controller = new Controller();
         controller.controllerInit(primaryStage);
-        controller.startLoop();
+//        controller.startLoop();
     }
 
     /**

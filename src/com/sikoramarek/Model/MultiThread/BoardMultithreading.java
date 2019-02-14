@@ -62,7 +62,7 @@ public class BoardMultithreading implements Board {
      * Method for calculating new generation - depends on rule to live and rule to get alive
      */
     public void nextGen() {
-        if(ongoingUpdate == false){
+        if(!ongoingUpdate){
             nextGenBoard = newEmptyBoard();
             ongoingUpdate = true;
             synchronized (this){
