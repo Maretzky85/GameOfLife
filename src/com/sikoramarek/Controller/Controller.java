@@ -67,7 +67,7 @@ public class Controller{
 
     private void handleInputs(){
         ruleManager.checkForInput();
-        for (KeyCode key : SharedResources.keyboardInput
+        for (KeyCode key : SharedResources.getKeyboardInput()
                 ) {
             switch (key) {
                 case P:
@@ -97,8 +97,8 @@ public class Controller{
                     break;
             }
         }
-        synchronized (SharedResources.keyboardInput){
-            SharedResources.keyboardInput.clear();
+        synchronized (SharedResources.getKeyboardInput()){
+            SharedResources.clearKeyboardInput();
         }
         for (int[] position : SharedResources.positions
                 ) {

@@ -1,5 +1,6 @@
 package com.sikoramarek.View;
 
+import com.sikoramarek.Common.SharedResources;
 import com.sikoramarek.View.Implementations.View3D.BoxB;
 
 import javafx.scene.input.InputEvent;
@@ -38,7 +39,7 @@ class InputHandler {
                                 int gridXposition = (int) (rectangle.getX() / RECTANGLE_WIDTH);
                                 int gridYposition = (int) (rectangle.getY() / RECTANGLE_HEIGHT);
                                 int[] position = new int[]{gridXposition, gridYposition};
-                                synchronized (keyboardInput){
+                                synchronized (positions){
                                     positions.add(position);
                                 }}
                         }
@@ -46,8 +47,8 @@ class InputHandler {
                     break;
 
                 case SECONDARY:
-                    synchronized (keyboardInput){
-                        keyboardInput.add(KeyCode.P);
+                    synchronized (SharedResources.class){
+                        SharedResources.addKeyboardInput(KeyCode.P);
                     }
                     break;
 
@@ -56,8 +57,8 @@ class InputHandler {
             }
         } else if (event.getEventType().equals(KEY_RELEASED)) {
             KeyEvent keyEvent = (KeyEvent) event;
-            synchronized (keyboardInput){
-                keyboardInput.add((keyEvent.getCode()));
+            synchronized (SharedResources.class){
+                SharedResources.addKeyboardInput(keyEvent.getCode());
             }
 
         }

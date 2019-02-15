@@ -123,13 +123,13 @@ public class ViewManager{
 
         scene.setOnMouseDragged(event -> views.get(currentView).handleMouse(event));
 
-        scene.setOnKeyReleased(event -> {
+        scene.setOnKeyPressed(event -> {
             switch (event.getCode()){
                 case TAB:
                     sceneToggle();
                     break;
                 case M:
-                    SharedResources.keyboardInput.add(M);
+                    SharedResources.addKeyboardInput(M);
                     primaryStage.setScene(menu.getMenu());
                     break;
                 default:

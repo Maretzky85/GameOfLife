@@ -10,7 +10,7 @@ public class RuleManager {
     public static int[] ruleToGetAlive = new int[]{3};
 
     public void checkForInput(){
-        for (KeyCode key : SharedResources.keyboardInput
+        for (KeyCode key : SharedResources.getKeyboardInput()
                 ) {
         switch (key) {
             case DIGIT1:

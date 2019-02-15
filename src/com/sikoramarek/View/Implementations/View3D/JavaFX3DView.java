@@ -363,7 +363,7 @@ public class JavaFX3DView implements ViewInterface{
                     case L:
                         showDeadDot = !showDeadDot;
                         shrinkBoxes();
-                        SharedResources.keyboardInput.add(KeyCode.L);
+                        SharedResources.addKeyboardInput(KeyCode.L);
                         break;
 
                     case W:
