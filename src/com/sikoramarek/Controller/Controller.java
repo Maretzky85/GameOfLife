@@ -230,12 +230,14 @@ public class Controller{
      * called from outside class after init
      */
     public void startLoop() {
-        System.out.println("=======================================loop started");
-        loop = new FrameControlLoop(this::updateState);
-        loop.attachStatisticTimer(this::showStatistics);
-        Thread loopThread = new Thread(loop);
-        loopThread.setDaemon(true);
-        loopThread.start();
+        if (loop == null){
+            loop = new FrameControlLoop(this::updateState);
+            loop.attachStatisticTimer(this::showStatistics);
+            Thread loopThread = new Thread(loop);
+            loopThread.setDaemon(true);
+            loopThread.start();
+        }
+
     }
 
     /**

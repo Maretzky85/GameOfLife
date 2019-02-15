@@ -87,8 +87,8 @@ public class JavaFX3DView implements ViewInterface{
 
     private Color DEAD_COLOR = new Color(0.5, 0.5, 0.5, 0.01);
     private PhongMaterial aliveMaterial = new PhongMaterial(Color.SNOW);
-    private Image bumpMap = new Image("bumpmap.jpg");
-    private Image bumpMap2 = new Image("bumpmap2.jpg");
+    private Image bumpMap;
+    private Image bumpMap2;
 
     /*
             ========= END OF MODEL VIEW SECTION ======
@@ -103,7 +103,12 @@ public class JavaFX3DView implements ViewInterface{
      */
     public JavaFX3DView (){
 //        this.primaryStage = primaryStage;
-
+        try{
+            bumpMap = new Image("bumpmap.jpg");
+            bumpMap2 = new Image("bumpmap2.jpg");
+        }catch (IllegalArgumentException exception){
+            Logger.error(exception.getMessage(), this);
+        }
     }
 
     /**

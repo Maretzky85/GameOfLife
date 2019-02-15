@@ -1,6 +1,7 @@
 package com.sikoramarek.View;
 
 import com.sikoramarek.Common.Config;
+import com.sikoramarek.Common.Logger;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -45,14 +46,18 @@ public class WindowedMenu {
 
         BackgroundSize backgroundSize = new BackgroundSize((int) Screen.getPrimary().getBounds().getWidth(),
                 (int)Screen.getPrimary().getBounds().getHeight(), true, true, true, true);
+        try{
+            menuGroup.setBackground(new Background(new BackgroundImage(new Image("gameoflife.jpg",(int) Screen.getPrimary().getBounds().getWidth(),
+                    (int)Screen.getPrimary().getBounds().getHeight(),
+                    false,true),
+                    BackgroundRepeat.NO_REPEAT,
+                    BackgroundRepeat.NO_REPEAT,
+                    BackgroundPosition.CENTER,
+                    backgroundSize)));
+        }catch (IllegalArgumentException exception){
+            Logger.error(exception.getMessage(), this);
+        }
 
-        menuGroup.setBackground(new Background(new BackgroundImage(new Image("gameoflife.jpg",(int) Screen.getPrimary().getBounds().getWidth(),
-                (int)Screen.getPrimary().getBounds().getHeight(),
-                false,true),
-                BackgroundRepeat.NO_REPEAT,
-                BackgroundRepeat.NO_REPEAT,
-                BackgroundPosition.CENTER,
-                backgroundSize)));
 
         TextField wHeight = new TextField(Integer.toString(Config.getRequestedWindowHeight()));
         GridPane.setConstraints(wHeight, 1, 0);
@@ -103,6 +108,10 @@ public class WindowedMenu {
             GridPane.setConstraints(newLabel, 0, i);
             menuGroup.getChildren().add(newLabel);
         }
+    }
+    @Override
+    public String toString(){
+        return "Menu";
     }
 
     public Scene getMenu() {
