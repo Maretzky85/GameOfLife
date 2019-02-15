@@ -3,7 +3,6 @@ package com.sikoramarek.View.Implementations;
 import com.sikoramarek.Common.Config;
 import com.sikoramarek.Common.Logger;
 import com.sikoramarek.Common.SystemConfigTooWeekException;
-import com.sikoramarek.Controller.Controller;
 import com.sikoramarek.Model.Dot;
 import com.sikoramarek.View.ViewInterface;
 import javafx.animation.KeyFrame;
@@ -304,16 +303,6 @@ public class JavaFXView implements ViewInterface {
         return text;
     }
 
-
-    /**
-     * attachObserver function
-     * passes observer to observator class that handles input calls
-     *
-     * @param controller - controller of GameOfLife
-     */
-    @Override
-    public void attachObserver(Controller controller) {
-    }
 
     @Override
     public String toString(){

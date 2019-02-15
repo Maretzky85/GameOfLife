@@ -139,7 +139,7 @@ public class JavaFX3DView implements ViewInterface{
         scene.setFill(Color.BLACK);
         scene.setCursor(Cursor.CROSSHAIR);
 
-        cornerObjects.setVisible(false);
+        cornerObjects.setVisible(true);
 
         long timeTaken = System.currentTimeMillis()-startTime;
         Logger.log("  ... Done. Taken "+timeTaken+" ms", this);
@@ -188,6 +188,9 @@ public class JavaFX3DView implements ViewInterface{
             material.setDiffuseColor(color);
             BoxB boxB = (BoxB) viewBoardTable[i][iterator];
             boxB.setVisible(true);
+            if(toggleColor == Color.BLACK){
+                boxB.setVisible(false);
+            }
         }
         if (iterator < X_SIZE-1){
             iterator++;
@@ -581,19 +584,6 @@ public class JavaFX3DView implements ViewInterface{
         int currentRenderedFrames = renderedFrames;
         renderedFrames = 0;
         return currentRenderedFrames;
-    }
-
-
-    /**
-     * attachObserver function
-     * passes observer to observator class that handles input calls
-     *
-     * @param controller - controller of GameOfLife
-     */
-    @Override
-    public void attachObserver(Controller controller) {
-
-//        inputHandler.addObserver(controller);
     }
 
     @Override

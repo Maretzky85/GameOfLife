@@ -8,29 +8,14 @@ import javafx.util.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Tutorial {
+class Tutorial {
 
-    int DISPLAY_DURATION = 4000;
+    private int DISPLAY_DURATION = 4000;
+    private List<Text> placeholders = new ArrayList<>();
+    private int currentLine = 0;
+    private Timeline timeline;
 
-    List<Text> placeholders = new ArrayList<>();
-
-    public Tutorial(){
-        makeTimeline();
-    }
-
-    public void addTextHolders(Text textholder){
-        placeholders.add(textholder);
-    }
-
-    public String getDisplayLine() {
-        timeline.play();
-        return displayLine;
-    }
-
-    int currentLine = 0;
-    String displayLine;
-
-    String[] tutorial = new String[]{
+    private String[] tutorial = new String[]{
             "",
             "Welcome in Game Of Life",
             "This guide will walk You through game basics",
@@ -48,9 +33,19 @@ public class Tutorial {
             "press M for starting menu",
     };
 
-    Timeline timeline;
+    Tutorial(){
+        makeTimeline();
+    }
 
-    void makeTimeline(){
+    void playTutorial(){
+        timeline.playFromStart();
+    }
+
+    void addTextHolders(Text textHolder){
+        placeholders.add(textHolder);
+    }
+
+    private void makeTimeline(){
 
         KeyFrame[] keyframes = new KeyFrame[tutorial.length];
         for (int i = 0; i < tutorial.length; i++) {
@@ -69,13 +64,12 @@ public class Tutorial {
             currentLine = 0;
         }
 
-        displayLine = tutorial[currentLine];
+        String displayLine = tutorial[currentLine];
 
         for (Text text : placeholders
                 ) {
             text.setText(displayLine);
         }
-//        System.out.println(displayLine);
     }
 
 }
