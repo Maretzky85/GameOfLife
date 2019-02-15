@@ -55,8 +55,9 @@ public class ViewManager{
         }else{
             currentView = 0;
         }
+        attachHandlers(views.get(currentView).getScene());
         primaryStage.setScene(views.get(currentView).getScene());
-        attachHandlers(primaryStage.getScene());
+        primaryStage.setFullScreen(true);
     }
 
     private void viewInit(){
@@ -92,6 +93,7 @@ public class ViewManager{
                 }
                 tutorial.playTutorial();
             }
+            primaryStage.setFullScreen(true);
         }else{
             Logger.error("Cannot initialize view, please change board size settings", this);
         }
@@ -132,6 +134,8 @@ public class ViewManager{
                     SharedResources.addKeyboardInput(M);
                     primaryStage.setScene(menu.getMenu());
                     break;
+                case F:
+                    primaryStage.setFullScreen(true);
                 default:
                     views.get(currentView).handleKeyboard(event);
                     inputHandler.handleInput(event);
