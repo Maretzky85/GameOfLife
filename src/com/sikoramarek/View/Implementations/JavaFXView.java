@@ -5,8 +5,7 @@ import com.sikoramarek.Common.Logger;
 import com.sikoramarek.Common.SystemConfigTooWeekException;
 import com.sikoramarek.Model.Dot;
 import com.sikoramarek.View.ViewInterface;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
+
 import javafx.application.Platform;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
@@ -18,7 +17,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.util.Duration;
 
 import java.text.DecimalFormat;
 
@@ -39,57 +37,31 @@ public class JavaFXView implements ViewInterface {
     private int droppedFrames = 0;
     private int renderedFrames = 0;
 
-    int iterator = 0;
-    Timeline timeline;
-    Color toggleColor;
+    private int iterator = 0;
+    private WelcomeAnimation welcomeAnimation = new WelcomeAnimation(this::toggleRow);
 
-    Text text = new Text(100, 50, "Welcome");
-    /**
-     * Constructor that takes primary stage from caller
-     *
-//     * @param primaryStage - takes primary stage from entry point of application
-     */
+    private Text tutorialPlaceholder;
+
     public JavaFXView() {
     }
 
     public Scene getScene() {
-        welcomeAnimation();
+        if(!welcomeAnimation.isStarted()){
+            iterator = 0;
+            welcomeAnimation.startAnimation();
+        }
         return gameScene;
     }
 
-    private void welcomeAnimation() {
-        toggleColor = Color.WHITE;
-        timeline = new Timeline(getKeyframes());
-        timeline.setOnFinished((event) -> {
-            timeline.stop();
-            toggleColor = Color.BLACK;
-            timeline = new Timeline(getKeyframes());
-            iterator = 0;
-            timeline.setOnFinished(event1 -> timeline.stop());
-            timeline.playFromStart();
-        });
-        timeline.playFromStart();
-    }
-
-    private KeyFrame[] getKeyframes(){
-        KeyFrame[] keyframes = new KeyFrame[X_SIZE];
-        for (int i = 0; i < keyframes.length; i++) {
-            keyframes[i] = new KeyFrame(Duration.millis(i*10), event -> {toggleRow(toggleColor);});
-        }
-        return keyframes;
-    }
-
-    private void toggleRow(Color color) {
-        for (int i = 0; i < viewRectangleTable.length; i++) {
-            viewRectangleTable[i][iterator].setFill(color);
+    private void toggleRow() {
+        for (Rectangle[] rectangles : viewRectangleTable) {
+            rectangles[iterator].setFill(welcomeAnimation.getToggleColor());
         }
         if (iterator < X_SIZE-1){
             iterator++;
         }else{
             iterator = 0;
         }
-
-
     }
 
     /**
@@ -97,7 +69,7 @@ public class JavaFXView implements ViewInterface {
      * Sets stages title, creates and initialises reflecting rectangle table for holding view`s side rectangles
      * Defines rectangle appearance
      * Calls gameScene set and view methods for showing window.
-     * Calls attachListeners function to attach proper listeners to stage and gameScene
+     * Calls attachResizeListeners function to attach proper listeners to stage and gameScene
      */
     @Override
     public void viewInit() throws SystemConfigTooWeekException {
@@ -110,38 +82,35 @@ public class JavaFXView implements ViewInterface {
         initGrid();
 
         Logger.log("Done. Initialising grid took " + (System.currentTimeMillis() - startTime) + " ms", this);
-        Logger.log("Setting-up window", this);
-
-        startTime = System.currentTimeMillis();
 
         gameScene.setCursor(Cursor.CROSSHAIR);
 
-        Logger.log("Preparing window took " + (System.currentTimeMillis() - startTime) + " ms", this);
+        tutorialPlaceholder = new Text(100, 50, "");
+        tutorialPlaceholder.setFill(Color.WHITE);
+        tutorialPlaceholder.setFont(new Font(30));
+        viewBoard.getChildren().add(tutorialPlaceholder);
 
+        attachResizeListeners();
+        
+        Logger.log("Initialising took " + (System.currentTimeMillis() - startTime) + " ms", this);
 
-        text.setFill(Color.WHITE);
-        text.setFont(new Font(30));
-        viewBoard.getChildren().add(text);
-
-        Platform.runLater(this::attachListeners);
     }
 
     /**
-     * Attaches listeners for mouse and keyboard input to gameScene
      * Attaches listeners for stage width and height and calls resizeGrid if needed
      */
-    private void attachListeners(){
-        int windowUpperBarThreshold = -30;
+    private void attachResizeListeners(){
+        final int WINDOW_UPPER_BAR_THRESHOLD = -30;
+        
         gameScene.widthProperty().addListener((observable, oldValue, newValue) -> {
             Config.setRequestedWindowWidth(newValue.intValue());
             resizeGrid();
         });
 
         gameScene.heightProperty().addListener((observable, oldValue, newValue) -> {
-            Config.setRequestedWindowHeight(newValue.intValue()+windowUpperBarThreshold);
+            Config.setRequestedWindowHeight(newValue.intValue()+WINDOW_UPPER_BAR_THRESHOLD);
             resizeGrid();
         });
-
     }
 
     private void resizeGrid(){
@@ -158,20 +127,14 @@ public class JavaFXView implements ViewInterface {
     }
 
     private void initGrid() throws SystemConfigTooWeekException {
-
         long initStartTime = System.currentTimeMillis();
         long counter = System.currentTimeMillis();
 
         viewRectangleTable = new Rectangle[Y_SIZE][X_SIZE];
         for (int boardYposition = 0; boardYposition < Y_SIZE; boardYposition++) {
+
             long timeTaken = System.currentTimeMillis() - initStartTime;
-            if (boardYposition % 25 == 0) {
-                if(timeTaken < 500){
-                    if (boardYposition % 25 == 0) {
-                        Logger.log("processing", this);
-                    }
-                }
-            }
+
             for (int boardXposition = 0; boardXposition < X_SIZE; boardXposition++) {
 
                 Rectangle rectangleToAdd = new Rectangle
@@ -299,8 +262,8 @@ public class JavaFXView implements ViewInterface {
     }
 
     @Override
-    public Text getText() {
-        return text;
+    public Text getTutorialPlaceholder() {
+        return tutorialPlaceholder;
     }
 
 

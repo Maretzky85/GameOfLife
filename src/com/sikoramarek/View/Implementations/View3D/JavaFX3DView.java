@@ -3,13 +3,12 @@ package com.sikoramarek.View.Implementations.View3D;
 import com.sikoramarek.Common.Logger;
 import com.sikoramarek.Common.SharedResources;
 import com.sikoramarek.Common.SystemConfigTooWeekException;
-import com.sikoramarek.Controller.Controller;
 import com.sikoramarek.Model.Dot;
+import com.sikoramarek.View.Implementations.WelcomeAnimation;
 import com.sikoramarek.View.ViewInterface;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.scene.*;
+import javafx.scene.effect.Bloom;
 import javafx.scene.image.Image;
 import javafx.scene.input.*;
 import javafx.scene.paint.Color;
@@ -17,7 +16,6 @@ import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.util.Duration;
 
 import java.text.DecimalFormat;
 
@@ -51,17 +49,13 @@ public class JavaFX3DView implements ViewInterface{
 
     private double mousePosX;
     private double mousePosY;
-    private double mouseOldX;
-    private double mouseOldY;
-    private double mouseDeltaX;
-    private double mouseDeltaY;
 
     private Xform viewBoard = new Xform();
 
     private Xform cornerObjects = new Xform();
     private Xform cornerLights = new Xform();
 
-    Text text = new Text(-WIDTH/2+50, -HEIGHT, "Welcome");
+    private Text text = new Text(-(double)WIDTH/2+50, -HEIGHT, "");
     /*
         =========== END OF 3D SECTION ===========
 
@@ -70,11 +64,8 @@ public class JavaFX3DView implements ViewInterface{
 
     private BoxB[][] viewBoardTable;
 
-//    private Stage primaryStage;
     private Group root = new Group();
     private Scene scene;
-
-//    private InputHandler inputHandler = new InputHandler();
 
     private boolean ongoingUpdateFromModel = false;
     private boolean ongoingUpdateFromView = false;
@@ -94,15 +85,13 @@ public class JavaFX3DView implements ViewInterface{
             ========= END OF MODEL VIEW SECTION ======
      */
 
-    int iterator = 0;
-    Timeline timeline;
-    Color toggleColor;
+    private WelcomeAnimation welcomeAnimation = new WelcomeAnimation(this::toggleRow);
+    private int animationIterator = 0;
 
     /**
      * Constructor that takes primary stage from caller
      */
     public JavaFX3DView (){
-//        this.primaryStage = primaryStage;
         try{
             bumpMap = new Image("bumpmap.jpg");
             bumpMap2 = new Image("bumpmap2.jpg");
@@ -144,58 +133,33 @@ public class JavaFX3DView implements ViewInterface{
         long timeTaken = System.currentTimeMillis()-startTime;
         Logger.log("  ... Done. Taken "+timeTaken+" ms", this);
 
-
-//        primaryStage.setTitle("Game Of Life  v " + VERSION);
-
         camera.setFieldOfView(50);
         scene.setCamera(camera);
-//        System.out.println("================== Game Start ==================");
 
     }
 
     public Scene getScene() {
-//        handleKeyboard(scene, world);
-//        handleMouse(scene, world);
-        welcomeAnimation();
+        if(!welcomeAnimation.isStarted()){
+            animationIterator = 0;
+            welcomeAnimation.startAnimation();
+        }
         return scene;
     }
 
-    private void welcomeAnimation() {
-        toggleColor = Color.WHITE;
-        timeline = new Timeline(getKeyframes());
-        timeline.setOnFinished((event) -> {
-            timeline.stop();
-            toggleColor = Color.BLACK;
-            timeline = new Timeline(getKeyframes());
-            iterator = 0;
-            timeline.setOnFinished(event1 -> timeline.stop());
-            timeline.play();
-        });
-        timeline.play();
-    }
-
-    private KeyFrame[] getKeyframes(){
-        KeyFrame[] keyframes = new KeyFrame[X_SIZE];
-        for (int i = 0; i < keyframes.length; i++) {
-            keyframes[i] = new KeyFrame(Duration.millis(i*10), event -> {toggleRow(toggleColor);});
-        }
-        return keyframes;
-    }
-
-    private void toggleRow(Color color) {
-        for (int i = 0; i < viewBoardTable.length; i++) {
-            PhongMaterial material = (PhongMaterial) viewBoardTable[i][iterator].getMaterial();
-            material.setDiffuseColor(color);
-            BoxB boxB = (BoxB) viewBoardTable[i][iterator];
+    private void toggleRow() {
+        for (BoxB[] boxBS : viewBoardTable) {
+            PhongMaterial material = (PhongMaterial) boxBS[animationIterator].getMaterial();
+            material.setDiffuseColor(welcomeAnimation.getToggleColor());
+            BoxB boxB = boxBS[animationIterator];
             boxB.setVisible(true);
-            if(toggleColor == Color.BLACK){
+            if (welcomeAnimation.getToggleColor() == Color.BLACK) {
                 boxB.setVisible(false);
             }
         }
-        if (iterator < X_SIZE-1){
-            iterator++;
+        if (animationIterator < X_SIZE-1){
+            animationIterator++;
         }else{
-            iterator = 0;
+            animationIterator = 0;
         }
 
 
@@ -214,12 +178,6 @@ public class JavaFX3DView implements ViewInterface{
         for (int boardYposition = 0; boardYposition < Y_SIZE; boardYposition++) {
             long timeTaken = System.currentTimeMillis() - initStartTime;
 
-                if(timeTaken < 500){
-                    if (boardYposition % 25 == 0) {
-                        System.out.print(".");
-                    }
-                }
-
             for (int boardXposition = 0; boardXposition < X_SIZE; boardXposition++) {
 
                 Xform boxXform = new Xform();
@@ -232,11 +190,11 @@ public class JavaFX3DView implements ViewInterface{
 //                boxToAdd.setTranslateZ(  Math.sin((double) boxToAdd.getBoardX()/90) * 1000  );
                 boxToAdd.setMaterial(new PhongMaterial(Color.RED));
                 boxToAdd.setVisible(false);
-//                boxToAdd.setEffect(new Bloom());
+                boxToAdd.setEffect(new Bloom());
                 /*
                     optional secondary color
                  */
-//                ((PhongMaterial) boxToAdd.getMaterial()).setSpecularColor(Color.YELLOWGREEN);
+                ((PhongMaterial) boxToAdd.getMaterial()).setSpecularColor(Color.YELLOWGREEN);
 
                 /*
                 Optional maps here
@@ -331,27 +289,22 @@ public class JavaFX3DView implements ViewInterface{
     @Override
     public void handleMouse(MouseEvent me) {
 
-//        scene.setOnMousePressed(new EventHandler<MouseEvent>() {
+        double mouseOldX;
+        double mouseOldY;
         if (me.getEventType().equals(MOUSE_PRESSED)){
-//            @Override public void handle(MouseEvent me) {
                 mousePressedTime = System.currentTimeMillis();
                 mousePosX = me.getSceneX();
                 mousePosY = me.getSceneY();
-                mouseOldX = me.getSceneX();
-                mouseOldY = me.getSceneY();
         }
-//        });
 
-//        scene.setOnMouseDragged(new EventHandler<MouseEvent>() {
-//            @Override public void handle(MouseEvent me) {
         if (me.getEventType().equals(MOUSE_DRAGGED)){
                 me.consume();
                 mouseOldX = mousePosX;
                 mouseOldY = mousePosY;
                 mousePosX = me.getSceneX();
                 mousePosY = me.getSceneY();
-                mouseDeltaX = (mousePosX - mouseOldX);
-                mouseDeltaY = (mousePosY - mouseOldY);
+            double mouseDeltaX = (mousePosX - mouseOldX);
+            double mouseDeltaY = (mousePosY - mouseOldY);
 
                 double modifier = 1.0;
 
@@ -362,28 +315,18 @@ public class JavaFX3DView implements ViewInterface{
                     modifier = SHIFT_MULTIPLIER;
                 }
                 if (me.isPrimaryButtonDown()) {
-                    cameraXform.ry.setAngle(cameraXform.ry.getAngle() + mouseDeltaX*MOUSE_SPEED*modifier*ROTATION_SPEED);
-                    cameraXform.rx.setAngle(cameraXform.rx.getAngle() - mouseDeltaY*MOUSE_SPEED*modifier*ROTATION_SPEED);
+                    cameraXform.ry.setAngle(cameraXform.ry.getAngle() + mouseDeltaX *MOUSE_SPEED*modifier*ROTATION_SPEED);
+                    cameraXform.rx.setAngle(cameraXform.rx.getAngle() - mouseDeltaY *MOUSE_SPEED*modifier*ROTATION_SPEED);
                 }
-//                else if (me.isSecondaryButtonDown()) {
-//                    double z = camera.getTranslateZ();
-//                    double newZ = z + mouseDeltaX*MOUSE_SPEED*modifier;
-//                    camera.setTranslateZ(newZ);
-//                }
                 else if (me.isMiddleButtonDown()) {
-                    cameraXform2.t.setX(cameraXform2.t.getX() + mouseDeltaX*MOUSE_SPEED*modifier*TRACK_SPEED);
-                    cameraXform2.t.setY(cameraXform2.t.getY() + mouseDeltaY*MOUSE_SPEED*modifier*TRACK_SPEED);
+                    cameraXform2.t.setX(cameraXform2.t.getX() + mouseDeltaX *MOUSE_SPEED*modifier*TRACK_SPEED);
+                    cameraXform2.t.setY(cameraXform2.t.getY() + mouseDeltaY *MOUSE_SPEED*modifier*TRACK_SPEED);
                 }
 
         }
-//        });
 
-//        scene.setOnMouseReleased(new EventHandler<MouseEvent>() {
-//            @Override public void handle(MouseEvent me) {
         if (me.getEventType().equals(MOUSE_RELEASED)){
                 if(System.currentTimeMillis() - mousePressedTime < 300){
-                    //TODO
-//                    inputHandler.handleInput(me);
                     if (me.getButton() == MouseButton.PRIMARY) {
                         if(me.getPickResult().getIntersectedNode() != null
                                 && me.getPickResult().getIntersectedNode().getClass().equals(BoxB.class)){
@@ -395,25 +338,20 @@ public class JavaFX3DView implements ViewInterface{
                     }
                 }
             }
-//        });
     }
 
     @Override
-    public Text getText() {
+    public Text getTutorialPlaceholder() {
         return text;
     }
 
 
     @Override
     public void handleKeyboard(KeyEvent event) {
-//        scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
-//            @Override
-//            public void handle(KeyEvent event) {
                 int speedModifier = 5;
                 if(event.isShiftDown()){
                     speedModifier = 20;
                 }
-//                Point3D cameraAngle = camera.getRotationAxis();
                 switch (event.getCode()) {
                     case Z:
                         cameraXform2.t.setX(0.0);
@@ -458,8 +396,6 @@ public class JavaFX3DView implements ViewInterface{
                     default:
                         break;
                 }
-//            }
-//        });
     }
 
 
@@ -507,11 +443,11 @@ public class JavaFX3DView implements ViewInterface{
 /*
   Optional lights
  */
-//                    PointLight light = new PointLight(Color.SNOW);
-//                    light.setTranslateZ(z);
-//                    light.setTranslateY(y);
-//                    light.setTranslateX(x);
-//                    cornerLights.getChildren().add(light);
+                    PointLight light = new PointLight(Color.SNOW);
+                    light.setTranslateZ(z);
+                    light.setTranslateY(y);
+                    light.setTranslateX(x);
+                    cornerLights.getChildren().add(light);
                 }
 
             }

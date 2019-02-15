@@ -1,7 +1,6 @@
 package com.sikoramarek;
 
 import com.sikoramarek.Common.BoardTooSmallException;
-import com.sikoramarek.Common.Config;
 import com.sikoramarek.Common.Logger;
 import com.sikoramarek.Common.SettingsMenu;
 import com.sikoramarek.Controller.Controller;
@@ -49,7 +48,7 @@ public class GameOfLife extends Application {
     @Override
     public String toString(){
       return "Game Of Life";
-    };
+    }
 
 }
 

@@ -49,11 +49,11 @@ class Tutorial {
 
         KeyFrame[] keyframes = new KeyFrame[tutorial.length];
         for (int i = 0; i < tutorial.length; i++) {
-            keyframes[i] = new KeyFrame(Duration.millis(DISPLAY_DURATION+i*DISPLAY_DURATION), event -> {changeLine();});
+            keyframes[i] = new KeyFrame(Duration.millis(DISPLAY_DURATION+i*DISPLAY_DURATION), event -> changeLine());
         }
 
         timeline = new Timeline(keyframes);
-        timeline.setOnFinished((event) -> { timeline.stop(); });
+        timeline.setOnFinished((event) -> timeline.stop());
 
     }
 

@@ -16,5 +16,4 @@ public interface Board {
 
     Dot[][] getBoard();
 
-    void setRules(int i);
 }

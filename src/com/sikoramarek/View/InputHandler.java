@@ -1,6 +1,5 @@
 package com.sikoramarek.View;
 
-import com.sikoramarek.Common.SharedResources;
 import com.sikoramarek.View.Implementations.View3D.BoxB;
 
 import javafx.scene.input.InputEvent;
@@ -11,6 +10,7 @@ import javafx.scene.shape.Rectangle;
 
 import static com.sikoramarek.Common.Config.RECTANGLE_HEIGHT;
 import static com.sikoramarek.Common.Config.RECTANGLE_WIDTH;
+import static com.sikoramarek.Common.SharedResources.*;
 import static javafx.scene.input.KeyEvent.KEY_RELEASED;
 import static javafx.scene.input.MouseEvent.MOUSE_RELEASED;
 
@@ -28,8 +28,8 @@ class InputHandler {
                             int gridYposition = (rectangle.getBoardY());
                             int[] position = new int[]{gridXposition, gridYposition}
                                     ;
-                            synchronized (SharedResources.positions){
-                                SharedResources.positions.add(position);
+                            synchronized (positions){
+                                positions.add(position);
                             }
 
                         }else{
@@ -37,17 +37,17 @@ class InputHandler {
                                 Rectangle rectangle = (Rectangle) mouseEvent.getPickResult().getIntersectedNode();
                                 int gridXposition = (int) (rectangle.getX() / RECTANGLE_WIDTH);
                                 int gridYposition = (int) (rectangle.getY() / RECTANGLE_HEIGHT);
-                                int position[] = new int[]{gridXposition, gridYposition};
-                                synchronized (SharedResources.keyboardInput){
-                                    SharedResources.positions.add(position);
+                                int[] position = new int[]{gridXposition, gridYposition};
+                                synchronized (keyboardInput){
+                                    positions.add(position);
                                 }}
                         }
                     }
                     break;
 
                 case SECONDARY:
-                    synchronized (SharedResources.keyboardInput){
-                        SharedResources.keyboardInput.add(KeyCode.P);
+                    synchronized (keyboardInput){
+                        keyboardInput.add(KeyCode.P);
                     }
                     break;
 
@@ -56,8 +56,8 @@ class InputHandler {
             }
         } else if (event.getEventType().equals(KEY_RELEASED)) {
             KeyEvent keyEvent = (KeyEvent) event;
-            synchronized (SharedResources.keyboardInput){
-                SharedResources.keyboardInput.add((keyEvent.getCode()));
+            synchronized (keyboardInput){
+                keyboardInput.add((keyEvent.getCode()));
             }
 
         }

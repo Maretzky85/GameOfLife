@@ -3,6 +3,7 @@ package com.sikoramarek.Model.MultiThread;
 import com.sikoramarek.Common.BoardTooSmallException;
 import com.sikoramarek.Model.Board;
 import com.sikoramarek.Model.Dot;
+import com.sikoramarek.Model.RuleManager;
 
 import java.util.ArrayList;
 /**
@@ -25,9 +26,10 @@ public class BoardMultithreading implements Board {
      *
      * @param y - y size (height) of board (int)
      * @param x - x size (width) of board (int)
+     * @param ruleManager
      * @throws BoardTooSmallException - forces app to exit if board size is too small
      */
-    public BoardMultithreading(int y, int x) throws BoardTooSmallException {
+    public BoardMultithreading(int y, int x, RuleManager ruleManager) throws BoardTooSmallException {
         if (x < 5 || y < 5) {
             throw new BoardTooSmallException("Board must be at least 5 x 5");
         }

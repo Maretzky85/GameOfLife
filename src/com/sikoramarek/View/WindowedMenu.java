@@ -2,8 +2,6 @@ package com.sikoramarek.View;
 
 import com.sikoramarek.Common.Config;
 import com.sikoramarek.Common.Logger;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -113,19 +111,16 @@ public class WindowedMenu {
         labelBuilder(labels);
 
         Button saveButton = new Button("Start");
-        saveButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                Config.setRequestedWindowHeight(Integer.valueOf(wHeight.getText()));
-                Config.setRequestedWindowWidth(Integer.valueOf(wWidth.getText()));
-                Config.setXsize(Integer.valueOf(xSize.getText()));
-                Config.setYsize(Integer.valueOf(ySize.getText()));
-                Config.FRAME_RATE = Integer.valueOf(frameRate.getText());
-                Config.CONSOLE_VIEW = consoleViewBox.isSelected();
-                Config.JAVAFX_VIEW = javaFXViewBox.isSelected();
-                Config.VIEW_3D = jFX3dBox.isSelected();
-                gameStarter.run();
-            }
+        saveButton.setOnAction(event -> {
+            Config.setRequestedWindowHeight(Integer.valueOf(wHeight.getText()));
+            Config.setRequestedWindowWidth(Integer.valueOf(wWidth.getText()));
+            Config.setXsize(Integer.valueOf(xSize.getText()));
+            Config.setYsize(Integer.valueOf(ySize.getText()));
+            Config.FRAME_RATE = Integer.valueOf(frameRate.getText());
+            Config.CONSOLE_VIEW = consoleViewBox.isSelected();
+            Config.JAVAFX_VIEW = javaFXViewBox.isSelected();
+            Config.VIEW_3D = jFX3dBox.isSelected();
+            gameStarter.run();
         });
 
         GridPane.setConstraints(saveButton, 0, labels.length);

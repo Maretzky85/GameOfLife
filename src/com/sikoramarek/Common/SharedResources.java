@@ -7,8 +7,8 @@ import java.util.List;
 
 public class SharedResources {
 
-    public static List<KeyCode> keyboardInput = new LinkedList<>();
+    public static final List<KeyCode> keyboardInput = new LinkedList<>();
 
-    public static List<int[]> positions = new LinkedList<>();
+    public static final List<int[]> positions = new LinkedList<>();
 
 }

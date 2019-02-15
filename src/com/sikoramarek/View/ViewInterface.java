@@ -27,5 +27,5 @@ public interface ViewInterface {
 
     void handleMouse(MouseEvent me);
 
-    Text getText();
+    Text getTutorialPlaceholder();
 }

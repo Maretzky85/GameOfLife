@@ -6,6 +6,7 @@ import com.sikoramarek.Common.Logger;
 import com.sikoramarek.Common.SharedResources;
 import com.sikoramarek.Model.Board;
 import com.sikoramarek.Model.MultiThread.BoardMultithreading;
+import com.sikoramarek.Model.RuleManager;
 import com.sikoramarek.Model.SingleThread.BoardSingleThread;
 import com.sikoramarek.View.ViewManager;
 import javafx.scene.input.KeyCode;
@@ -21,7 +22,7 @@ import static com.sikoramarek.Common.Config.*;
  */
 public class Controller{
 
-    private SharedResources sr = new SharedResources();
+    private RuleManager ruleManager;
     private Board model;
     private ViewManager view;
     private FrameControlLoop loop;
@@ -124,12 +125,13 @@ public class Controller{
     }
 
     private void init() throws BoardTooSmallException {
+        this.ruleManager = new RuleManager();
         int logicProcessors = Runtime.getRuntime().availableProcessors();
         if( logicProcessors > 1 && Y_SIZE >= 100 && X_SIZE >= 100){
             Logger.log("Found "+ logicProcessors +" logical processors, starting Multithreaded model", this);
-            model = new BoardMultithreading(Y_SIZE, X_SIZE);
+            model = new BoardMultithreading(Y_SIZE, X_SIZE, ruleManager);
         }else{
-            model = new BoardSingleThread(Y_SIZE, X_SIZE);
+            model = new BoardSingleThread(Y_SIZE, X_SIZE, ruleManager);
         }
         startLoop();
     }
@@ -185,33 +187,34 @@ public class Controller{
 //    }
 
     private synchronized void handleInputs(){
-            for (KeyCode key : SharedResources.keyboardInput
-                    ) {
-                switch (key) {
-                    case P:
-                        pause = !pause;
-                        break;
-                    case C:
-                        model.clearBoard();
-                        view.refresh(model.getBoard());
-                        break;
-                    case N:
-                        model.initExampleBoard();
-                        view.refresh(model.getBoard());
-                        break;
-                    case ADD:
-                        loop.increaseSpeed();
-                        break;
-                    case SUBTRACT:
-                        loop.decreaseSpeed();
-                        break;
-                    case L:
-                        view.refresh(model.getBoard());
-                        System.out.println("refreshed");
-                        break;
-                    default:
-                        break;
-                }
+        ruleManager.checkForInput();
+        for (KeyCode key : SharedResources.keyboardInput
+                ) {
+            switch (key) {
+                case P:
+                    pause = !pause;
+                    break;
+                case C:
+                    model.clearBoard();
+                    view.refresh(model.getBoard());
+                    break;
+                case N:
+                    model.initExampleBoard();
+                    view.refresh(model.getBoard());
+                    break;
+                case ADD:
+                    loop.increaseSpeed();
+                    break;
+                case SUBTRACT:
+                    loop.decreaseSpeed();
+                    break;
+                case L:
+                    view.refresh(model.getBoard());
+                    System.out.println("refreshed");
+                    break;
+                default:
+                    break;
+            }
         }
         synchronized (SharedResources.keyboardInput){
             SharedResources.keyboardInput.clear();

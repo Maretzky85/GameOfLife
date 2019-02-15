@@ -20,6 +20,7 @@ public class ModelPerformanceTests {
     int timeToRun;
     BoardSingleThread boardSingleThread;
     BoardMultithreading boardMulti;
+    RuleManager ruleManager;
     long multiResoult;
     long singleResoult;
     float percent;
@@ -46,15 +47,16 @@ public class ModelPerformanceTests {
 
     @Before
     public void init(){
+        ruleManager = new RuleManager();
         try {
-            boardSingleThread = new BoardSingleThread(size,1000);
+            boardSingleThread = new BoardSingleThread(size,1000, ruleManager);
         } catch (BoardTooSmallException e) {
             e.printStackTrace();
         }
         boardSingleThread.initExampleBoard();
 
         try {
-            boardMulti = new BoardMultithreading(size,size);
+            boardMulti = new BoardMultithreading(size,size, ruleManager);
         } catch (BoardTooSmallException e) {
             e.printStackTrace();
         }

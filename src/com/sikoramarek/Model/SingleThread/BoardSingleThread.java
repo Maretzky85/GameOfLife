@@ -3,6 +3,8 @@ package com.sikoramarek.Model.SingleThread;
 import com.sikoramarek.Common.BoardTooSmallException;
 import com.sikoramarek.Model.Board;
 import com.sikoramarek.Model.Dot;
+import com.sikoramarek.Model.RuleManager;
+import com.sun.javafx.css.Rule;
 
 import java.util.Arrays;
 
@@ -14,8 +16,7 @@ import java.util.Arrays;
 public class BoardSingleThread implements Board {
     private Dot[][] board;
 
-    private int[] ruleToLive = new int[]{2, 3};
-    private int[] ruleToGetAlive = new int[]{3};
+    private RuleManager ruleManager;
     private int generation = 0;
     private boolean busy = false;
 
@@ -26,10 +27,11 @@ public class BoardSingleThread implements Board {
      * @param x - x size (width) of board (int)
      * @throws BoardTooSmallException - forces app to exit if board size is too small
      */
-    public BoardSingleThread(int y, int x) throws BoardTooSmallException {
+    public BoardSingleThread(int y, int x, RuleManager ruleManager) throws BoardTooSmallException {
         if (x < 5 || y < 5) {
             throw new BoardTooSmallException("Board must be at least 5 x 5");
         }
+        this.ruleManager = ruleManager;
         this.board = new Dot[y][x];
     }
 
@@ -49,9 +51,9 @@ public class BoardSingleThread implements Board {
 
                     int aliveNeighbors = getNeighbors(j, i);
                     Dot currentSourceDot = board[i][j];
-                    if (currentSourceDot != null && Arrays.stream(ruleToLive).anyMatch(value -> value == aliveNeighbors)) {
+                    if (currentSourceDot != null && Arrays.stream(ruleManager.ruleToLive).anyMatch(value -> value == aliveNeighbors)) {
                         tempBoard[i][j] = currentSourceDot;
-                    } else if ((currentSourceDot == null && Arrays.stream(ruleToGetAlive).anyMatch(value -> value == aliveNeighbors))) {
+                    } else if ((currentSourceDot == null && Arrays.stream(ruleManager.ruleToGetAlive).anyMatch(value -> value == aliveNeighbors))) {
                         tempBoard[i][j] = new Dot();
                     }
                 }
@@ -142,64 +144,6 @@ public class BoardSingleThread implements Board {
     @Override
     public void clearBoard() {
         board = newEmptyBoard();
-    }
-
-    /**
-     * setRules
-     * function to swap rules according to option ( given int )
-     *
-     * @param i - setting for rule number to apply
-     */
-    public void setRules(int i) {
-        switch (i) {
-            case 1:
-                System.out.println("Conway`s Game of Life rules");
-                ruleToLive = new int[]{2, 3};
-                ruleToGetAlive = new int[]{3};
-                break;
-            case 2:
-                System.out.println("HighLife 23/36 rule");
-                ruleToLive = new int[]{2, 3};
-                ruleToGetAlive = new int[]{3, 6};
-                break;
-            case 3:
-                System.out.println("345/345 rule");
-                ruleToGetAlive = new int[]{3, 4, 5};
-                ruleToGetAlive = new int[]{3, 4, 5};
-                break;
-            case 4:
-                System.out.println("Motion 234/368 rule");
-                ruleToLive = new int[]{2, 4, 5};
-                ruleToGetAlive = new int[]{3, 6, 8};
-                break;
-            case 5:
-                System.out.println("Replicator 1357/1357 rule");
-                ruleToLive = new int[]{1, 3, 5, 7};
-                ruleToGetAlive = new int[]{1, 3, 5, 7};
-                break;
-            case 6:
-                System.out.println("Labirynt 12345/3 rule");
-                ruleToLive = new int[]{1, 2, 3, 4, 5};
-                ruleToGetAlive = new int[]{3};
-                break;
-            case 7:
-                System.out.println("traycloth /234 rule");
-                ruleToLive = new int[]{};
-                ruleToGetAlive = new int[]{2, 3, 4};
-                break;
-            case 8:
-                System.out.println("Leafs 012345678/3 rule");
-                ruleToLive = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8};
-                ruleToGetAlive = new int[]{3};
-                break;
-            case 9:
-                System.out.println("Wolfram - 7(e) 012345678/1 rule");
-                ruleToLive = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8};
-                ruleToGetAlive = new int[]{1};
-                break;
-            default:
-                break;
-        }
     }
 
     /**
@@ -303,4 +247,5 @@ public class BoardSingleThread implements Board {
     public Dot[][] getBoard() {
         return board;
     }
+
 }

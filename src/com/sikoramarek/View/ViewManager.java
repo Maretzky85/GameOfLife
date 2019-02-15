@@ -78,7 +78,7 @@ public class ViewManager{
             for (ViewInterface view : views
                     ) {
                 view.getScene().setCursor(Cursor.CROSSHAIR);
-                tutorial.addTextHolders(view.getText());
+                tutorial.addTextHolders(view.getTutorialPlaceholder());
 
             }
             tutorial.playTutorial();
@@ -110,13 +110,9 @@ public class ViewManager{
             inputHandler.handleInput(event);
         });
 
-        scene.setOnMousePressed(event -> {
-            views.get(currentView).handleMouse(event);
-        });
+        scene.setOnMousePressed(event -> views.get(currentView).handleMouse(event));
 
-        scene.setOnMouseDragged(event -> {
-            views.get(currentView).handleMouse(event);
-        });
+        scene.setOnMouseDragged(event -> views.get(currentView).handleMouse(event));
 
         scene.setOnKeyReleased(event -> {
             switch (event.getCode()){

@@ -9,7 +9,6 @@ import javafx.scene.paint.Color;
  */
 public class Dot {
 
-    private int generation = 0;
     private boolean descColor = false;
     private int green = 0;
 
@@ -33,6 +32,6 @@ public class Dot {
                 descColor = true;
             }
         }
-        return color.rgb(250,green,0);
+        return Color.rgb(250,green,0);
     }
 }

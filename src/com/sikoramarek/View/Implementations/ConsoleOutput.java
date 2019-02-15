@@ -30,7 +30,6 @@ public class ConsoleOutput{
 
     public void viewInit() {
         clearScreen();
-
     }
 
     /**
@@ -54,10 +53,6 @@ public class ConsoleOutput{
                     }
                 }
             }
-            System.out.println();
-            System.out.println();
-            System.out.println("Rendered Frames: "+renderedFramesSum);
-            System.out.println("Dropped frames: "+frameDropped);
             renderedFrames++;
             printingInProgress = false;
         }else{

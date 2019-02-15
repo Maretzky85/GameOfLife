@@ -1,6 +1,7 @@
 package com.sikoramarek.Controller;
 
 import com.sikoramarek.Common.Config;
+import com.sikoramarek.Common.Logger;
 import com.sikoramarek.Common.SharedResources;
 import javafx.scene.input.KeyCode;
 
@@ -42,7 +43,7 @@ public class FrameControlLoop implements Runnable{
      */
     @Override
     public void run() {
-        System.out.println("FrameControlLoop started at thread: "+Thread.currentThread());
+        Logger.log("FrameControlLoop started", this);
         isRunning = true;
         while (isRunning) {
             long currentTime = System.currentTimeMillis();
@@ -140,5 +141,10 @@ public class FrameControlLoop implements Runnable{
 
     int getFPS() {
         return FPS;
+    }
+
+    @Override
+    public String toString(){
+        return "Control Loop";
     }
 }
