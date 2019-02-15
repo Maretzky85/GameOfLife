@@ -1,46 +1,47 @@
 package com.sikoramarek.Model.MultiThread;
 
+import com.sikoramarek.Common.Logger;
 import com.sikoramarek.Model.Dot;
+import com.sikoramarek.Model.RuleManager;
 
 import java.util.Arrays;
 
 class WorkerThread implements Runnable{
-    int linesLimit = 50;
-    int[] lineNumber = new int[linesLimit];
-    BoardMultithreading model;
-    boolean alive = true;
-    int indexNumber = 0;
+    private int linesLimit = 50;
+    private int[] lineNumbers = new int[linesLimit];
+    private final BoardMultithreading model;
+    private boolean alive = true;
+    private int indexNumber = 0;
 
     WorkerThread(BoardMultithreading board){
         this.model = board;
     }
 
-    boolean addCheckLineNr(int lineNr){
+    boolean addLineAndCheckCapacity(int lineNr){
         if(indexNumber<linesLimit){
-            lineNumber[indexNumber] = lineNr;
+            lineNumbers[indexNumber] = lineNr;
             indexNumber++;
             return true;
         }else{
             return false;
         }
-
     }
 
     void trim(){
         int[] temp = new int[indexNumber-1];
-        System.arraycopy(lineNumber, 0, temp, 0, indexNumber-1);
-        lineNumber = temp;
+        System.arraycopy(lineNumbers, 0, temp, 0, indexNumber-1);
+        lineNumbers = temp;
     }
 
     private void lineNextGen(){
-        for (int line : lineNumber
+        for (int line : lineNumbers
                 ) {
             for (int i = 0; i < model.board[line].length; i++) {
                 int aliveNeighbors = getNeighbors(i, line);
                 Dot currentSourceDot = model.board[line][i];
-                if (currentSourceDot != null && Arrays.stream(model.ruleToLive).anyMatch(value -> value == aliveNeighbors)) {
+                if (currentSourceDot != null && Arrays.stream(RuleManager.ruleToLive).anyMatch(value -> value == aliveNeighbors)) {
                     model.nextGenBoard[line][i] = currentSourceDot;
-                } else if ((currentSourceDot == null && Arrays.stream(model.ruleToGetAlive).anyMatch(value -> value == aliveNeighbors))) {
+                } else if ((currentSourceDot == null && Arrays.stream(RuleManager.ruleToGetAlive).anyMatch(value -> value == aliveNeighbors))) {
                     model.nextGenBoard[line][i] = new Dot();
                 }
             }
@@ -75,23 +76,20 @@ class WorkerThread implements Runnable{
                 model.updater();
                 try {
                     synchronized (model){
-//                            System.out.println("Thread " + currentThread().getId() + " put to sleep");
                         model.wait();
                     }
 
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    Logger.error(e.getMessage(), this);
                 }
             }
             else{
                 try {
                     synchronized (model){
-//                            System.out.println("Thread " + currentThread().getId() + " put to sleep");
                         model.wait();
                     }
                 } catch (InterruptedException e) {
-//                        System.out.println(currentThread().getId() + " Thread get interrupted");
-                    e.printStackTrace();
+                    Logger.error(e.getMessage(), this);
                 }
             }
 

@@ -12,8 +12,6 @@ public class Dot {
     private boolean descColor = false;
     private int green = 0;
 
-    private Color color = new Color(1,0,0, 1);
-
     @Override
     public String toString() {
         return "*";

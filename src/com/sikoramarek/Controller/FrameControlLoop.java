@@ -20,6 +20,7 @@ public class FrameControlLoop implements Runnable{
     private Runnable statTimer;
 
     private boolean isRunning = false;
+
     private boolean isPause = false;
 
     private int tics = 0; //For FPS Debugging
@@ -71,9 +72,11 @@ public class FrameControlLoop implements Runnable{
                 }
             }
 
-            //FPS loging in ======================
+            //FPS logging ======================
             if (currentTime - startTime > 1000) {
-                statTimer.run();
+                if(!isPause){
+                    statTimer.run();
+                }
                 startTime = System.currentTimeMillis();
                 FPS = tics;
                 tics = 0;
@@ -141,6 +144,10 @@ public class FrameControlLoop implements Runnable{
 
     int getFPS() {
         return FPS;
+    }
+
+    public boolean isPause() {
+        return isPause;
     }
 
     @Override

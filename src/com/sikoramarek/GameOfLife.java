@@ -42,7 +42,7 @@ public class GameOfLife extends Application {
     public void start(Stage primaryStage) throws BoardTooSmallException {
         Logger.log("Starting game...", this);
         Controller controller = new Controller();
-        controller.controllerInit(primaryStage);
+        controller.GameInit(primaryStage);
     }
 
     @Override

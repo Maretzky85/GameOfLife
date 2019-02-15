@@ -6,8 +6,8 @@ import javafx.scene.input.KeyCode;
 
 public class RuleManager {
 
-    public int[] ruleToLive = new int[]{2, 3};
-    public int[] ruleToGetAlive = new int[]{3};
+    public static int[] ruleToLive = new int[]{2, 3};
+    public static int[] ruleToGetAlive = new int[]{3};
 
     public void checkForInput(){
         for (KeyCode key : SharedResources.keyboardInput

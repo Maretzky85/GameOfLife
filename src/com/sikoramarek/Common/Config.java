@@ -10,7 +10,7 @@ public class Config {
      * Set true for printing FPS statistics in 1 sec interval
      * prints FPS for model calculations and view dropped frames
      */
-    private static boolean printStatistics = false;
+    private static boolean printStatistics = true;
 
     /**
      * CONSOLE_VIEW - console printing if true, JavaFX Window if false

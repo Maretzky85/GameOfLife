@@ -3,7 +3,6 @@ package com.sikoramarek.Model.MultiThread;
 import com.sikoramarek.Common.BoardTooSmallException;
 import com.sikoramarek.Model.Board;
 import com.sikoramarek.Model.Dot;
-import com.sikoramarek.Model.RuleManager;
 
 import java.util.ArrayList;
 /**
@@ -14,11 +13,9 @@ import java.util.ArrayList;
 public class BoardMultithreading implements Board {
     Dot[][] board;
     Dot[][] nextGenBoard;
-    public Boolean ongoingUpdate = false;
     private ArrayList<WorkerThread> runnableArray = new ArrayList<>();
+    public Boolean ongoingUpdate = false;
     private int workersDoneCount = 0;
-    int[] ruleToLive = new int[]{2, 3};
-    int[] ruleToGetAlive = new int[]{3};
     private int generation = 0;
 
     /**
@@ -26,10 +23,9 @@ public class BoardMultithreading implements Board {
      *
      * @param y - y size (height) of board (int)
      * @param x - x size (width) of board (int)
-     * @param ruleManager
      * @throws BoardTooSmallException - forces app to exit if board size is too small
      */
-    public BoardMultithreading(int y, int x, RuleManager ruleManager) throws BoardTooSmallException {
+    public BoardMultithreading(int y, int x) throws BoardTooSmallException {
         if (x < 5 || y < 5) {
             throw new BoardTooSmallException("Board must be at least 5 x 5");
         }
@@ -38,11 +34,9 @@ public class BoardMultithreading implements Board {
         this.runnableArray.add(new WorkerThread(this));
 
         for (int i = 0; i < board.length; i++) {
-            if(runnableArray.get(runnableArray.size()-1).addCheckLineNr(i)){
-
-            }else{
+            if(!runnableArray.get(runnableArray.size()-1).addLineAndCheckCapacity(i)){
                 this.runnableArray.add(new WorkerThread(this));
-                runnableArray.get(runnableArray.size()-1).addCheckLineNr(i);
+                runnableArray.get(runnableArray.size()-1).addLineAndCheckCapacity(i);
             }
             if(i == board.length-1){
                 runnableArray.get(runnableArray.size()-1).trim();
@@ -133,64 +127,6 @@ public class BoardMultithreading implements Board {
      */
     public void clearBoard() {
         board = newEmptyBoard();
-    }
-
-    /**
-     * setRules
-     * function to swap rules according to option ( given int )
-     *
-     * @param i - setting for rule number to apply
-     */
-    public void setRules(int i) {
-        switch (i) {
-            case 1:
-                System.out.println("Conway`s Game of Life rules");
-                ruleToLive = new int[]{2, 3};
-                ruleToGetAlive = new int[]{3};
-                break;
-            case 2:
-                System.out.println("HighLife 23/36 rule");
-                ruleToLive = new int[]{2, 3};
-                ruleToGetAlive = new int[]{3, 6};
-                break;
-            case 3:
-                System.out.println("345/345 rule");
-                ruleToGetAlive = new int[]{3, 4, 5};
-                ruleToGetAlive = new int[]{3, 4, 5};
-                break;
-            case 4:
-                System.out.println("Motion 234/368 rule");
-                ruleToLive = new int[]{2, 4, 5};
-                ruleToGetAlive = new int[]{3, 6, 8};
-                break;
-            case 5:
-                System.out.println("Replicator 1357/1357 rule");
-                ruleToLive = new int[]{1, 3, 5, 7};
-                ruleToGetAlive = new int[]{1, 3, 5, 7};
-                break;
-            case 6:
-                System.out.println("Labirynt 12345/3 rule");
-                ruleToLive = new int[]{1, 2, 3, 4, 5};
-                ruleToGetAlive = new int[]{3};
-                break;
-            case 7:
-                System.out.println("traycloth /234 rule");
-                ruleToLive = new int[]{};
-                ruleToGetAlive = new int[]{2, 3, 4};
-                break;
-            case 8:
-                System.out.println("Leafs 012345678/3 rule");
-                ruleToLive = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8};
-                ruleToGetAlive = new int[]{3};
-                break;
-            case 9:
-                System.out.println("Wolfram - 7(e) 012345678/1 rule");
-                ruleToLive = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8};
-                ruleToGetAlive = new int[]{1};
-                break;
-            default:
-                break;
-        }
     }
 
     /**

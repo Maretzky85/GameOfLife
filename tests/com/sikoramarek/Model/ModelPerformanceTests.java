@@ -49,7 +49,7 @@ public class ModelPerformanceTests {
     public void init(){
         ruleManager = new RuleManager();
         try {
-            boardSingleThread = new BoardSingleThread(size,1000, ruleManager);
+            boardSingleThread = new BoardSingleThread(size,size, ruleManager);
         } catch (BoardTooSmallException e) {
             e.printStackTrace();
         }

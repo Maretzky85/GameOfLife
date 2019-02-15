@@ -2,6 +2,7 @@ package com.sikoramarek.View;
 
 import com.sikoramarek.Common.Config;
 import com.sikoramarek.Common.Logger;
+import com.sikoramarek.Common.SharedResources;
 import com.sikoramarek.Common.SystemConfigTooWeekException;
 import com.sikoramarek.Model.Dot;
 import com.sikoramarek.View.Implementations.ConsoleOutput;
@@ -16,6 +17,7 @@ import javafx.stage.Stage;
 import java.util.ArrayList;
 
 import static com.sikoramarek.Common.Config.*;
+import static javafx.scene.input.KeyCode.M;
 
 public class ViewManager{
 
@@ -28,6 +30,7 @@ public class ViewManager{
     private InputHandler inputHandler = new InputHandler();
 
     private int currentView = 0;
+    public boolean boardLoadSuccess;
 
 
     public ViewManager(Stage primaryStage, Runnable modelInitializer){
@@ -61,6 +64,7 @@ public class ViewManager{
         consoleOutput = null;
         currentView = 0;
 
+        long startTime = System.currentTimeMillis();
         if(Config.VIEW_3D){
             initSingleView(new JavaFX3DView());
         }
@@ -71,18 +75,23 @@ public class ViewManager{
             consoleOutput = new ConsoleOutput();
             consoleOutput.viewInit();
         }
+        if(System.currentTimeMillis() - startTime > 2000){
+            Logger.log("\n\n*************************************************************\n" +
+                    "            WARNING: Performance may be low    WARNING\n" +
+                    "*************************************************************\n", this);
+        }
         if (views.size() > 0){
             initializer.run();
-            primaryStage.setScene(views.get(currentView).getScene());
-            attachHandlers(primaryStage.getScene());
-            for (ViewInterface view : views
-                    ) {
-                view.getScene().setCursor(Cursor.CROSSHAIR);
-                tutorial.addTextHolders(view.getTutorialPlaceholder());
-
+            if(boardLoadSuccess){
+                primaryStage.setScene(views.get(currentView).getScene());
+                attachHandlers(primaryStage.getScene());
+                for (ViewInterface view : views
+                ) {
+                    view.getScene().setCursor(Cursor.CROSSHAIR);
+                    tutorial.addTextHolders(view.getTutorialPlaceholder());
+                }
+                tutorial.playTutorial();
             }
-            tutorial.playTutorial();
-
         }else{
             Logger.error("Cannot initialize view, please change board size settings", this);
         }
@@ -120,6 +129,7 @@ public class ViewManager{
                     sceneToggle();
                     break;
                 case M:
+                    SharedResources.keyboardInput.add(M);
                     primaryStage.setScene(menu.getMenu());
                     break;
                 default:
@@ -143,5 +153,13 @@ public class ViewManager{
     @Override
     public String toString(){
         return "View Manager";
+    }
+
+    public int getRenderedFrames() {
+        return views.get(currentView).getRenderedFrames();
+    }
+
+    public int getDroppedFrames() {
+        return views.get(currentView).getDroppedFrames();
     }
 }

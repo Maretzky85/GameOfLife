@@ -4,7 +4,6 @@ import com.sikoramarek.Common.BoardTooSmallException;
 import com.sikoramarek.Model.Board;
 import com.sikoramarek.Model.Dot;
 import com.sikoramarek.Model.RuleManager;
-import com.sun.javafx.css.Rule;
 
 import java.util.Arrays;
 
@@ -16,7 +15,6 @@ import java.util.Arrays;
 public class BoardSingleThread implements Board {
     private Dot[][] board;
 
-    private RuleManager ruleManager;
     private int generation = 0;
     private boolean busy = false;
 
@@ -27,11 +25,10 @@ public class BoardSingleThread implements Board {
      * @param x - x size (width) of board (int)
      * @throws BoardTooSmallException - forces app to exit if board size is too small
      */
-    public BoardSingleThread(int y, int x, RuleManager ruleManager) throws BoardTooSmallException {
+    public BoardSingleThread(int y, int x) throws BoardTooSmallException {
         if (x < 5 || y < 5) {
             throw new BoardTooSmallException("Board must be at least 5 x 5");
         }
-        this.ruleManager = ruleManager;
         this.board = new Dot[y][x];
     }
 
@@ -51,9 +48,14 @@ public class BoardSingleThread implements Board {
 
                     int aliveNeighbors = getNeighbors(j, i);
                     Dot currentSourceDot = board[i][j];
-                    if (currentSourceDot != null && Arrays.stream(ruleManager.ruleToLive).anyMatch(value -> value == aliveNeighbors)) {
+
+                    if (currentSourceDot != null &&
+                            Arrays.stream(RuleManager.ruleToLive).anyMatch(value -> value == aliveNeighbors)) {
                         tempBoard[i][j] = currentSourceDot;
-                    } else if ((currentSourceDot == null && Arrays.stream(ruleManager.ruleToGetAlive).anyMatch(value -> value == aliveNeighbors))) {
+                    }
+
+                    else if ((currentSourceDot == null &&
+                            Arrays.stream(RuleManager.ruleToGetAlive).anyMatch(value -> value == aliveNeighbors))) {
                         tempBoard[i][j] = new Dot();
                     }
                 }
