@@ -27,17 +27,25 @@ public class Tutorial {
         return displayLine;
     }
 
-    int currentline = 0;
+    int currentLine = 0;
     String displayLine;
 
     String[] tutorial = new String[]{
+            "",
             "Welcome in Game Of Life",
             "This guide will walk You through game basics",
-            "Press p or right click to unpause/pause",
-            "press n for placing example game",
-            "You can add or remove cells by left clicking on game area",
-            "It can be easier when paused",
-            "you can press C to clear board"
+            "press N for placing example game",
+            "Press P or right click to unpause/pause",
+            "In 3D mode You can light up whole board using L",
+            "Use this if You want to change state of cells",
+            "You can add or remove cells by left clicking on them",
+            "In 2D mode You can click without lighting up",
+            "In 3D mode You can rotate board by simply dragging",
+            "You also can press V for corner elements to show",
+            "They dont do anything, just looking good",
+            "You can press C to clear board",
+            "TAB is for changing views (2D/3D)",
+            "press M for starting menu",
     };
 
     Timeline timeline;
@@ -50,24 +58,24 @@ public class Tutorial {
         }
 
         timeline = new Timeline(keyframes);
-        timeline.setOnFinished((event) -> { timeline.playFromStart(); });
+        timeline.setOnFinished((event) -> { timeline.stop(); });
 
     }
 
     private void changeLine() {
-        if(currentline < tutorial.length-1){
-            currentline++;
+        if(currentLine < tutorial.length-1){
+            currentLine++;
         }else{
-            currentline = 0;
+            currentLine = 0;
         }
 
-        displayLine = tutorial[currentline];
+        displayLine = tutorial[currentLine];
 
         for (Text text : placeholders
                 ) {
             text.setText(displayLine);
         }
-        System.out.println(displayLine);
+//        System.out.println(displayLine);
     }
 
 }

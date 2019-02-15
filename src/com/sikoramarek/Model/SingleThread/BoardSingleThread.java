@@ -49,7 +49,6 @@ public class BoardSingleThread implements Board {
 
                     int aliveNeighbors = getNeighbors(j, i);
                     Dot currentSourceDot = board[i][j];
-
                     if (currentSourceDot != null && Arrays.stream(ruleToLive).anyMatch(value -> value == aliveNeighbors)) {
                         tempBoard[i][j] = currentSourceDot;
                     } else if ((currentSourceDot == null && Arrays.stream(ruleToGetAlive).anyMatch(value -> value == aliveNeighbors))) {

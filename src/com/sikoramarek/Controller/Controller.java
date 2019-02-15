@@ -23,7 +23,7 @@ public class Controller{
     private Board model;
     private ViewManager view;
     private FrameControlLoop loop;
-    private boolean pause;
+    private boolean pause = true;
 
     /**
      * Initiates model with parameters specified in Config class

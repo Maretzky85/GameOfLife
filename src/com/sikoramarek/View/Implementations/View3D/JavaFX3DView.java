@@ -38,7 +38,7 @@ public class JavaFX3DView implements ViewInterface{
     private final Xform cameraXform = new Xform();
     private final Xform cameraXform2 = new Xform();
     private final Xform cameraXform3 = new Xform();
-    private static double CAMERA_INITIAL_DISTANCE = -1500;
+    private static double CAMERA_INITIAL_DISTANCE = -2000;
     private static double CAMERA_INITIAL_X_ANGLE = 0.0;
     private static double CAMERA_INITIAL_Y_ANGLE = 0.0;
     private static final double CAMERA_NEAR_CLIP = 0.1;
@@ -61,7 +61,7 @@ public class JavaFX3DView implements ViewInterface{
     private Xform cornerObjects = new Xform();
     private Xform cornerLights = new Xform();
 
-    Text text = new Text(0, -Y_SIZE, "Welcome");
+    Text text = new Text(-WIDTH/2+50, -HEIGHT, "Welcome");
     /*
         =========== END OF 3D SECTION ===========
 
