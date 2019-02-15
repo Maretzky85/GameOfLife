@@ -29,7 +29,8 @@ public class WindowedMenu {
             "Frame Rate",
             "Console View",
             "JavaFX View",
-            "JavaFX3D View"};
+            "JavaFX3D View",
+            "World wrapping"};
 
     WindowedMenu(Runnable viewInitializer){
         this.gameStarter = viewInitializer;
@@ -98,6 +99,10 @@ public class WindowedMenu {
         jFX3dBox.setSelected(Config.VIEW_3D);
         GridPane.setConstraints(jFX3dBox, 1, 7);
 
+        CheckBox worldWrapingBox = new CheckBox();
+        worldWrapingBox.setSelected(Config.isWorldWrapping());
+        GridPane.setConstraints(worldWrapingBox, 1, 8);
+
         menuGroup.getChildren().addAll(
                 wHeight,
                 wWidth,
@@ -106,7 +111,8 @@ public class WindowedMenu {
                 frameRate,
                 consoleViewBox,
                 javaFXViewBox,
-                jFX3dBox);
+                jFX3dBox,
+                worldWrapingBox);
 
         labelBuilder(labels);
 
@@ -116,10 +122,11 @@ public class WindowedMenu {
             Config.setRequestedWindowWidth(Integer.valueOf(wWidth.getText()));
             Config.setXsize(Integer.valueOf(xSize.getText()));
             Config.setYsize(Integer.valueOf(ySize.getText()));
-            Config.FRAME_RATE = Integer.valueOf(frameRate.getText());
-            Config.CONSOLE_VIEW = consoleViewBox.isSelected();
-            Config.JAVAFX_VIEW = javaFXViewBox.isSelected();
-            Config.VIEW_3D = jFX3dBox.isSelected();
+            Config.setFrameRate(Integer.valueOf(frameRate.getText()));
+            Config.setConsoleView(consoleViewBox.isSelected());
+            Config.setJavafxView(javaFXViewBox.isSelected());
+            Config.setView3d(jFX3dBox.isSelected());
+            Config.setWorldWrapping(worldWrapingBox.isSelected());
             gameStarter.run();
         });
 

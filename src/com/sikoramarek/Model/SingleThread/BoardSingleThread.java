@@ -1,7 +1,7 @@
 package com.sikoramarek.Model.SingleThread;
 
 import com.sikoramarek.Common.BoardTooSmallException;
-import com.sikoramarek.Common.Logger;
+import com.sikoramarek.Common.Config;
 import com.sikoramarek.Model.Board;
 import com.sikoramarek.Model.Dot;
 import com.sikoramarek.Model.RuleManager;
@@ -95,17 +95,20 @@ public class BoardSingleThread implements Board {
                 int checkYposition = boardTargetYposition + i;
                 int checkXposition = boardTargetXposition + j;
 
-                if(checkXposition == board[0].length){
-                    checkXposition = 0;
-                }
-                if(checkXposition < 0){
-                    checkXposition = board[0].length-1;
-                }
-                if(checkYposition == board.length){
-                    checkYposition = 0;
-                }
-                if(checkYposition < 0){
-                    checkYposition = board.length-1;
+                if(Config.isWorldWrapping()){
+
+                    if(checkXposition == board[0].length){
+                        checkXposition = 0;
+                    }
+                    if(checkXposition < 0){
+                        checkXposition = board[0].length-1;
+                    }
+                    if(checkYposition == board.length){
+                        checkYposition = 0;
+                    }
+                    if(checkYposition < 0){
+                        checkYposition = board.length-1;
+                    }
                 }
                 try {
                     if (board[checkYposition][checkXposition] != null && !(i == thisPosition && j == thisPosition)) {

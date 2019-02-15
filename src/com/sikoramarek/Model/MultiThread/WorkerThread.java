@@ -1,5 +1,6 @@
 package com.sikoramarek.Model.MultiThread;
 
+import com.sikoramarek.Common.Config;
 import com.sikoramarek.Common.Logger;
 import com.sikoramarek.Model.Dot;
 import com.sikoramarek.Model.RuleManager;
@@ -59,17 +60,19 @@ class WorkerThread implements Runnable{
                 int checkYposition = boardTargetYposition + i;
                 int checkXposition = boardTargetXposition + j;
 
-                if(checkXposition == model.board[0].length){
-                    checkXposition = 0;
-                }
-                if(checkXposition < 0){
-                    checkXposition = model.board[0].length-1;
-                }
-                if(checkYposition == model.board.length-1){
-                    checkYposition = 0;
-                }
-                if(checkYposition < 0){
-                    checkYposition = model.board.length-1;
+                if(Config.isWorldWrapping()){
+                    if(checkXposition == model.board[0].length){
+                        checkXposition = 0;
+                    }
+                    if(checkXposition < 0){
+                        checkXposition = model.board[0].length-1;
+                    }
+                    if(checkYposition == model.board.length-1){
+                        checkYposition = 0;
+                    }
+                    if(checkYposition < 0){
+                        checkYposition = model.board.length-1;
+                    }
                 }
 
                 try {

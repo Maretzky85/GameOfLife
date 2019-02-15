@@ -5,6 +5,8 @@ import javafx.scene.paint.Color;
 public class Config {
     public static double VERSION = 0.99;
 
+    private static boolean worldWrapping = true;
+
     /**
      * Print statistics
      * Set true for printing FPS statistics in 1 sec interval
@@ -33,7 +35,9 @@ public class Config {
     public static int X_SIZE = 80;
 
     public static int Y_SIZE = 40;
+
     public static int FRAME_RATE = 20;
+
     /**
      * JavaFX window size configuration
      * DEAD_COLOR - color for inactive Dot
@@ -69,7 +73,15 @@ public class Config {
     =============================================================================
     setters and getters for console menu and in-game modifications from JavaFX
      */
-    public static void togglePrintStatistics() {
+    public static boolean isWorldWrapping() {
+        return worldWrapping;
+    }
+
+    public static void setWorldWrapping(boolean worldWrapping) {
+        Config.worldWrapping = worldWrapping;
+    }
+
+    static void togglePrintStatistics() {
         printStatistics = !printStatistics;
     }
 
@@ -99,7 +111,7 @@ public class Config {
         resize();
     }
 
-    static void setFrameRate(int frameRate) {
+    public static void setFrameRate(int frameRate) {
         FRAME_RATE = frameRate;
     }
 
