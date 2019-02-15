@@ -1,6 +1,7 @@
 package com.sikoramarek.Model.SingleThread;
 
 import com.sikoramarek.Common.BoardTooSmallException;
+import com.sikoramarek.Common.Logger;
 import com.sikoramarek.Model.Board;
 import com.sikoramarek.Model.Dot;
 import com.sikoramarek.Model.RuleManager;
@@ -86,15 +87,32 @@ public class BoardSingleThread implements Board {
     private int getNeighbors(int boardTargetXposition, int boardTargetYposition) {
         int neighbors = 0;
         int leftOfDownThreshold = -1;
-        int rightOrUpTreshold = 1;
+        int rightOrUpThreshold = 1;
         int thisPosition = 0;
-        for (int i = leftOfDownThreshold; i <= rightOrUpTreshold; i++) {
-            for (int j = leftOfDownThreshold; j <= rightOrUpTreshold; j++) {
+        for (int i = leftOfDownThreshold; i <= rightOrUpThreshold; i++) {
+            for (int j = leftOfDownThreshold; j <= rightOrUpThreshold; j++) {
+
+                int checkYposition = boardTargetYposition + i;
+                int checkXposition = boardTargetXposition + j;
+
+                if(checkXposition == board[0].length){
+                    checkXposition = 0;
+                }
+                if(checkXposition < 0){
+                    checkXposition = board[0].length-1;
+                }
+                if(checkYposition == board.length){
+                    checkYposition = 0;
+                }
+                if(checkYposition < 0){
+                    checkYposition = board.length-1;
+                }
                 try {
-                    if (board[boardTargetYposition + i][boardTargetXposition + j] != null && !(i == thisPosition && j == thisPosition)) {
+                    if (board[checkYposition][checkXposition] != null && !(i == thisPosition && j == thisPosition)) {
                         neighbors++;
                     }
                 } catch (ArrayIndexOutOfBoundsException ignored) {
+
                 }
             }
         }

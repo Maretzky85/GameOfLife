@@ -46,9 +46,7 @@ class WorkerThread implements Runnable{
                 }
             }
         }
-
     }
-
 
     private int getNeighbors(int boardTargetXposition, int boardTargetYposition) {
         int neighbors = 0;
@@ -57,8 +55,25 @@ class WorkerThread implements Runnable{
         int thisPosition = 0;
         for (int i = leftOfDownThreshold; i <= rightOrUpTreshold; i++) {
             for (int j = leftOfDownThreshold; j <= rightOrUpTreshold; j++) {
+
+                int checkYposition = boardTargetYposition + i;
+                int checkXposition = boardTargetXposition + j;
+
+                if(checkXposition == model.board[0].length){
+                    checkXposition = 0;
+                }
+                if(checkXposition < 0){
+                    checkXposition = model.board[0].length-1;
+                }
+                if(checkYposition == model.board.length-1){
+                    checkYposition = 0;
+                }
+                if(checkYposition < 0){
+                    checkYposition = model.board.length-1;
+                }
+
                 try {
-                    if (model.board[boardTargetYposition + i][boardTargetXposition + j] != null && !(i == thisPosition && j == thisPosition)) {
+                    if (model.board[checkYposition][checkXposition] != null && !(i == thisPosition && j == thisPosition)) {
                         neighbors++;
                     }
                 } catch (ArrayIndexOutOfBoundsException ignored) {

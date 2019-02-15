@@ -38,7 +38,7 @@ public class BoardMultithreading implements Board {
                 this.runnableArray.add(new WorkerThread(this));
                 runnableArray.get(runnableArray.size()-1).addLineAndCheckCapacity(i);
             }
-            if(i == board.length-1){
+            if(i == board.length){
                 runnableArray.get(runnableArray.size()-1).trim();
             }
         }
