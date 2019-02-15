@@ -2,8 +2,6 @@ package com.sikoramarek.Controller;
 
 import com.sikoramarek.Common.Config;
 import com.sikoramarek.Common.Logger;
-import com.sikoramarek.Common.SharedResources;
-import javafx.scene.input.KeyCode;
 
 import static com.sikoramarek.Common.Config.CONSOLE_VIEW;
 import static com.sikoramarek.Common.Config.FRAME_RATE;
@@ -20,8 +18,6 @@ public class FrameControlLoop implements Runnable{
     private Runnable statTimer;
 
     private boolean isRunning = false;
-
-    private boolean isPause = false;
 
     private int tics = 0; //For FPS Debugging
 
@@ -52,14 +48,12 @@ public class FrameControlLoop implements Runnable{
             initialTime = currentTime;
 
             if (timeCounterMs >= timeFrame) {
-                if (!isPause) {
-                    updater.run();
-                    Thread.yield();
-                }
+                updater.run();
+                Thread.yield();
 
                 if (CONSOLE_VIEW) {
-                    System.out.println("Frame: " + frame);
-                    System.out.println("FPS: " + FPS);
+                    Logger.log("Frame: " + frame, this);
+                    Logger.log("FPS: " + FPS, this);
                 }
                 tics += 1;
                 frame++;
@@ -74,9 +68,7 @@ public class FrameControlLoop implements Runnable{
 
             //FPS logging ======================
             if (currentTime - startTime > 1000) {
-                if(!isPause){
-                    statTimer.run();
-                }
+                statTimer.run();
                 startTime = System.currentTimeMillis();
                 FPS = tics;
                 tics = 0;
@@ -94,14 +86,6 @@ public class FrameControlLoop implements Runnable{
     }
 
     /**
-     * togglePause
-     * while true does not send update request
-     */
-    void togglePause() {
-        isPause = !isPause;
-    }
-
-    /**
      * decrease/increase speed
      * decrease or increase update speed by altering timeframe value
      */
@@ -109,13 +93,13 @@ public class FrameControlLoop implements Runnable{
         if(timeFrame<1000){
             timeFrame = 1000 / Math.max((1000 / timeFrame -1), 1);
         }else {
-            System.out.println("Limit FPS");
+            Logger.log("Limit FPS", this);
         }
         if(timeFrame < 30){
             timeFrame++;
         }
         if (Config.isPrintStatistics()) {
-            System.out.println("new requested FPS: " + 1000 / timeFrame);
+            Logger.log("New requested FPS: " + 1000 / timeFrame, this);
         }
     }
 
@@ -123,11 +107,11 @@ public class FrameControlLoop implements Runnable{
         if(timeFrame > 1){
             timeFrame = 1000 / (1000 / timeFrame +1);
         }else {
-            System.out.println("Limit FPS");
+            Logger.log("Limit FPS", this);
         }
 
         if (Config.isPrintStatistics()) {
-            System.out.println("new requested FPS: " + 1000 / timeFrame);
+            Logger.log("new requested FPS: " + 1000 / timeFrame, this);
 
         }
 
@@ -144,10 +128,6 @@ public class FrameControlLoop implements Runnable{
 
     int getFPS() {
         return FPS;
-    }
-
-    public boolean isPause() {
-        return isPause;
     }
 
     @Override

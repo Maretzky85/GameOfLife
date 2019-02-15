@@ -1,8 +1,10 @@
 package com.sikoramarek.Model;
 
 import com.sikoramarek.Common.BoardTooSmallException;
+import com.sikoramarek.Common.SharedResources;
 import com.sikoramarek.Model.MultiThread.BoardMultithreading;
 import com.sikoramarek.Model.SingleThread.BoardSingleThread;
+import javafx.scene.input.KeyCode;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,15 +50,18 @@ public class ModelPerformanceTests {
     @Before
     public void init(){
         ruleManager = new RuleManager();
+        SharedResources.addKeyboardInput(KeyCode.DIGIT5);
+        ruleManager.checkForInput();
+
         try {
-            boardSingleThread = new BoardSingleThread(size,size, ruleManager);
+            boardSingleThread = new BoardSingleThread(size,1000);
         } catch (BoardTooSmallException e) {
             e.printStackTrace();
         }
         boardSingleThread.initExampleBoard();
 
         try {
-            boardMulti = new BoardMultithreading(size,size, ruleManager);
+            boardMulti = new BoardMultithreading(size,1000);
         } catch (BoardTooSmallException e) {
             e.printStackTrace();
         }

@@ -12,7 +12,7 @@ import javafx.scene.shape.Rectangle;
 import static com.sikoramarek.Common.Config.RECTANGLE_HEIGHT;
 import static com.sikoramarek.Common.Config.RECTANGLE_WIDTH;
 import static com.sikoramarek.Common.SharedResources.*;
-import static javafx.scene.input.KeyEvent.KEY_RELEASED;
+import static javafx.scene.input.KeyEvent.KEY_PRESSED;
 import static javafx.scene.input.MouseEvent.MOUSE_RELEASED;
 
 class InputHandler {
@@ -55,7 +55,7 @@ class InputHandler {
                 default:
                     break;
             }
-        } else if (event.getEventType().equals(KEY_RELEASED)) {
+        } else if (event.getEventType().equals(KEY_PRESSED)) {
             KeyEvent keyEvent = (KeyEvent) event;
             synchronized (SharedResources.class){
                 SharedResources.addKeyboardInput(keyEvent.getCode());
