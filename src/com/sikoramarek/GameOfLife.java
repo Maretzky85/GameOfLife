@@ -2,10 +2,13 @@ package com.sikoramarek;
 
 import com.sikoramarek.Common.BoardTooSmallException;
 import com.sikoramarek.Common.Config;
+import com.sikoramarek.Common.Logger;
 import com.sikoramarek.Common.SettingsMenu;
 import com.sikoramarek.Controller.Controller;
 import javafx.application.Application;
 import javafx.stage.Stage;
+
+import java.util.Arrays;
 
 public class GameOfLife extends Application {
 
@@ -17,9 +20,13 @@ public class GameOfLife extends Application {
      */
     public static void main(String[] args) {
         if (args.length > 0) {
-            handleArgs(args);
+            if(Arrays.asList(args).contains("-m")){
+                SettingsMenu.settingMenu();
+            }else{
+                SettingsMenu.handleArgs(args);
+                launch();
+            }
         } else {
-            SettingsMenu.settingMenu();
             launch();
         }
 
@@ -34,93 +41,15 @@ public class GameOfLife extends Application {
      */
     @Override
     public void start(Stage primaryStage) throws BoardTooSmallException {
-        System.out.println("Starting Game Of Life...");
+        Logger.log("Starting game...", this);
         Controller controller = new Controller();
         controller.controllerInit(primaryStage);
-//        controller.startLoop();
     }
 
-    /**
-     * handleArgs method for setting application before launch
-     *
-     * @param args - arguments from console call
-     */
-    private static void handleArgs(String[] args) {
-        for (String arg : args) {
-            switch (arg) {
-                case "-w":
-                    Config.setConsoleView(false);
-                    break;
-                case "-e":
-                    Config.toggleStartExampleModels();
-                    break;
-                case "-c":
-                    Config.setConsoleView(true);
-                    break;
-                case "-s":
-                    Config.togglePrintStatistics();
-                    break;
-                case "-3":
-                    Config.setView3d(true);
-                    break;
-                case "-h":
-                    SettingsMenu.showHelp();
-                    System.exit(0);
-                    break;
-                default:
-                    if(!handleComplexArg(arg)){
-                        SettingsMenu.showHelp();
-                        System.out.println(
-                                "List of available arguments:\n\n" +
-                                "-x[] - sets board X size eg. -x200\n" +
-                                "-y[] - sets board Y size eg. -y200\n" +
-                                "-W[] - sets window width eg. -W1000\n" +
-                                "-H[] - sets window height eg. -H1000\n" +
-                                "-w - start app in window with default configuration\n" +
-                                "-3 - set JavaFX view in 3D view\n" +
-                                "-e - start app with example models\n" +
-                                "-c - start app with console output\n" +
-                                "-s - start app with print statistics on\n" +
-                                "-h - display help\n\n");
-
-                        System.exit(0);
-                    }
-                    break;
-            }
-        }
-        launch();
-    }
-
-    /**
-     * function for handling complex arguments
-     *
-     * @param argument - single argument
-     * @return - true if handled properly
-     */
-    private static boolean handleComplexArg(String argument) {
-        try{
-            if (argument.startsWith("-x")){
-                Config.setXsize(convertToInt(argument));
-                return true;
-            }else if(argument.startsWith("-y")){
-                Config.setYsize(convertToInt(argument));
-                return true;
-            }else if(argument.startsWith("-W")){
-                Config.setRequestedWindowWidth(convertToInt(argument));
-                return true;
-            }else if(argument.startsWith("-H")){
-                Config.setRequestedWindowHeight(convertToInt(argument));
-                return true;
-            }
-        }catch (NumberFormatException ignored){
-        }
-        return false;
-    }
-
-    private static int convertToInt(String arg){
-        int value = Integer.valueOf(arg.substring(2));
-        return value;
-    }
+    @Override
+    public String toString(){
+      return "Game Of Life";
+    };
 
 }
 

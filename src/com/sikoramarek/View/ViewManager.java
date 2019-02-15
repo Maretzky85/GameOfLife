@@ -9,13 +9,13 @@ import com.sikoramarek.View.Implementations.ConsoleOutput;
 import com.sikoramarek.View.Implementations.JavaFXView;
 import com.sikoramarek.View.Implementations.View3D.BoxB;
 import com.sikoramarek.View.Implementations.View3D.JavaFX3DView;
+
 import javafx.scene.Scene;
 import javafx.scene.input.InputEvent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
@@ -32,24 +32,23 @@ public class ViewManager{
     private ArrayList<ViewInterface> views = new ArrayList<>();
     private ConsoleOutput consoleOutput;
     private Tutorial tutorial = new Tutorial();
-
     private WindowedMenu menu;
 
     private int currentView = 0;
 
-    public ViewManager(Stage primaryStage, Runnable initializer){
+
+    public ViewManager(Stage primaryStage, Runnable modelInitializer){
+        this.initializer = modelInitializer;
+        this.primaryStage = primaryStage;
+
         primaryStage.setMaximized(true);
         primaryStage.setTitle("Game Of Life  v " + VERSION);
         primaryStage.show();
+
         Config.setRequestedWindowHeight((int)Screen.getPrimary().getBounds().getHeight());
         Config.setRequestedWindowWidth((int)Screen.getPrimary().getBounds().getWidth());
 
-
-        this.initializer = initializer;
-        this.primaryStage = primaryStage;
-        menu = new WindowedMenu(() -> {
-                viewInit();
-        });
+        menu = new WindowedMenu(this::viewInit);
         primaryStage.setScene(menu.getMenu());
     }
 
@@ -64,7 +63,9 @@ public class ViewManager{
 
     public void viewInit(){
         views = new ArrayList<>();
+        consoleOutput = null;
         currentView = 0;
+
         if(Config.VIEW_3D){
             initSingleView(new JavaFX3DView());
         }
@@ -73,8 +74,6 @@ public class ViewManager{
         }
         if(Config.CONSOLE_VIEW){
             consoleOutput = new ConsoleOutput();
-            Thread t = new Thread(consoleOutput);
-            t.start();
             consoleOutput.viewInit();
         }
         if (views.size() > 0){

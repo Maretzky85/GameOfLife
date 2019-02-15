@@ -2,6 +2,7 @@ package com.sikoramarek.Controller;
 
 import com.sikoramarek.Common.BoardTooSmallException;
 import com.sikoramarek.Common.Config;
+import com.sikoramarek.Common.Logger;
 import com.sikoramarek.Common.SharedResources;
 import com.sikoramarek.Model.Board;
 import com.sikoramarek.Model.MultiThread.BoardMultithreading;
@@ -9,6 +10,7 @@ import com.sikoramarek.Model.SingleThread.BoardSingleThread;
 import com.sikoramarek.View.ViewManager;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
+import sun.rmi.runtime.Log;
 
 import static com.sikoramarek.Common.Config.*;
 
@@ -61,7 +63,7 @@ public class Controller{
             try {
                 init();
             } catch (BoardTooSmallException e) {
-                e.printStackTrace();
+                Logger.error(e.getMessage(), this);
             }
         });
 
@@ -123,8 +125,8 @@ public class Controller{
 
     private void init() throws BoardTooSmallException {
         int logicProcessors = Runtime.getRuntime().availableProcessors();
-        if( logicProcessors > 1 && Y_SIZE > 100 && X_SIZE > 100){
-            System.out.print("\nBoard: Found "+logicProcessors+" logical processors, starting Multithreaded model");
+        if( logicProcessors > 1 && Y_SIZE >= 100 && X_SIZE >= 100){
+            Logger.log("Found "+ logicProcessors +" logical processors, starting Multithreaded model", this);
             model = new BoardMultithreading(Y_SIZE, X_SIZE);
         }else{
             model = new BoardSingleThread(Y_SIZE, X_SIZE);

@@ -7,7 +7,7 @@ import com.sikoramarek.Model.Dot;
  * View class for viewing GameOfLife board in console
  * mostly for debugging and testing purposes
  */
-public class ConsoleOutput implements Runnable{
+public class ConsoleOutput{
     private int frameDropped = 0;
     private int renderedFrames = 0;
     private int renderedFramesSum = 0;
@@ -80,8 +80,4 @@ public class ConsoleOutput implements Runnable{
         return currentRenderedFrames;
     }
 
-    @Override
-    public void run() {
-        System.out.println("ConsoleOutput Started in new thread");
-    }
 }
