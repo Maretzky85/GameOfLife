@@ -162,10 +162,7 @@ public class JavaFX3DView implements ViewInterface{
         }else{
             animationIterator = 0;
         }
-
-
     }
-
 
     private void initGrid() throws SystemConfigTooWeekException {
         viewBoardTable = new BoxB[Y_SIZE][X_SIZE];
