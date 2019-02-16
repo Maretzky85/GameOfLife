@@ -1,29 +1,26 @@
 package com.sikoramarek.View.Implementations;
 
 import com.sikoramarek.Common.Config;
+import com.sikoramarek.Common.Logger;
 import com.sikoramarek.Common.SystemConfigTooWeekException;
-import com.sikoramarek.Controller.Controller;
 import com.sikoramarek.Model.Dot;
-import com.sikoramarek.View.Implementations.Common.InputHandler;
 import com.sikoramarek.View.ViewInterface;
+
 import javafx.application.Platform;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.input.InputEvent;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.stage.Stage;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 
 import java.text.DecimalFormat;
 
 import static com.sikoramarek.Common.Config.*;
-import static javafx.scene.input.KeyCode.TAB;
-import static javafx.scene.input.KeyEvent.KEY_PRESSED;
 import static javafx.scene.input.MouseEvent.MOUSE_RELEASED;
 
 /**
@@ -32,26 +29,39 @@ import static javafx.scene.input.MouseEvent.MOUSE_RELEASED;
  */
 public class JavaFXView implements ViewInterface {
 
-    private Stage primaryStage;
     private Group viewBoard = new Group();
     private Scene gameScene = new Scene(viewBoard, WIDTH, HEIGHT, Color.BLACK);
-    private Group menuGroup = new Group();
-    private Scene menu = new Scene(menuGroup, WIDTH, HEIGHT, Color.WHITE);
-    private InputHandler inputHandler = new InputHandler();
     private Rectangle[][] viewRectangleTable;
     private boolean ongoingUpdateFromModel = false;
     private boolean ongoingUpdateFromView = false;
     private int droppedFrames = 0;
     private int renderedFrames = 0;
 
+    private int iterator = 0;
+    private WelcomeAnimation welcomeAnimation = new WelcomeAnimation(this::toggleRow);
 
-    /**
-     * Constructor that takes primary stage from caller
-     *
-     * @param primaryStage - takes primary stage from entry point of application
-     */
-    public JavaFXView(Stage primaryStage) {
-        this.primaryStage = primaryStage;
+    private Text tutorialPlaceholder;
+
+    public JavaFXView() {
+    }
+
+    public Scene getScene() {
+        if(welcomeAnimation.started()){
+            iterator = 0;
+            welcomeAnimation.startAnimation();
+        }
+        return gameScene;
+    }
+
+    private void toggleRow() {
+        for (Rectangle[] rectangles : viewRectangleTable) {
+            rectangles[iterator].setFill(welcomeAnimation.getToggleColor());
+        }
+        if (iterator < X_SIZE-1){
+            iterator++;
+        }else{
+            iterator = 0;
+        }
     }
 
     /**
@@ -59,50 +69,48 @@ public class JavaFXView implements ViewInterface {
      * Sets stages title, creates and initialises reflecting rectangle table for holding view`s side rectangles
      * Defines rectangle appearance
      * Calls gameScene set and view methods for showing window.
-     * Calls attachListeners function to attach proper listeners to stage and gameScene
+     * Calls attachResizeListeners function to attach proper listeners to stage and gameScene
      */
     @Override
     public void viewInit() throws SystemConfigTooWeekException {
-        System.out.println("JavaFX: Initialising Scene.");
-        primaryStage.setTitle("Game Of Life  v " + VERSION);
+        Logger.log("Initialising Scene.", this);
 
         long startTime = System.currentTimeMillis();
 
-        System.out.print("JavaFX: Initialising grid");
+        Logger.log("Initialising grid", this);
+
         initGrid();
-        System.out.print("\nDone. Initialising grid took " + (System.currentTimeMillis() - startTime) + " ms\n");
 
-        System.out.println("JavaFX: Setting-up gameScene");
-        primaryStage.setScene(gameScene);
-        System.out.println("JavaFX: Finished setting-up gameScene");
+        Logger.log("Done. Initialising grid took " + (System.currentTimeMillis() - startTime) + " ms", this);
 
-        System.out.println("JavaFX: setting-up window");
-        startTime = System.currentTimeMillis();
         gameScene.setCursor(Cursor.CROSSHAIR);
-        primaryStage.show();
-        System.out.println("JavaFX: Preparing window took " + (System.currentTimeMillis() - startTime) + " ms");
-        Platform.runLater(this::attachListeners);
-//        menuBuilder();
+
+        tutorialPlaceholder = new Text(100, 50, "");
+        tutorialPlaceholder.setFill(Color.WHITE);
+        tutorialPlaceholder.setFont(new Font(30));
+        viewBoard.getChildren().add(tutorialPlaceholder);
+
+        attachResizeListeners();
+        
+        Logger.log("Initialising took " + (System.currentTimeMillis() - startTime) + " ms", this);
+
     }
 
     /**
-     * Attaches listeners for mouse and keyboard input to gameScene
      * Attaches listeners for stage width and height and calls resizeGrid if needed
      */
-    private void attachListeners(){
-        int windowUpperBarTreshold = -30;
-        primaryStage.widthProperty().addListener((observable, oldValue, newValue) -> {
+    private void attachResizeListeners(){
+        final int WINDOW_UPPER_BAR_THRESHOLD = -30;
+        
+        gameScene.widthProperty().addListener((observable, oldValue, newValue) -> {
             Config.setRequestedWindowWidth(newValue.intValue());
             resizeGrid();
         });
 
-        primaryStage.heightProperty().addListener((observable, oldValue, newValue) -> {
-            Config.setRequestedWindowHeight(newValue.intValue()+windowUpperBarTreshold);
+        gameScene.heightProperty().addListener((observable, oldValue, newValue) -> {
+            Config.setRequestedWindowHeight(newValue.intValue()+WINDOW_UPPER_BAR_THRESHOLD);
             resizeGrid();
         });
-
-        gameScene.setOnKeyPressed(this::handleInput);
-        gameScene.setOnMouseReleased(this::handleInput);
     }
 
     private void resizeGrid(){
@@ -119,20 +127,14 @@ public class JavaFXView implements ViewInterface {
     }
 
     private void initGrid() throws SystemConfigTooWeekException {
-
         long initStartTime = System.currentTimeMillis();
         long counter = System.currentTimeMillis();
 
         viewRectangleTable = new Rectangle[Y_SIZE][X_SIZE];
         for (int boardYposition = 0; boardYposition < Y_SIZE; boardYposition++) {
+
             long timeTaken = System.currentTimeMillis() - initStartTime;
-            if (boardYposition % 25 == 0) {
-                if(timeTaken < 500){
-                    if (boardYposition % 25 == 0) {
-                        System.out.print(".");
-                    }
-                }
-            }
+
             for (int boardXposition = 0; boardXposition < X_SIZE; boardXposition++) {
 
                 Rectangle rectangleToAdd = new Rectangle
@@ -148,10 +150,10 @@ public class JavaFXView implements ViewInterface {
                     long currentTime = System.currentTimeMillis();
                     if(counter - currentTime < -500){
                         counter = System.currentTimeMillis();
-                        System.out.print( "\n- "+
+                        Logger.log( ""+
                                 new DecimalFormat("#0.0")
                                         .format((double)
-                                                (X_SIZE*boardYposition+boardXposition)/(Y_SIZE*X_SIZE)*100) +" % " );
+                                                (X_SIZE*boardYposition+boardXposition)/(Y_SIZE*X_SIZE)*100) +" % ", this);
                     }
                 }
 
@@ -160,29 +162,6 @@ public class JavaFXView implements ViewInterface {
                 }
             }
         }
-    }
-
-    /**
-     * handleInput method for handling view side and routing for InputHandler class
-     *             and/or updateViewOnPos function
-     *
-     * @param event - any input event acceptable, mouse or key event are supported here, else is discarded
-     */
-    private void handleInput(InputEvent event) {
-        inputHandler.handleInput(event);
-        if (event.getEventType().equals(MOUSE_RELEASED)) {
-            MouseEvent mouseEvent = (MouseEvent) event;
-            if (mouseEvent.getButton() == MouseButton.PRIMARY) {
-                updateViewOnPos(mouseEvent);
-            }
-        }else if (event.getEventType().equals(KEY_PRESSED)){
-            KeyEvent keyEvent = (KeyEvent) event;
-            if(keyEvent.getCode().equals(TAB)){
-                primaryStage.setScene(menu);
-            }
-
-        }
-
     }
 
 
@@ -198,7 +177,8 @@ public class JavaFXView implements ViewInterface {
     private void updateViewOnPos(MouseEvent event) {
         ongoingUpdateFromView = true;
         Platform.runLater(() -> {
-            if (event.getPickResult().getIntersectedNode() != null) {
+            if (event.getPickResult().getIntersectedNode() != null
+                    && event.getPickResult().getIntersectedNode().getClass().equals(Rectangle.class)) {
                 Rectangle rectangle = (Rectangle) event.
                         getPickResult().
                         getIntersectedNode();
@@ -209,8 +189,8 @@ public class JavaFXView implements ViewInterface {
                     rectangle.
                             setFill(Color.WHITE);
                 }
-                ongoingUpdateFromView = false;
             }
+            ongoingUpdateFromView = false;
         });
 
     }
@@ -267,25 +247,30 @@ public class JavaFXView implements ViewInterface {
         return currentRenderedFrames;
     }
 
-
-    /**
-     * attachObserver function
-     * passes observer to observator class that handles input calls
-     *
-     * @param controller - controller of GameOfLife
-     */
     @Override
-    public void attachObserver(Controller controller) {
-        inputHandler.addObserver(controller);
+    public void handleKeyboard(KeyEvent event) {
+
     }
 
-    private void menuBuilder(){
-
-        Button button = new Button("Return to game");
-
-        button.setOnAction(event -> primaryStage.setScene(gameScene));
-
-        menuGroup.getChildren().add(button);
+    @Override
+    public void handleMouse(MouseEvent me) {
+        if (me.getEventType().equals(MOUSE_RELEASED)) {
+            if (me.getButton() == MouseButton.PRIMARY) {
+                updateViewOnPos(me);
+            }
+        }
     }
+
+    @Override
+    public Text getTutorialPlaceholder() {
+        return tutorialPlaceholder;
+    }
+
+
+    @Override
+    public String toString(){
+        return "JavaFX";
+    }
+
 
 }

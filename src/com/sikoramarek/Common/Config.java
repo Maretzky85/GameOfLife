@@ -5,12 +5,14 @@ import javafx.scene.paint.Color;
 public class Config {
     public static double VERSION = 0.99;
 
+    private static boolean worldWrapping = true;
+
     /**
      * Print statistics
      * Set true for printing FPS statistics in 1 sec interval
      * prints FPS for model calculations and view dropped frames
      */
-    private static boolean printStatistics = false;
+    private static boolean printStatistics = true;
 
     /**
      * CONSOLE_VIEW - console printing if true, JavaFX Window if false
@@ -18,11 +20,13 @@ public class Config {
      */
     public static boolean CONSOLE_VIEW = false;
 
+    public static boolean JAVAFX_VIEW = true;
+
     /**
      * VIEW_3D - 3D representation of board
      * can be showed if JavaFX view is selected
      */
-    public static boolean VIEW_3D = false;
+    public static boolean VIEW_3D = true;
 
     /**
      * X_SIZE and Y_SIZE - size of grid for GameOfLife board
@@ -31,7 +35,9 @@ public class Config {
     public static int X_SIZE = 80;
 
     public static int Y_SIZE = 40;
+
     public static int FRAME_RATE = 20;
+
     /**
      * JavaFX window size configuration
      * DEAD_COLOR - color for inactive Dot
@@ -67,7 +73,15 @@ public class Config {
     =============================================================================
     setters and getters for console menu and in-game modifications from JavaFX
      */
-    public static void togglePrintStatistics() {
+    public static boolean isWorldWrapping() {
+        return worldWrapping;
+    }
+
+    public static void setWorldWrapping(boolean worldWrapping) {
+        Config.worldWrapping = worldWrapping;
+    }
+
+    static void togglePrintStatistics() {
         printStatistics = !printStatistics;
     }
 
@@ -78,6 +92,8 @@ public class Config {
     public static void setView3d(boolean view3d) {
         VIEW_3D = view3d;
     }
+
+    public static void setJavafxView(boolean javafxView){ JAVAFX_VIEW = javafxView;}
 
     public static void setXsize(int xSize) {
         X_SIZE = xSize;
@@ -95,7 +111,7 @@ public class Config {
         resize();
     }
 
-    static void setFrameRate(int frameRate) {
+    public static void setFrameRate(int frameRate) {
         FRAME_RATE = frameRate;
     }
 
@@ -125,7 +141,7 @@ public class Config {
         return ok;
     }
 
-    public static void toggleStartExampleModels() {
+    static void toggleStartExampleModels() {
         Config.startExampleModels = !Config.startExampleModels;
     }
 
@@ -146,31 +162,31 @@ public class Config {
         return CONSOLE_VIEW;
     }
 
-    public static boolean isView3d() {
+    static boolean isView3d() {
         return VIEW_3D;
     }
 
-    static int getxSize() {
+    public static int getxSize() {
         return X_SIZE;
     }
 
-    static int getySize() {
+    public static int getySize() {
         return Y_SIZE;
     }
 
-    static int getFrameRate() {
+    public static int getFrameRate() {
         return FRAME_RATE;
     }
 
-    static int getRequestedWindowWidth() {
+    public static int getRequestedWindowWidth() {
         return REQUESTED_WINDOW_WIDTH;
     }
 
-    static int getRequestedWindowHeight() {
+    public static int getRequestedWindowHeight() {
         return REQUESTED_WINDOW_HEIGHT;
     }
 
-    public static boolean isStartExampleModels() {
+    static boolean isStartExampleModels() {
         return startExampleModels;
     }
 }

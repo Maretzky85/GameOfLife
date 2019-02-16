@@ -14,7 +14,8 @@ public interface Board {
 
     boolean isBusy();
 
+    void checkForInput();
+
     Dot[][] getBoard();
 
-    void setRules(int i);
 }

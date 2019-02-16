@@ -2,18 +2,15 @@ package com.sikoramarek.Controller;
 
 import com.sikoramarek.Common.BoardTooSmallException;
 import com.sikoramarek.Common.Config;
-import com.sikoramarek.Common.SystemConfigTooWeekException;
+import com.sikoramarek.Common.Logger;
+import com.sikoramarek.Common.SharedResources;
 import com.sikoramarek.Model.Board;
 import com.sikoramarek.Model.MultiThread.BoardMultithreading;
+import com.sikoramarek.Model.RuleManager;
 import com.sikoramarek.Model.SingleThread.BoardSingleThread;
-import com.sikoramarek.View.Implementations.ConsoleView;
-import com.sikoramarek.View.Implementations.JavaFXView;
-import com.sikoramarek.View.Implementations.View3D.JavaFX3DView;
-import com.sikoramarek.View.ViewInterface;
+import com.sikoramarek.View.ViewManager;
+import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
-
-import java.util.Observable;
-import java.util.Observer;
 
 import static com.sikoramarek.Common.Config.*;
 
@@ -22,17 +19,19 @@ import static com.sikoramarek.Common.Config.*;
  * Have theoretical model(Board), View for drawing model and FrameControlLoop for
  * controlling speed of updates for model and statistics drawing
  */
-public class Controller implements Observer {
+public class Controller{
 
+    private RuleManager ruleManager;
     private Board model;
-    private ViewInterface view;
+    private ViewManager view;
     private FrameControlLoop loop;
+    private boolean pause = true;
 
     /**
      * Initiates model with parameters specified in Config class
      * Initiates view output
      * Initiates FrameControlLoop with setting configured in Config class
-     * measure init time for modules
+     * measure ModelInit time for modules
      * <p>
      * For console view - start without pause
      * For JavaFX view - starts paused, sets loop thread as daemon
@@ -41,150 +40,91 @@ public class Controller implements Observer {
      *
      * @param primaryStage - primaryStage from main thread - for passing through if JavaFX View is selected
      *
-     * @throws BoardTooSmallException - if board in config is too small, forces app to exit
      */
-    public void controllerInit(Stage primaryStage) throws BoardTooSmallException {
+    public void GameInit(Stage primaryStage) {
+        view = new ViewManager(primaryStage, () -> {
+            try {
+                ModelInit();
+                view.boardLoadSuccess = true;
+            } catch (BoardTooSmallException e) {
+                view.boardLoadSuccess = false;
+                Logger.error(e.getMessage(), this);
+            }
+        });
+    }
 
-        System.out.print("------=============  Initialising Model  =============------\n");
+    private void ModelInit() throws BoardTooSmallException {
+        this.ruleManager = new RuleManager();
         int logicProcessors = Runtime.getRuntime().availableProcessors();
-        long startTime = System.currentTimeMillis();
-        System.out.print("Board: Initialising.");
-        if( logicProcessors > 1 && Y_SIZE > 100 && X_SIZE > 100){
-            System.out.print("\nBoard: Found "+logicProcessors+" logical processors, starting Multithreaded model");
+        if( logicProcessors > 1 && Y_SIZE >= 100 && X_SIZE >= 100){
+            Logger.log("Found "+ logicProcessors +" logical processors, starting Multithreaded model", this);
             model = new BoardMultithreading(Y_SIZE, X_SIZE);
         }else{
             model = new BoardSingleThread(Y_SIZE, X_SIZE);
         }
-        if (Config.isStartExampleModels()) {
-            model.initExampleBoard();
-        }
-        System.out.print("\nBoard: done. Took " + (System.currentTimeMillis() - startTime) + " ms\n" +
-                "-------Theoretical model initialised successfully\n\n");
-
-        loop = new FrameControlLoop(this::updateState);
-        loop.attachStatisticTimer(this::showStatistics);
-
-        System.out.print("------=============  Initialising View  =============------\n");
-        startTime = System.currentTimeMillis();
-        if (CONSOLE_VIEW) {
-            view = new ConsoleView();
-            ConsoleView cview = (ConsoleView) view;
-            new Thread(cview).start();
-        } else {
-            if(VIEW_3D){
-                view = new JavaFX3DView(primaryStage);
-            }else{
-                view = new JavaFXView(primaryStage);
-            }
-
-        }
-
-        try {
-            view.viewInit();
-        } catch (SystemConfigTooWeekException e) {
-            System.out.println("\n"+e.getMessage());
-            if(VIEW_3D){
-                System.out.println("Fallback to JavaFX 2D View");
-                startTime = System.currentTimeMillis();
-                view = new JavaFXView(primaryStage);
-                try {
-                    view.viewInit();
-                } catch (SystemConfigTooWeekException e1) {
-                    System.out.println("\n"+e1.getMessage());
-                    System.out.println("System performance too low, please try smaller board");
-                    System.exit(0);
-                }
-            }else{
-                System.out.println("System performance too low, please try smaller board");
-                System.exit(0);
-            }
-        }
-
-        if (CONSOLE_VIEW) {
-            loop.togglePause();
-        } else {
-//            loop.togglePause();
-            view.attachObserver(this);
-            view.refresh(model.getBoard());
-        }
-        if(System.currentTimeMillis() - startTime > 2000){
-            System.out.println("\n\n*************************************************************\n" +
-                    "            WARNING: Performance may be low    WARNING\n" +
-                    "*************************************************************\n");
-        }
-        System.out.print("\nView: done. Took " + (System.currentTimeMillis() - startTime) + " ms\n" +
-                "-------Theoretical model initialised successfully\n\n" +
-                "------=============  Game Of Life v "+VERSION+"  =============------\n");
+        startLoop();
     }
 
-
-    /**
-     * ***Only for JavaFX view
-     * Overriden method for updating model if input is received
-     *
-     * @param o - observable object( in this case InputHandler Class )
-     * @param arg - arguments for update:
-     *            int[] for board position update
-     *            int - for board rules update
-     *            String for speed control, pause, clear and insert example elements on board
-     */
-    @Override
-    public void update(Observable o, Object arg) {
-        boolean argIsPosition = true;
-        boolean argIsint = true;
-        try {
-            int[] position = (int[]) arg;
-            model.changeOnPosition(position[0], position[1]);
-        } catch (ClassCastException ignored) {
-            argIsPosition = false;
-        }
-
-        try {
-            int option = Integer.valueOf(arg.toString());
-            model.setRules(option);
-        } catch (NumberFormatException ignored) {
-            argIsint = false;
-        }
-
-        if (!argIsPosition && !argIsint) try {
-            String key = (String) arg;
+    private void handleInputs(){
+        model.checkForInput();
+        ruleManager.checkForInput();
+        for (KeyCode key : SharedResources.getKeyboardInput()
+                ) {
             switch (key) {
-                case "p":
-                    loop.togglePause();
+                case P:
+                    pause = !pause;
                     break;
-                case "c":
+                case C:
                     model.clearBoard();
                     view.refresh(model.getBoard());
                     break;
-                case "n":
+                case N:
                     model.initExampleBoard();
                     view.refresh(model.getBoard());
                     break;
-                case "+":
+                case ADD:
                     loop.increaseSpeed();
                     break;
-                case "-":
+                case SUBTRACT:
                     loop.decreaseSpeed();
                     break;
-                case "l":
+                case L:
+                    view.refresh(model.getBoard());
+                    break;
+                case M:
+                    loop.toggleLoopState();
+                    break;
+                case R:
                     view.refresh(model.getBoard());
                     break;
                 default:
                     break;
             }
-        } catch (ClassCastException ignored) {
+            synchronized (SharedResources.getKeyboardInput()) {
+                SharedResources.clearKeyboardInput();
+            }
+        }
+        for (int[] position : SharedResources.positions
+                ) {
+            model.changeOnPosition(position[0], position[1]);
+            }
+        synchronized (SharedResources.positions) {
+            SharedResources.positions.clear();
         }
     }
+
 
     /**
      * startLoop
      * method for FrameControlLoop start in new Thread
-     * called from outside class after init
+     * called from outside class after ModelInit
      */
-    public void startLoop() {
-        Thread loopThread = new Thread(loop);
-        loopThread.setDaemon(true);
-        loopThread.start();
+    private void startLoop() {
+            loop = new FrameControlLoop(this::updateState);
+            loop.attachStatisticTimer(this::showStatistics);
+            Thread loopThread = new Thread(loop);
+            loopThread.setDaemon(true);
+            loopThread.start();
     }
 
     /**
@@ -193,23 +133,33 @@ public class Controller implements Observer {
      * for both model and than view
      */
     private void updateState() {
+        handleInputs();
+        if (!pause){
             if(!model.isBusy()){
                 model.nextGen();
                 view.refresh(model.getBoard());
             }
+        }
+
     }
 
     /**
      * showStatistics
      * method for printing out ( once per call ) FPS statistic
-     * gathered from FrameLoopControl and View(view avaible only for JavaFX)
+     * gathered from FrameLoopControl and View(view available only for JavaFX)
      */
     private void showStatistics() {
         if (Config.isPrintStatistics()) {
-            System.out.println("Loop: FPS: " + loop.getFPS() +
-                    "\nBoard: Generations (per second): "+ model.getGeneration() +
-                    "\nView: rendered frames: " + view.getRenderedFrames() +
-                    "\nView: dropped frames: "+ view.getDroppedFrames());
+            Logger.log("\nLoop: FPS:                       " + loop.getFPS() +
+                    "\nBoard: Generations (per second): "+ model.getGeneration()
+                            +
+                    "\nView: rendered frames:           " + view.getRenderedFrames() +
+                    "\nView: dropped frames:            "+ view.getDroppedFrames()+"\n", this);
         }
+    }
+
+    @Override
+    public String toString(){
+        return "Controller";
     }
 }
