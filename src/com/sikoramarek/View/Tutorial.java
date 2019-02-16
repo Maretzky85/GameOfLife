@@ -49,6 +49,7 @@ class Tutorial {
     }
 
     void playTutorial(){
+        timeline.stop();
         timeline.playFromStart();
     }
 

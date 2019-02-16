@@ -16,7 +16,11 @@ import javafx.stage.Screen;
 import static com.sikoramarek.Common.Config.HEIGHT;
 import static com.sikoramarek.Common.Config.WIDTH;
 
+
 public class WindowedMenu {
+
+    TextField wHeight;
+    TextField wWidth;
 
     private Runnable gameStarter;
     private GridPane menuGroup;
@@ -72,10 +76,10 @@ public class WindowedMenu {
         }
 
 
-        TextField wHeight = new TextField(Integer.toString(Config.getRequestedWindowHeight()));
+        wHeight = new TextField(Integer.toString(Config.getRequestedWindowHeight()));
         GridPane.setConstraints(wHeight, 1, 0);
 
-        TextField wWidth = new TextField(Integer.toString(Config.getRequestedWindowWidth()));
+        wWidth = new TextField(Integer.toString(Config.getRequestedWindowWidth()));
         GridPane.setConstraints(wWidth, 1, 1);
 
         TextField xSize = new TextField(Integer.toString(Config.getxSize()));

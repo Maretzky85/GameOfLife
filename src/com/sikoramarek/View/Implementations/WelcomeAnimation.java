@@ -41,7 +41,7 @@ public class WelcomeAnimation {
     private KeyFrame[] getKeyframes(){
         KeyFrame[] keyframes = new KeyFrame[X_SIZE];
         for (int i = 0; i < keyframes.length; i++) {
-            keyframes[i] = new KeyFrame(Duration.millis(i*10), event -> toggle.run());
+            keyframes[i] = new KeyFrame(Duration.millis(i*((float)500/X_SIZE)), event -> toggle.run());
         }
         return keyframes;
     }

@@ -28,6 +28,7 @@ public class ViewManager{
     private Tutorial tutorial = new Tutorial();
     private WindowedMenu menu;
     private InputHandler inputHandler = new InputHandler();
+    private boolean fullscreen = true;
 
     private int currentView = 0;
     public boolean boardLoadSuccess;
@@ -36,6 +37,8 @@ public class ViewManager{
     public ViewManager(Stage primaryStage, Runnable modelInitializer){
         this.initializer = modelInitializer;
         this.primaryStage = primaryStage;
+        primaryStage.setMinHeight(600);
+        primaryStage.setMinWidth(600);
 
         primaryStage.setMaximized(true);
         primaryStage.setTitle("Game Of Life  v " + VERSION);
@@ -45,6 +48,12 @@ public class ViewManager{
         Config.setRequestedWindowWidth((int)Screen.getPrimary().getBounds().getWidth());
 
         menu = new WindowedMenu(this::viewInit);
+        menu.getMenu().heightProperty().addListener((observable, oldValue, newValue)-> {
+            menu.wHeight.setText(Integer.toString(newValue.intValue()));
+        });
+        menu.getMenu().widthProperty().addListener((observable, oldValue, newValue) -> {
+            menu.wWidth.setText(Integer.toString(newValue.intValue()));
+        });
         primaryStage.setScene(menu.getMenu());
     }
 
@@ -57,7 +66,9 @@ public class ViewManager{
         }
         attachHandlers(views.get(currentView).getScene());
         primaryStage.setScene(views.get(currentView).getScene());
-        primaryStage.setFullScreen(true);
+        if(fullscreen){
+            primaryStage.setFullScreen(true);
+        }
     }
 
     private void viewInit(){
@@ -135,7 +146,12 @@ public class ViewManager{
                     primaryStage.setScene(menu.getMenu());
                     break;
                 case F:
+                    fullscreen = true;
                     primaryStage.setFullScreen(true);
+                    break;
+                case ESCAPE:
+                    fullscreen = false;
+                    break;
                 default:
                     views.get(currentView).handleKeyboard(event);
                     inputHandler.handleInput(event);

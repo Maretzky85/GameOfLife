@@ -147,16 +147,17 @@ public class JavaFX3DView implements ViewInterface{
     }
 
     private void toggleRow() {
-        for (BoxB[] boxBS : viewBoardTable) {
-            PhongMaterial material = (PhongMaterial) boxBS[animationIterator].getMaterial();
-            material.setDiffuseColor(welcomeAnimation.getToggleColor());
-            BoxB boxB = boxBS[animationIterator];
-            boxB.setVisible(true);
-            if (welcomeAnimation.getToggleColor() == Color.BLACK) {
-                boxB.setVisible(false);
-            }
-        }
         if (animationIterator < X_SIZE-1){
+            for (BoxB[] boxBS : viewBoardTable) {
+                PhongMaterial material = (PhongMaterial) boxBS[animationIterator].getMaterial();
+                material.setDiffuseColor(welcomeAnimation.getToggleColor());
+                BoxB boxB = boxBS[animationIterator];
+                if (welcomeAnimation.getToggleColor() == Color.BLACK) {
+                    boxB.setVisible(false);
+                }else{
+                    boxB.setVisible(true);
+                }
+            }
             animationIterator++;
         }else{
             animationIterator = 0;
@@ -359,13 +360,14 @@ public class JavaFX3DView implements ViewInterface{
                         camera.setTranslateZ(CAMERA_INITIAL_DISTANCE);
                         cameraXform.ry.setAngle(CAMERA_INITIAL_Y_ANGLE);
                         cameraXform.rx.setAngle(CAMERA_INITIAL_X_ANGLE);
+                        camera.setRotate(0);
+                        camera.setTranslateY(0);
                         break;
                     case L:
                         showDeadDot = !showDeadDot;
                         shrinkBoxes();
                         SharedResources.addKeyboardInput(KeyCode.L);
                         break;
-
                     case W:
                         camera.setTranslateZ(camera.getTranslateZ()+speedModifier);
                         break;
