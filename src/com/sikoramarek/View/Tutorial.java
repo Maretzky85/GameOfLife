@@ -10,27 +10,38 @@ import java.util.List;
 
 class Tutorial {
 
-    private int DISPLAY_DURATION = 4000;
+    private int DISPLAY_DURATION = 5000;
+
     private List<Text> placeholders = new ArrayList<>();
     private int currentLine = 0;
     private Timeline timeline;
 
     private String[] tutorial = new String[]{
             "",
-            "Welcome in Game Of Life",
-            "This guide will walk You through game basics",
-            "press N for placing example game",
+            "Welcome in Game Of Life game",
+            "This guide will walk You through game controls",
+            "Press N for placing example cells",
             "Press P or right click to unpause/pause",
-            "In 3D mode You can light up whole board using L",
-            "Use this if You want to change state of cells",
-            "You can add or remove cells by left clicking on them",
-            "In 2D mode You can click without lighting up",
-            "In 3D mode You can rotate board by simply dragging",
-            "You also can press V for corner elements to show",
-            "They dont do anything, just looking good",
+            "In 3D mode You can light up whole board using L key",
+            "In 3D mode this will allow You to click on any cell",
+            "In 3D mode press V to hide/show corner elements",
+            "In 3D mode You can rotate board by simply click-dragging mouse",
+            "Also move camera using W/S/A/D keys",
+            "Rotate camera using LEFT and RIGHT ARROW",
+            "And move up/down by UP/DOWN ARROW",
+            "There are also speed modifier - SHIFT and CTRL",
+            "Combine holding these keys along with any movement key",
+            "If You get lost just press Z key",
+            "Press TAB for changing views (2D/3D)",
+            "You can click any cell to switch state (active / not active)",
+            "You may want to pause (P) first",
             "You can press C to clear board",
-            "TAB is for changing views (2D/3D)",
-            "press M for starting menu",
+            "Keys 1 thru 9 will change game rules",
+            "You can experiment with these",
+            "F key will turn on full screen mode",
+            "M key will return You to start menu",
+            "Have fun!",
+            ""
     };
 
     Tutorial(){

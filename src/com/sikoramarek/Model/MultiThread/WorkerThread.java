@@ -67,7 +67,7 @@ class WorkerThread implements Runnable{
                     if(checkXposition < 0){
                         checkXposition = model.board[0].length-1;
                     }
-                    if(checkYposition == model.board.length-1){
+                    if(checkYposition == model.board.length){
                         checkYposition = 0;
                     }
                     if(checkYposition < 0){
