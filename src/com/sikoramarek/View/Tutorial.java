@@ -37,8 +37,10 @@ class Tutorial {
             "You may want to pause (P) first",
             "You can press C to clear board",
             "Keys 1 thru 9 will change game rules",
-            "You can experiment with these",
+            "Numpad keys 1-3 followed by click places different models",
+            "You can experiment with these numbers",
             "F key will turn on full screen mode",
+            "+ and - Keys allow You to change speed",
             "M key will return You to start menu",
             "Have fun!",
             ""

@@ -66,6 +66,7 @@ public class Controller{
     }
 
     private void handleInputs(){
+        model.checkForInput();
         ruleManager.checkForInput();
         for (KeyCode key : SharedResources.getKeyboardInput()
                 ) {
@@ -93,18 +94,21 @@ public class Controller{
                 case M:
                     loop.toggleLoopState();
                     break;
+                case R:
+                    view.refresh(model.getBoard());
+                    break;
                 default:
                     break;
             }
-        }
-        synchronized (SharedResources.getKeyboardInput()){
-            SharedResources.clearKeyboardInput();
+            synchronized (SharedResources.getKeyboardInput()) {
+                SharedResources.clearKeyboardInput();
+            }
         }
         for (int[] position : SharedResources.positions
                 ) {
             model.changeOnPosition(position[0], position[1]);
             }
-        synchronized (SharedResources.positions){
+        synchronized (SharedResources.positions) {
             SharedResources.positions.clear();
         }
     }
@@ -142,7 +146,7 @@ public class Controller{
     /**
      * showStatistics
      * method for printing out ( once per call ) FPS statistic
-     * gathered from FrameLoopControl and View(view avaible only for JavaFX)
+     * gathered from FrameLoopControl and View(view available only for JavaFX)
      */
     private void showStatistics() {
         if (Config.isPrintStatistics()) {

@@ -118,7 +118,7 @@ public class FrameControlLoop implements Runnable{
     }
 
     /**
-     * Aditional timed function - called once per second
+     * Additional timed function - called once per second
      *
      * @param showStatistics - runnable function called once per second
      */

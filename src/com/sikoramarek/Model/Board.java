@@ -14,6 +14,8 @@ public interface Board {
 
     boolean isBusy();
 
+    void checkForInput();
+
     Dot[][] getBoard();
 
 }

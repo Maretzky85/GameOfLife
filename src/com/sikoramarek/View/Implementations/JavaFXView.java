@@ -46,7 +46,7 @@ public class JavaFXView implements ViewInterface {
     }
 
     public Scene getScene() {
-        if(!welcomeAnimation.isStarted()){
+        if(welcomeAnimation.started()){
             iterator = 0;
             welcomeAnimation.startAnimation();
         }

@@ -48,12 +48,10 @@ public class ViewManager{
         Config.setRequestedWindowWidth((int)Screen.getPrimary().getBounds().getWidth());
 
         menu = new WindowedMenu(this::viewInit);
-        menu.getMenu().heightProperty().addListener((observable, oldValue, newValue)-> {
-            menu.wHeight.setText(Integer.toString(newValue.intValue()));
-        });
-        menu.getMenu().widthProperty().addListener((observable, oldValue, newValue) -> {
-            menu.wWidth.setText(Integer.toString(newValue.intValue()));
-        });
+        menu.getMenu().heightProperty().addListener((observable, oldValue, newValue)->
+                menu.wHeight.setText(Integer.toString(newValue.intValue())));
+        menu.getMenu().widthProperty().addListener((observable, oldValue, newValue) ->
+                menu.wWidth.setText(Integer.toString(newValue.intValue())));
         primaryStage.setScene(menu.getMenu());
     }
 
