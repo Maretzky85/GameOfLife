@@ -139,7 +139,7 @@ public class JavaFX3DView implements ViewInterface{
     }
 
     public Scene getScene() {
-        if(!welcomeAnimation.isStarted()){
+        if(welcomeAnimation.started()){
             animationIterator = 0;
             welcomeAnimation.startAnimation();
         }

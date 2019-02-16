@@ -50,7 +50,7 @@ public class WelcomeAnimation {
         return toggleColor;
     }
 
-    public boolean isStarted() {
-        return started;
+    public boolean started() {
+        return !started;
     }
 }

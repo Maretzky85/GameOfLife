@@ -103,9 +103,9 @@ public class WindowedMenu {
         jFX3dBox.setSelected(Config.VIEW_3D);
         GridPane.setConstraints(jFX3dBox, 1, 7);
 
-        CheckBox worldWrapingBox = new CheckBox();
-        worldWrapingBox.setSelected(Config.isWorldWrapping());
-        GridPane.setConstraints(worldWrapingBox, 1, 8);
+        CheckBox worldWrappingBox = new CheckBox();
+        worldWrappingBox.setSelected(Config.isWorldWrapping());
+        GridPane.setConstraints(worldWrappingBox, 1, 8);
 
         menuGroup.getChildren().addAll(
                 wHeight,
@@ -116,7 +116,7 @@ public class WindowedMenu {
                 consoleViewBox,
                 javaFXViewBox,
                 jFX3dBox,
-                worldWrapingBox);
+                worldWrappingBox);
 
         labelBuilder(labels);
 
@@ -130,7 +130,7 @@ public class WindowedMenu {
             Config.setConsoleView(consoleViewBox.isSelected());
             Config.setJavafxView(javaFXViewBox.isSelected());
             Config.setView3d(jFX3dBox.isSelected());
-            Config.setWorldWrapping(worldWrapingBox.isSelected());
+            Config.setWorldWrapping(worldWrappingBox.isSelected());
             gameStarter.run();
         });
 

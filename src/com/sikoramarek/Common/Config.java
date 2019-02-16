@@ -141,7 +141,7 @@ public class Config {
         return ok;
     }
 
-    public static void toggleStartExampleModels() {
+    static void toggleStartExampleModels() {
         Config.startExampleModels = !Config.startExampleModels;
     }
 
@@ -162,7 +162,7 @@ public class Config {
         return CONSOLE_VIEW;
     }
 
-    public static boolean isView3d() {
+    static boolean isView3d() {
         return VIEW_3D;
     }
 
@@ -186,7 +186,7 @@ public class Config {
         return REQUESTED_WINDOW_HEIGHT;
     }
 
-    public static boolean isStartExampleModels() {
+    static boolean isStartExampleModels() {
         return startExampleModels;
     }
 }
