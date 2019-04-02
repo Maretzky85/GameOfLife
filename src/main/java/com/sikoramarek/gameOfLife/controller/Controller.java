@@ -10,9 +10,13 @@ import com.sikoramarek.gameOfLife.model.RuleManager;
 import com.sikoramarek.gameOfLife.model.multiThread.BoardMultithreading;
 import com.sikoramarek.gameOfLife.model.singleThread.BoardSingleThread;
 import com.sikoramarek.gameOfLife.view.ViewManager;
+import com.sikoramarek.gameOfLife.client.Client;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 
+import java.io.IOException;
+
+import static com.sikoramarek.gameOfLife.common.Config.*;
 import static com.sikoramarek.gameOfLife.common.Config.X_SIZE;
 import static com.sikoramarek.gameOfLife.common.Config.Y_SIZE;
 
@@ -29,30 +33,41 @@ public class Controller {
 	private FrameControlLoop loop;
 	private boolean pause = true;
 
-	/**
-	 * Initiates model with parameters specified in Config class
-	 * Initiates view output
-	 * Initiates FrameControlLoop with setting configured in Config class
-	 * measure ModelInit time for modules
-	 * <p>
-	 * For console view - start without pause
-	 * For JavaFX view - starts paused, sets loop thread as daemon
-	 * <p>
-	 * Initiates first view update for first frame draw
-	 *
-	 * @param primaryStage - primaryStage from main thread - for passing through if JavaFX view is selected
-	 */
-	public void GameInit(Stage primaryStage) {
-		view = new ViewManager(primaryStage, () -> {
-			try {
-				ModelInit();
-				view.boardLoadSuccess = true;
-			} catch (BoardTooSmallException e) {
-				view.boardLoadSuccess = false;
-				Logger.error(e.getMessage(), this);
-			}
-		});
-	}
+    private Client client;
+
+    {
+        try {
+            client = new Client();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Initiates model with parameters specified in Config class
+     * Initiates view output
+     * Initiates FrameControlLoop with setting configured in Config class
+     * measure ModelInit time for modules
+     * <p>
+     * For console view - start without pause
+     * For JavaFX view - starts paused, sets loop thread as daemon
+     * <p>
+     * Initiates first view update for first frame draw
+     *
+     * @param primaryStage - primaryStage from main thread - for passing through if JavaFX view is selected
+     *
+     */
+    public void GameInit(Stage primaryStage) {
+        view = new ViewManager(primaryStage, () -> {
+            try {
+                ModelInit();
+                view.boardLoadSuccess = true;
+            } catch (BoardTooSmallException e) {
+                view.boardLoadSuccess = false;
+                Logger.error(e.getMessage(), this);
+            }
+        });
+    }
 
 	private void ModelInit() throws BoardTooSmallException {
 		this.ruleManager = new RuleManager();
@@ -128,19 +143,25 @@ public class Controller {
 		loopThread.start();
 	}
 
-	/**
-	 * updateState
-	 * method for trigger next generation update
-	 * for both model and than view
-	 */
-	private void updateState() {
-		handleInputs();
-		if (!pause) {
-			if (!model.isBusy()) {
-				model.nextGen();
-				view.refresh(model.getBoard());
-			}
-		}
+    /**
+     * updateState
+     * method for trigger next generation update
+     * for both model and than view
+     */
+    private void updateState() {
+        handleInputs();
+        if (!pause){
+            if(!model.isBusy()){
+                model.nextGen();
+                view.refresh(model.getBoard());
+            }
+	        try {
+		        client.sendData(model.getBoard());
+		        System.out.println("sent");
+	        } catch (IOException e) {
+		        e.printStackTrace();
+	        }
+        }
 
 	}
 
