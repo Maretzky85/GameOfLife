@@ -11,6 +11,7 @@ import com.sikoramarek.gameOfLife.model.multiThread.BoardMultithreading;
 import com.sikoramarek.gameOfLife.model.singleThread.BoardSingleThread;
 import com.sikoramarek.gameOfLife.view.ViewManager;
 import com.sikoramarek.gameOfLife.client.Client;
+import javafx.application.Platform;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 
@@ -34,14 +35,6 @@ public class Controller {
 	private boolean pause = true;
 
     private Client client;
-
-    {
-        try {
-            client = new Client();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     /**
      * Initiates model with parameters specified in Config class
@@ -67,6 +60,12 @@ public class Controller {
                 Logger.error(e.getMessage(), this);
             }
         });
+            try {
+                client = new Client();
+            } catch (IOException e) {
+                Logger.error(e.getMessage(), this);
+                Platform.exit();
+            }
     }
 
 	private void ModelInit() throws BoardTooSmallException {
@@ -157,9 +156,9 @@ public class Controller {
             }
 	        try {
 		        client.sendData(model.getBoard());
-		        System.out.println("sent");
 	        } catch (IOException e) {
 		        e.printStackTrace();
+		        Platform.exit();
 	        }
         }
 

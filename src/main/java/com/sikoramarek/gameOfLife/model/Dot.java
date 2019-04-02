@@ -2,12 +2,14 @@ package com.sikoramarek.gameOfLife.model;
 
 import javafx.scene.paint.Color;
 
+import java.io.Serializable;
+
 /**
  * Dot Class
  * holds number of generations lived
  * overrides toString method for console output printing
  */
-public class Dot {
+public class Dot implements Serializable {
 
 	private boolean descColor = false;
 	private int green = 0;

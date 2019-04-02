@@ -13,39 +13,17 @@ public class Client {
 
 	public Client() throws IOException {
 
-		 client = new Socket("127.0.0.1", 65432);
-		 inputStream = new ObjectInputStream(client.getInputStream());
-		 outputStream = new ObjectOutputStream(client.getOutputStream());
+	 client = new Socket("217.182.73.80", 65432);
+//	 client = new Socket("localhost", 65432);
+	 outputStream  = new ObjectOutputStream(client.getOutputStream());
+//	 inputStream = new ObjectInputStream(client.getInputStream());
 
 	}
 
-	public void sendData(Dot[][] dotBoard) throws IOException {
-//		int[][] data = new int[dotBoard[0].length][dotBoard.length];
-//		for(int i = 0; i<data.length; i++){
-//			for (int j=0; j>data[0].length; j++){
-//				if (!dotBoard[i][j]){
-//					data[i][j] = 0;
-//				}else{
-//					data[i][j] = 1;
-//				}
-//
-//			}
-//		}
-
-		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-
-		outputStream.writeInt(dotBoard.length);
+	public void sendData(Dot[][] dotBoard) throws IOException{
 		outputStream.writeObject(dotBoard);
-//		for (int[] line:data
-//		     ) {
-//
-//			for (int cell:line
-//			     ) {
-//				outputStream.writeInt(cell);
-//			}
-//
-//		}
 		outputStream.flush();
+//		System.out.println(inputStream.readObject());
 	}
 }
 
