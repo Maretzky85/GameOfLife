@@ -1,5 +1,6 @@
 package com.sikoramarek.gameOfLife.view.implementations;
 
+import com.sikoramarek.gameOfLife.client.Client;
 import com.sikoramarek.gameOfLife.common.Config;
 import com.sikoramarek.gameOfLife.common.Logger;
 import com.sikoramarek.gameOfLife.common.errors.SystemConfigTooWeekException;
@@ -28,13 +29,14 @@ import static javafx.scene.input.MouseEvent.MOUSE_RELEASED;
  */
 public class JavaFXView implements ViewInterface {
 
-	private Group viewBoard = new Group();
-	private Scene gameScene = new Scene(viewBoard, WIDTH, HEIGHT, Color.BLACK);
-	private Rectangle[][] viewRectangleTable;
-	private boolean ongoingUpdateFromModel = false;
-	private boolean ongoingUpdateFromView = false;
-	private int droppedFrames = 0;
-	private int renderedFrames = 0;
+    private Group viewBoard = new Group();
+    private Scene gameScene = new Scene(viewBoard, WIDTH, HEIGHT, Color.BLACK);
+    private Rectangle[][] viewRectangleTable;
+    private boolean ongoingUpdateFromModel = false;
+    private boolean ongoingUpdateFromView = false;
+    private int droppedFrames = 0;
+    private int renderedFrames = 0;
+    private Dot[][] secondPlayerBoard;
 
 	private int iterator = 0;
 	private WelcomeAnimation welcomeAnimation = new WelcomeAnimation(this::toggleRow);
@@ -195,36 +197,84 @@ public class JavaFXView implements ViewInterface {
 	}
 
 
-	/**
-	 * refresh method takes board as argument, scans model board and updates representing view board accordingly.
-	 * <p>
-	 * ongoingUpdateFromModel and ongoingUpdateFromView must be set to false for update to take place
-	 * if not, function add a drop frame and discard this view update
-	 *
-	 * @param board - 2D board from model
-	 */
-	@Override
-	public void refresh(Dot[][] board) {
-		if (!ongoingUpdateFromModel && !ongoingUpdateFromView) {
-			ongoingUpdateFromModel = true;
-			Platform.runLater(() -> {
-				for (int i = 0; i < Y_SIZE; i++) {
-					for (int j = 0; j < X_SIZE; j++) {
-						Rectangle rectangle = viewRectangleTable[i][j];
-						if (board[i][j] != null) {
-							rectangle.setFill(board[i][j].getColor());
-						} else {
-							rectangle.setFill(DEAD_COLOR);
-						}
-					}
-				}
-				renderedFrames++;
-				ongoingUpdateFromModel = false;
-			});
-		} else {
-			droppedFrames++;
-		}
-	}
+    /**
+     * refresh method takes board as argument, scans model board and updates representing view board accordingly.
+     *
+     * ongoingUpdateFromModel and ongoingUpdateFromView must be set to false for update to take place
+     * if not, function add a drop frame and discard this view update
+     *
+     * @param board - 2D board from model
+     */
+    @Override
+    public void refresh(Dot[][] board) {
+        if (!ongoingUpdateFromModel && !ongoingUpdateFromView) {
+            ongoingUpdateFromModel = true;
+//            secondPlayerBoard = Client.getClient().getSecondBoard();
+            Platform.runLater(() -> {
+                boolean connectionError = false;
+                if (secondPlayerBoard == null) {
+                    connectionError = true;
+                }
+                if(multiplayer && !connectionError){
+                    try {
+                    for (int i = 0; i < Y_SIZE; i++) {
+                        for (int j = 0; j < X_SIZE; j++) {
+                                Rectangle rectangle = viewRectangleTable[i][j];
+                                if (board[i][j] != null) {
+                                    if (secondPlayerBoard[i][j] != null){
+                                        Color color = board[i][j].getColor();
+                                        rectangle.setFill(color.darker());
+                                    }else {
+                                        rectangle.setFill(board[i][j].getColor());
+                                    }
+                                } else {
+                                    if (secondPlayerBoard[i][j] != null){
+                                        rectangle.setFill(Color.DARKGREY);
+                                    }else{
+                                        rectangle.setFill(DEAD_COLOR);
+                                    }
+
+                                }
+                        }
+                    }
+                    }catch (NullPointerException e){
+                        if (!connectionError){
+                            connectionError = true;
+                            Logger.error("No second Player", this);
+                            System.out.println(secondPlayerBoard);
+                        }
+                    }catch (ArrayIndexOutOfBoundsException e2){
+                        if (!connectionError){
+                            connectionError = true;
+                            Logger.error("Board mismatch", this);
+//                            Logger.log("Requested board: "+secondPlayerBoard[0].length+
+//                                    " "+secondPlayerBoard.length,this);
+                        }
+                    }
+                    renderedFrames++;
+                    ongoingUpdateFromModel = false;
+
+
+            }
+                if (!multiplayer || connectionError){
+                    for (int i = 0; i < Y_SIZE; i++) {
+                        for (int j = 0; j < X_SIZE; j++) {
+                            Rectangle rectangle = viewRectangleTable[i][j];
+                            if (board[i][j] != null) {
+                                rectangle.setFill(board[i][j].getColor());
+                            } else {
+                                rectangle.setFill(DEAD_COLOR);
+                            }
+                        }
+                    }
+                    renderedFrames++;
+                    ongoingUpdateFromModel = false;}
+                });
+
+        } else {
+            droppedFrames++;
+        }
+    }
 
 
 	/**
@@ -264,6 +314,11 @@ public class JavaFXView implements ViewInterface {
 	public Text getTutorialPlaceholder() {
 		return tutorialPlaceholder;
 	}
+
+    @Override
+    public void refreshSecond(Dot[][] secondPlayerBoard) {
+        this.secondPlayerBoard = secondPlayerBoard;
+    }
 
 
 	@Override

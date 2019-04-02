@@ -51,6 +51,7 @@ public class Controller {
      *
      */
     public void GameInit(Stage primaryStage) {
+        client = Client.getClient();
         view = new ViewManager(primaryStage, () -> {
             try {
                 ModelInit();
@@ -60,12 +61,7 @@ public class Controller {
                 Logger.error(e.getMessage(), this);
             }
         });
-            try {
-                client = new Client();
-            } catch (IOException e) {
-                Logger.error(e.getMessage(), this);
-                Platform.exit();
-            }
+
     }
 
 	private void ModelInit() throws BoardTooSmallException {
@@ -152,14 +148,16 @@ public class Controller {
         if (!pause){
             if(!model.isBusy()){
                 model.nextGen();
+                if(multiplayer){
+//                    view.refreshSecond(client.getSecondBoard());
+                }
                 view.refresh(model.getBoard());
             }
-	        try {
-		        client.sendData(model.getBoard());
-	        } catch (IOException e) {
-		        e.printStackTrace();
-		        Platform.exit();
-	        }
+            if (multiplayer){
+//                client.sendBoard(model.getBoard());
+
+            }
+
         }
 
 	}

@@ -51,20 +51,20 @@ public class FrameControlLoop implements Runnable {
 				updater.run();
 				Thread.yield();
 
-				if (CONSOLE_VIEW) {
-					Logger.log("Frame: " + frame, this);
-					Logger.log("FPS: " + FPS, this);
-				}
-				tics += 1;
-				frame++;
-				timeCounterMs = 0;
-			}
-			if (timeFrame - timeCounterMs > 0) {
-				try {
-					Thread.sleep(timeFrame - timeCounterMs);
-				} catch (InterruptedException ignored) {
-				}
-			}
+//                if (CONSOLE_VIEW) {
+//                    Logger.log("Frame: " + frame, this);
+//                    Logger.log("FPS: " + FPS, this);
+//                }
+                tics += 1;
+                frame++;
+                timeCounterMs = 0;
+            }
+            if(timeFrame - timeCounterMs > 0){
+                try {
+                    Thread.sleep(timeFrame - timeCounterMs);
+                } catch (InterruptedException ignored) {
+                }
+            }
 
 			//FPS logging ======================
 			if (currentTime - startTime > 1000) {

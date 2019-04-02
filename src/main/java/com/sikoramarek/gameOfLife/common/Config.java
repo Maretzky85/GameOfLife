@@ -1,5 +1,6 @@
 package com.sikoramarek.gameOfLife.common;
 
+import com.sikoramarek.gameOfLife.client.GameState;
 import javafx.scene.paint.Color;
 
 public class Config {
@@ -12,7 +13,7 @@ public class Config {
      * Set true for printing FPS statistics in 1 sec interval
      * prints FPS for model calculations and view dropped frames
      */
-    private static boolean printStatistics = true;
+    private static boolean printStatistics = false;
 
     /**
      * CONSOLE_VIEW - console printing if true, JavaFX Window if false
@@ -54,6 +55,10 @@ public class Config {
      * put example Dots in model on game start
      */
     private static boolean startExampleModels = false;
+
+    public static boolean multiplayer = false;
+
+    public static GameState gameState = GameState.CONFIG;
 
     /**
      * DO NOT EDIT!!!!

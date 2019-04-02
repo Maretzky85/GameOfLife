@@ -27,5 +27,7 @@ public interface ViewInterface {
 
 	void handleMouse(MouseEvent me);
 
-	Text getTutorialPlaceholder();
+    Text getTutorialPlaceholder();
+
+    void refreshSecond(Dot[][] secondPlayerBoard);
 }

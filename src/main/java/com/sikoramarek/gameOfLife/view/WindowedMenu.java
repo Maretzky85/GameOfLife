@@ -1,5 +1,7 @@
 package com.sikoramarek.gameOfLife.view;
 
+import com.sikoramarek.gameOfLife.client.Client;
+import com.sikoramarek.gameOfLife.client.GameState;
 import com.sikoramarek.gameOfLife.common.Config;
 import com.sikoramarek.gameOfLife.common.Logger;
 import javafx.geometry.Insets;
@@ -19,8 +21,9 @@ import static com.sikoramarek.gameOfLife.common.Config.WIDTH;
 
 public class WindowedMenu {
 
-	TextField wHeight;
-	TextField wWidth;
+    TextField wHeight;
+    TextField wWidth;
+    Client client;
 
 	private Runnable gameStarter;
 	private GridPane menuGroup;
@@ -36,12 +39,13 @@ public class WindowedMenu {
 			"JavaFX3D view",
 			"World wrapping"};
 
-	WindowedMenu(Runnable viewInitializer) {
-		this.gameStarter = viewInitializer;
-		menuGroup = new GridPane();
-		menu = new Scene(menuGroup, WIDTH, HEIGHT, Color.WHITE);
-		init();
-	}
+    WindowedMenu(Runnable viewInitializer){
+        this.gameStarter = viewInitializer;
+        menuGroup = new GridPane();
+        menu = new Scene(menuGroup, WIDTH, HEIGHT, Color.WHITE);
+        this.client = Client.getClient();
+        init();
+    }
 
 	private void init() {
 		menuGroup.setPadding(new Insets(10, 10, 10, 10));
@@ -120,23 +124,40 @@ public class WindowedMenu {
 
 		labelBuilder(labels);
 
-		Button saveButton = new Button("Start");
-		saveButton.setOnAction(event -> {
-			Config.setRequestedWindowHeight(Integer.valueOf(wHeight.getText()));
-			Config.setRequestedWindowWidth(Integer.valueOf(wWidth.getText()));
-			Config.setXsize(Integer.valueOf(xSize.getText()));
-			Config.setYsize(Integer.valueOf(ySize.getText()));
-			Config.setFrameRate(Integer.valueOf(frameRate.getText()));
-			Config.setConsoleView(consoleViewBox.isSelected());
-			Config.setJavafxView(javaFXViewBox.isSelected());
-			Config.setView3d(jFX3dBox.isSelected());
-			Config.setWorldWrapping(worldWrappingBox.isSelected());
-			gameStarter.run();
-		});
+        Button saveButton = new Button("Start");
+        saveButton.setOnAction(event -> {
+            Config.setRequestedWindowHeight(Integer.valueOf(wHeight.getText()));
+            Config.setRequestedWindowWidth(Integer.valueOf(wWidth.getText()));
+            Config.setXsize(Integer.valueOf(xSize.getText()));
+            Config.setYsize(Integer.valueOf(ySize.getText()));
+            Config.setFrameRate(Integer.valueOf(frameRate.getText()));
+            Config.setConsoleView(consoleViewBox.isSelected());
+            Config.setJavafxView(javaFXViewBox.isSelected());
+            Config.setView3d(jFX3dBox.isSelected());
+            Config.setWorldWrapping(worldWrappingBox.isSelected());
+            if(client != null){
+                try {
+                    Config.gameState = GameState.READY;
+                    new Thread(client).start();
+                }catch (NullPointerException e){
+                    Logger.error("Not connected", this);
+                }
+            }
 
-		GridPane.setConstraints(saveButton, 0, labels.length);
-		menuGroup.getChildren().add(saveButton);
-	}
+            gameStarter.run();
+        });
+
+        Button connectButton = new Button("Connect");
+        connectButton.setOnAction(event -> {
+            Client client = Client.getClient();
+            client.connect();
+            Config.multiplayer = true;
+        });
+
+        GridPane.setConstraints(saveButton, 0, labels.length);
+        GridPane.setConstraints(connectButton, 0, labels.length+1);
+        menuGroup.getChildren().addAll(saveButton, connectButton);
+    }
 
 	private void labelBuilder(Object[] any) {
 		for (int i = 0; i < any.length; i++) {

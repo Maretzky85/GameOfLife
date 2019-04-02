@@ -86,8 +86,10 @@ public class JavaFX3DView implements ViewInterface {
     /*
             ========= END OF MODEL VIEW SECTION ======
      */
-	private int animationIterator = 0;
-	private WelcomeAnimation welcomeAnimation = new WelcomeAnimation(this::toggleRow);
+
+    private Dot[][] secondPlayerBoard;
+    private WelcomeAnimation welcomeAnimation = new WelcomeAnimation(this::toggleRow);
+    private int animationIterator = 0;
 
 	/**
 	 * Constructor that takes primary stage from caller
@@ -342,6 +344,11 @@ public class JavaFX3DView implements ViewInterface {
 	public Text getTutorialPlaceholder() {
 		return text;
 	}
+
+    @Override
+    public void refreshSecond(Dot[][] secondPlayerBoard) {
+        this.secondPlayerBoard = secondPlayerBoard;
+    }
 
 
 	@Override

@@ -1,5 +1,6 @@
 package com.sikoramarek.gameOfLife.view;
 
+import com.sikoramarek.gameOfLife.client.Client;
 import com.sikoramarek.gameOfLife.common.Config;
 import com.sikoramarek.gameOfLife.common.Logger;
 import com.sikoramarek.gameOfLife.common.SharedResources;
@@ -32,12 +33,15 @@ public class ViewManager {
 	private boolean fullscreen = true;
 	private int currentView = 0;
 
+    Client client;
 
-	public ViewManager(Stage primaryStage, Runnable modelInitializer) {
-		this.initializer = modelInitializer;
-		this.primaryStage = primaryStage;
-		primaryStage.setMinHeight(600);
-		primaryStage.setMinWidth(600);
+
+    public ViewManager(Stage primaryStage, Runnable modelInitializer){
+        this.client = Client.getClient();
+        this.initializer = modelInitializer;
+        this.primaryStage = primaryStage;
+        primaryStage.setMinHeight(600);
+        primaryStage.setMinWidth(600);
 
 		primaryStage.setMaximized(true);
 		primaryStage.setTitle("Game Of Life  v " + VERSION);
@@ -177,7 +181,17 @@ public class ViewManager {
 		return views.get(currentView).getRenderedFrames();
 	}
 
-	public int getDroppedFrames() {
-		return views.get(currentView).getDroppedFrames();
-	}
+    public int getDroppedFrames() {
+        return views.get(currentView).getDroppedFrames();
+    }
+
+    public void refreshSecond(Dot[][] secondPlayerBoard) {
+        for (ViewInterface view : views
+        ) {
+            view.refreshSecond(secondPlayerBoard);
+        }
+        if(CONSOLE_VIEW){
+            consoleOutput.refresh(secondPlayerBoard);
+        }
+    }
 }
