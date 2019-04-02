@@ -1,4 +1,4 @@
-package com.sikoramarek.Model;
+package java.com.sikoramarek.gameOfLife.model;
 
 import com.sikoramarek.gameOfLife.common.BoardTooSmallException;
 import com.sikoramarek.gameOfLife.common.SharedResources;
@@ -94,10 +94,8 @@ public class ModelPerformanceTests {
 
         multiResoult = boardMulti.getGeneration();
 
-//        System.out.println("Time taken for multiThread: "+ multiResoult + " ms");
 
         percent = (float)multiResoult/(float)singleResoult*100;
-//        System.out.println("MultiThreaded is "+ percent +" % of SingleThreaded");
 
         assertTrue("MultiThreaded is "+ percent +" % of SingleThreaded", multiResoult > singleResoult);
     }
