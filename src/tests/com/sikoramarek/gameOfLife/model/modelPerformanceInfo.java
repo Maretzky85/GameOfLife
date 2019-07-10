@@ -1,7 +1,7 @@
 package com.sikoramarek.gameOfLife.model;
 
-import com.sikoramarek.gameOfLife.common.errors.BoardTooSmallException;
 import com.sikoramarek.gameOfLife.common.SharedResources;
+import com.sikoramarek.gameOfLife.common.errors.BoardTooSmallException;
 import com.sikoramarek.gameOfLife.model.multiThread.BoardMultithreading;
 import com.sikoramarek.gameOfLife.model.singleThread.BoardSingleThread;
 import javafx.scene.input.KeyCode;
@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
 public class modelPerformanceInfo {
@@ -96,7 +95,7 @@ public class modelPerformanceInfo {
 
 		percent = (float) multiResoult / (float) singleResoult * 100;
 
-		assertNotSame("MultiThreaded is " + percent + " % of SingleThreaded", multiResoult ,singleResoult);
+		assertNotSame("MultiThreaded is " + percent + " % of SingleThreaded", multiResoult, singleResoult);
 //		assertTrue("MultiThreaded is " + percent + " % of SingleThreaded", multiResoult > singleResoult);
 	}
 

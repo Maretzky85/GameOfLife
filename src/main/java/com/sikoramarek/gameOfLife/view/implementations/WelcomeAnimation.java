@@ -12,6 +12,7 @@ public class WelcomeAnimation {
 	private boolean started = false;
 	private Timeline timeline;
 	private Color toggleColor;
+
 	public WelcomeAnimation(Runnable rowToggler) {
 		this.toggle = rowToggler;
 	}

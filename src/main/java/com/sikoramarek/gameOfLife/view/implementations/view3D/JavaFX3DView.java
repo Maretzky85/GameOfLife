@@ -83,9 +83,9 @@ public class JavaFX3DView implements ViewInterface {
 	private Image bumpMap;
 	private Image bumpMap2;
 
-    /*
-            ========= END OF MODEL VIEW SECTION ======
-     */
+	/*
+			========= END OF MODEL VIEW SECTION ======
+	 */
 	private int animationIterator = 0;
 	private WelcomeAnimation welcomeAnimation = new WelcomeAnimation(this::toggleRow);
 
