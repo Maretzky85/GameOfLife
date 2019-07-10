@@ -1,6 +1,6 @@
 package com.sikoramarek.gameOfLife.view;
 
-import com.sikoramarek.gameOfLife.common.SystemConfigTooWeekException;
+import com.sikoramarek.gameOfLife.common.errors.SystemConfigTooWeekException;
 import com.sikoramarek.gameOfLife.model.Dot;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
@@ -13,19 +13,19 @@ import javafx.scene.text.Text;
  */
 public interface ViewInterface {
 
-    Scene getScene();
+	Scene getScene();
 
-    void viewInit() throws SystemConfigTooWeekException;
+	void viewInit() throws SystemConfigTooWeekException;
 
-    void refresh(Dot[][] board);
+	void refresh(Dot[][] board);
 
-    int getDroppedFrames();
+	int getDroppedFrames();
 
-    int getRenderedFrames();
+	int getRenderedFrames();
 
-    void handleKeyboard(KeyEvent event);
+	void handleKeyboard(KeyEvent event);
 
-    void handleMouse(MouseEvent me);
+	void handleMouse(MouseEvent me);
 
-    Text getTutorialPlaceholder();
+	Text getTutorialPlaceholder();
 }

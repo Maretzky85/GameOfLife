@@ -9,27 +9,27 @@ import javafx.scene.paint.Color;
  */
 public class Dot {
 
-    private boolean descColor = false;
-    private int green = 0;
+	private boolean descColor = false;
+	private int green = 0;
 
-    @Override
-    public String toString() {
-        return "*";
-    }
+	@Override
+	public String toString() {
+		return "*";
+	}
 
 
-    public Color getColor() {
-        if (descColor) {
-            green -= 10;
-            if(green < 50){
-                descColor = false;
-            }
-        }else{
-            green +=10;
-            if(green > 245){
-                descColor = true;
-            }
-        }
-        return Color.rgb(250,green,0);
-    }
+	public Color getColor() {
+		if (descColor) {
+			green -= 10;
+			if (green < 50) {
+				descColor = false;
+			}
+		} else {
+			green += 10;
+			if (green > 245) {
+				descColor = true;
+			}
+		}
+		return Color.rgb(250, green, 0);
+	}
 }

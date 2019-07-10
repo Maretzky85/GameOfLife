@@ -2,20 +2,20 @@ package com.sikoramarek.gameOfLife.model;
 
 public interface Board {
 
-    void nextGen();
+	void nextGen();
 
-    int getGeneration();
+	int getGeneration();
 
-    void initExampleBoard();
+	void initExampleBoard();
 
-    void clearBoard();
+	void clearBoard();
 
-    void changeOnPosition(int x, int y);
+	void changeOnPosition(int x, int y);
 
-    boolean isBusy();
+	boolean isBusy();
 
-    void checkForInput();
+	void checkForInput();
 
-    Dot[][] getBoard();
+	Dot[][] getBoard();
 
 }
