@@ -19,7 +19,7 @@ To run this project just clone repository and run mvn package exec:java
 
 ### Prerequisites
 
-  - [Java 8](https://www.java.com/download/) (OpenJDK will not work here)
+  - [Java](https://www.java.com/download/)
   - [Maven](https://maven.apache.org/download.cgi)
   
 What things you need to install the software and how to install them
@@ -35,7 +35,7 @@ apt-get install maven
 Launch console, go to the project folder, and type:
 
 ```
-mvn package exec:java
+mvn package javafx:run
 ```
 
 and hit enter
@@ -44,7 +44,7 @@ alternatively, you can go for:
 
 ```
 mvn package
-mvn exec:java
+mvn javafx:run
 ```
 mvn package must be run only once. mvn exec:java is for starting a built project.
 
